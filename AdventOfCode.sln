@@ -41,6 +41,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "csharp", "csharp", "{D07494
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "csharp", "csharp", "{06AFC3E1-D7CF-429D-B80D-BFEB696B9BC6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iteams", "2022\Day3\csharp\iteams\iteams.csproj", "{3E7F1842-6961-4BA7-A420-15F04E2019AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{FF9D8A59-0D0A-4861-B2F5-D3B354BF1488}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF9D8A59-0D0A-4861-B2F5-D3B354BF1488}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF9D8A59-0D0A-4861-B2F5-D3B354BF1488}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E7F1842-6961-4BA7-A420-15F04E2019AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E7F1842-6961-4BA7-A420-15F04E2019AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E7F1842-6961-4BA7-A420-15F04E2019AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E7F1842-6961-4BA7-A420-15F04E2019AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -78,6 +84,7 @@ Global
 		{FB5D621F-EA9A-48E0-93A1-4A15113BC8E6} = {117C6923-1B21-4640-837E-64056439366C}
 		{D074949C-1FFE-4187-B85B-CF616E7FC56A} = {997F6B3B-D64E-4307-97D5-C7969B531FBB}
 		{06AFC3E1-D7CF-429D-B80D-BFEB696B9BC6} = {1A1F5AC0-1EEE-4277-8FF9-D7B3C53528F1}
+		{3E7F1842-6961-4BA7-A420-15F04E2019AE} = {D5E2F6E5-26EE-4B8B-A1C8-102F9738A48F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {63AC2A69-7C51-49BF-B94B-273AD16906EE}
