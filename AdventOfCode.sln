@@ -51,6 +51,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "code", "2022\Day6\csharp\co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "data", "2022\Day7\csharp\data\data.csproj", "{898C782E-9596-42BB-B3FC-6DF5B181088F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "trees", "2022\Day8\csharp\trees\trees.csproj", "{4175B154-496E-4515-B5EB-97C27A288F89}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,10 @@ Global
 		{898C782E-9596-42BB-B3FC-6DF5B181088F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{898C782E-9596-42BB-B3FC-6DF5B181088F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{898C782E-9596-42BB-B3FC-6DF5B181088F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4175B154-496E-4515-B5EB-97C27A288F89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4175B154-496E-4515-B5EB-97C27A288F89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4175B154-496E-4515-B5EB-97C27A288F89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4175B154-496E-4515-B5EB-97C27A288F89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -113,6 +119,7 @@ Global
 		{FA9230AC-C74B-44A7-9E26-647FB3B44AA9} = {544FF04B-BB40-490D-B6DE-7D44AD5DD5C6}
 		{F7A6BCEC-9143-4884-BF06-C666CE7405AC} = {FA9230AC-C74B-44A7-9E26-647FB3B44AA9}
 		{898C782E-9596-42BB-B3FC-6DF5B181088F} = {D074949C-1FFE-4187-B85B-CF616E7FC56A}
+		{4175B154-496E-4515-B5EB-97C27A288F89} = {06AFC3E1-D7CF-429D-B80D-BFEB696B9BC6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {63AC2A69-7C51-49BF-B94B-273AD16906EE}
