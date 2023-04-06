@@ -47,6 +47,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ranges", "2022\Day4\csharp\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "crates", "2022\Day5\csharp\crates\crates.csproj", "{F1DB2806-7A67-4F39-98B3-37178DCE9E5B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "code", "2022\Day6\csharp\ConsoleApp1\code.csproj", "{3A5BEEBA-9D9B-4A3B-8904-61D4E6ABEA61}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{F1DB2806-7A67-4F39-98B3-37178DCE9E5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1DB2806-7A67-4F39-98B3-37178DCE9E5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1DB2806-7A67-4F39-98B3-37178DCE9E5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A5BEEBA-9D9B-4A3B-8904-61D4E6ABEA61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A5BEEBA-9D9B-4A3B-8904-61D4E6ABEA61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A5BEEBA-9D9B-4A3B-8904-61D4E6ABEA61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A5BEEBA-9D9B-4A3B-8904-61D4E6ABEA61}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -99,6 +105,7 @@ Global
 		{3E7F1842-6961-4BA7-A420-15F04E2019AE} = {D5E2F6E5-26EE-4B8B-A1C8-102F9738A48F}
 		{936B6B91-0F3E-4DC7-B8AB-AAA4E01B29E3} = {017FD6AA-8D6F-4111-8BF8-8164C48DE841}
 		{F1DB2806-7A67-4F39-98B3-37178DCE9E5B} = {0CF418BE-BA1C-4800-9DDB-74883266AAA0}
+		{3A5BEEBA-9D9B-4A3B-8904-61D4E6ABEA61} = {FB5D621F-EA9A-48E0-93A1-4A15113BC8E6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {63AC2A69-7C51-49BF-B94B-273AD16906EE}
