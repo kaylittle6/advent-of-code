@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "calories", "AdventOfCode.temp\calories.csproj", "{0BF43CC0-ECA9-40E5-A70B-79CDC671D1EE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2022", "2022", "{9C1B8008-6E41-4AD0-BDD5-F799BFAFD119}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Day1", "Day1", "{B8D88FED-F06C-42F7-9D6F-0AC8CF267445}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "csharp", "csharp", "{B32FA26F-BCD0-426E-AE0C-295A0FD7D185}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0BF43CC0-ECA9-40E5-A70B-79CDC671D1EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BF43CC0-ECA9-40E5-A70B-79CDC671D1EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BF43CC0-ECA9-40E5-A70B-79CDC671D1EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BF43CC0-ECA9-40E5-A70B-79CDC671D1EE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0BF43CC0-ECA9-40E5-A70B-79CDC671D1EE} = {B32FA26F-BCD0-426E-AE0C-295A0FD7D185}
+		{B8D88FED-F06C-42F7-9D6F-0AC8CF267445} = {9C1B8008-6E41-4AD0-BDD5-F799BFAFD119}
+		{B32FA26F-BCD0-426E-AE0C-295A0FD7D185} = {B8D88FED-F06C-42F7-9D6F-0AC8CF267445}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {63AC2A69-7C51-49BF-B94B-273AD16906EE}
+	EndGlobalSection
+EndGlobal
