@@ -60,8 +60,8 @@
   public class Directory
   {
     public string Name { get; set; }
-    public List<int> Files { get; set; }
-    public List<Directory> SubDirectories { get; set; }
+    public List<int> Files { get; set; } = new List<int>();
+    public List<Directory> SubDirectories { get; set; } = new List<Directory>();
     public int FilesTotalData => Files.Any() ? Files.Sum() : 0;
     public int SubFilesTotalData => SubDirectories.Sum(d => d.TotalDirectoryDataSize);
     public int TotalDirectoryDataSize => FilesTotalData + SubFilesTotalData;
@@ -70,8 +70,6 @@
     public Directory(string _name)
     {
       Name = _name;
-      Files = new List<int>();
-      SubDirectories = new List<Directory>();
     }
   }
 }
