@@ -6,7 +6,7 @@
     List<Directory> spaceNeededList = new List<Directory>();
     Directory activeDirectory = new("");
 
-    string[] input = File.ReadAllLines("D:\\Programming\\repos\\aventOfCode\\data\\data\\data\\input.txt");
+    string[] input = File.ReadAllLines("D:\\Programming\\repos\\aventOfCode\\AdventOfCode\\2022\\Day7\\csharp\\data\\input.txt");
     const int spaceNeeded = 4376732;
 
     foreach (string line in input)
