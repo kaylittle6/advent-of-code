@@ -1,34 +1,112 @@
 ﻿using System.Globalization;
+using System.Reflection;
 using System.Reflection.Metadata.Ecma335;
 
 public class Program
 {
   public static void Main(string[] args)
   {
-    string[] input = File.ReadAllLines("D:\\Programming\\repos\\aventOfCode\\trees\\trees\\input.txt");
+    string[] input = File.ReadAllLines("D:\\Programming\\repos\\aventOfCode\\AdventOfCode\\2022\\Day8\\csharp\\trees\\input.txt");
+    int[][] index = SerializeInput(input);
+    int totalVisible = 0;
 
-    int[][] xindex = new int[99][];
-
-    foreach (string line in input)
+    for (int i = 0; i < index.Length; i++)
     {
-      var splitLines = line.Split();
-
-      for (int i = 0; i < input.Length; i++)
+      for (int j = 0; j < index[0].Length; j++)
       {
-        xindex[i] = new int[100];
-
-        foreach (string number in splitLines)
+        if (IsTreeVisible(index, i, j))
         {
-          xindex[i][i] = int.Parse(number);
+          totalVisible += 1;
         }
       }
     }
-
-
-    Console.WriteLine();
+    
+    Console.WriteLine(totalVisible);
     Console.ReadLine();
+  }
 
+  private static int[][] SerializeInput(string[] _input)
+  {
+    int[][] index = new int[_input.Length][];
+    char[] charArray;
 
+    for (int i = 0; i < _input.Length; i++)
+    {
+      index[i] = new int[_input[i].Length];
+    }
 
+    for (int i = 0; i < _input.Length; i++)
+    {
+      charArray = _input[i].ToCharArray();
+
+      for (int j = 0; j < charArray.Length; j++)
+      {
+        index[i][j] = int.Parse(charArray[j].ToString());
+      }
+    }
+
+    return index;
+  }
+
+  private static bool IsTreeVisible(int[][] _index, int _yindex, int _xindex)
+  {
+    bool rightTrue = IsTreeVisibleRight(_index, _yindex, _xindex);
+    bool leftTrue = IsTreeVisibleLeft(_index, _yindex, _xindex);
+    bool upTrue = IsTreeVisibleUp(_index, _yindex, _xindex);
+    bool downTrue = IsTreeVisibleDown(_index, _yindex, _xindex);
+    
+    return rightTrue || leftTrue || upTrue || downTrue;
+  }
+
+  private static bool IsTreeVisibleRight(int[][] _index, int _yindex, int _xindex)
+  {
+    for (int i = _xindex + 1; i < _index[_yindex].Length; i++)
+    {
+      if (_index[_yindex][_xindex] <= _index[_yindex][i])
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  private static bool IsTreeVisibleLeft(int[][] _index, int _yindex, int _xindex)
+  {
+    for (int i = _xindex - 1; i > -1; i--)
+    {
+      if (_index[_yindex][_xindex] <= _index[_yindex][i])
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  private static bool IsTreeVisibleUp(int[][] _index, int _yindex, int _xindex)
+  {
+    for (int i = _yindex - 1; i > -1; i--)
+    {
+      if (_index[_yindex][_xindex] <= _index[i][_xindex])
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  private static bool IsTreeVisibleDown(int[][] _index, int _yindex, int _xindex)
+  {
+    for (int i = _yindex + 1; i < _index[_yindex].Length; i++)
+    {
+      if (_index[_yindex][_xindex] <= _index[i][_xindex])
+      {
+        return false;
+      }
+    }
+
+    return true;
   }
 }
