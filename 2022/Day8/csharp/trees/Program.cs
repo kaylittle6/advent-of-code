@@ -20,7 +20,7 @@ public class Program
         }
       }
     }
-    
+
     Console.WriteLine(totalVisible);
     Console.ReadLine();
   }
@@ -50,63 +50,43 @@ public class Program
 
   private static bool IsTreeVisible(int[][] _index, int _yindex, int _xindex)
   {
-    bool rightTrue = IsTreeVisibleRight(_index, _yindex, _xindex);
-    bool leftTrue = IsTreeVisibleLeft(_index, _yindex, _xindex);
-    bool upTrue = IsTreeVisibleUp(_index, _yindex, _xindex);
-    bool downTrue = IsTreeVisibleDown(_index, _yindex, _xindex);
-    
-    return rightTrue || leftTrue || upTrue || downTrue;
-  }
+    bool right = true;
+    bool left = true;
+    bool up = true;
+    bool down = true;
 
-  private static bool IsTreeVisibleRight(int[][] _index, int _yindex, int _xindex)
-  {
     for (int i = _xindex + 1; i < _index[_yindex].Length; i++)
     {
       if (_index[_yindex][_xindex] <= _index[_yindex][i])
       {
-        return false;
+        right = false;
       }
     }
 
-    return true;
-  }
-
-  private static bool IsTreeVisibleLeft(int[][] _index, int _yindex, int _xindex)
-  {
     for (int i = _xindex - 1; i > -1; i--)
     {
       if (_index[_yindex][_xindex] <= _index[_yindex][i])
       {
-        return false;
+        left = false;
       }
     }
 
-    return true;
-  }
-
-  private static bool IsTreeVisibleUp(int[][] _index, int _yindex, int _xindex)
-  {
     for (int i = _yindex - 1; i > -1; i--)
     {
       if (_index[_yindex][_xindex] <= _index[i][_xindex])
       {
-        return false;
+        up = false;
       }
     }
 
-    return true;
-  }
-
-  private static bool IsTreeVisibleDown(int[][] _index, int _yindex, int _xindex)
-  {
     for (int i = _yindex + 1; i < _index[_yindex].Length; i++)
     {
       if (_index[_yindex][_xindex] <= _index[i][_xindex])
       {
-        return false;
+        down = false;
       }
     }
 
-    return true;
+    return right || left || up || down;
   }
 }
