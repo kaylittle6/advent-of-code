@@ -51,7 +51,7 @@
     bool up = true;
     bool down = true;
 
-    for (int i = _xindex + 1; i < _index[_yindex].Length; i++)
+    for (int i = _xindex + 1; i < _index[_xindex].Length; i++)
     {
       if (_index[_yindex][_xindex] <= _index[_yindex][i])
       {
