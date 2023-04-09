@@ -1,8 +1,4 @@
-﻿using System.Globalization;
-using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
-
-public class Program
+﻿public class Program
 {
   public static void Main(string[] args)
   {
