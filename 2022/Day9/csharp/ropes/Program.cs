@@ -7,17 +7,13 @@
     Rope headRope = new();
     Rope tailRope = new();
 
+    tailRope.SaveCoordinates();
+
     foreach (string line in input)
     {
       string[] splitLines = line.Split(' ');
 
-      tailRope.SaveCoordinates();
-      MoveHeadRope(headRope, splitLines);
-      
-      if (TailRopeNeedsToMove(headRope, tailRope))
-      {
-        MoveTailRope(headRope, tailRope);
-      }
+      MoveHeadRope(headRope, tailRope, splitLines);
     }
 
     List<int[]> distinctCoordinates = tailRope.Coordinates.Distinct(new CompareInts()).ToList();
@@ -26,40 +22,57 @@
     Console.ReadLine();
   }
   
-  private static void MoveHeadRope(Rope _headRope, string[] _splitLines)
+  private static void MoveHeadRope(Rope _headRope, Rope _tailRope, string[] _splitLines)
   {
-    switch (_splitLines[0])
+    for (int i = 0; i < int.Parse(_splitLines[1]); i++)
     {
-      case "R":
-        _headRope.XIndex += int.Parse(_splitLines[1]);
-        break;
+      switch (_splitLines[0])
+      {
+        case "R":
+          _headRope.XIndex++;
+          if (TailRopeNeedsToMove(_headRope, _tailRope))
+          {
+            MoveTailRope(_headRope, _tailRope);
+          }
+          break;
 
-      case "L":
-        _headRope.XIndex -= int.Parse(_splitLines[1]);
-        break;
+        case "L":
+          _headRope.XIndex--;
+          if (TailRopeNeedsToMove(_headRope, _tailRope))
+          {
+            MoveTailRope(_headRope, _tailRope);
+          }
+          break;
 
-      case "U":
-        _headRope.YIndex += int.Parse(_splitLines[1]);
-        break;
+        case "U":
+          _headRope.YIndex++;
+          if (TailRopeNeedsToMove(_headRope, _tailRope))
+          {
+            MoveTailRope(_headRope, _tailRope);
+          }
+          break;
 
-      case "D":
-        _headRope.YIndex -= int.Parse(_splitLines[1]);
-        break;
+        case "D":
+          _headRope.YIndex--;
+          if (TailRopeNeedsToMove(_headRope, _tailRope))
+          {
+            MoveTailRope(_headRope, _tailRope);
+          }
+          break;
+      }
     }
   }
 
   private static bool TailRopeNeedsToMove(Rope _headRope, Rope _tailRope)
   {
-    return (_headRope.XIndex - _tailRope.XIndex >= 2 || _headRope.XIndex - _tailRope.YIndex <= 2
+    return (_headRope.XIndex - _tailRope.XIndex >= 2 || _headRope.XIndex - _tailRope.YIndex <= -2
       || _headRope.YIndex - _tailRope.YIndex >= 2 || _headRope.YIndex - _tailRope.YIndex <= -2);
   }
 
   private static void MoveTailRope(Rope _headRope, Rope _tailRope)
   {
-    if (((_headRope.YIndex - _tailRope.YIndex >= 1 || _headRope.YIndex - _tailRope.YIndex <= -1)
-      && (_headRope.XIndex - _tailRope.XIndex >= 2 || _headRope.XIndex - _tailRope.XIndex <= -2))
-      || ((_headRope.YIndex - _tailRope.YIndex >= 2 || _headRope.YIndex - _tailRope.YIndex <= -2) 
-      && (_headRope.XIndex - _tailRope.YIndex >= 1 || _headRope.XIndex - _tailRope.YIndex <= -1)))
+    if (((_headRope.YIndex - _tailRope.YIndex == 1) || (_headRope.YIndex - _tailRope.YIndex == -1))
+      && ((_headRope.XIndex - _tailRope.XIndex == 2) || (_headRope.XIndex - _tailRope.XIndex == -2)))
     {
       if (_headRope.XIndex > _tailRope.XIndex && _headRope.YIndex > _tailRope.YIndex)
       {
@@ -105,6 +118,8 @@
     {
       _tailRope.YIndex--;
     }
+
+    _tailRope.SaveCoordinates();
   }
 
   public class Rope
