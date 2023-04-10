@@ -150,7 +150,7 @@ public class Program
 
   public class Rope
   {
-    public string ID { get; set;  }
+    public string ID { get; set; }
     public int XIndex { get; set; } = 0;
     public int YIndex { get; set; } = 0;
     public List<int[]> Coordinates { get; set; } = new List<int[]>();
