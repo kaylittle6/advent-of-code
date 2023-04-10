@@ -1,132 +1,164 @@
-﻿public class Program
+﻿using System.Globalization;
+
+public class Program
 {
   public static void Main(string[] args)
   {
     string[] input = File.ReadAllLines("C:\\Users\\klittle\\source\\vscPractice\\AoC\\2022\\Day9\\csharp\\ropes\\input.txt");
 
-    Rope headRope = new();
-    Rope tailRope = new();
+    Rope[] ropes = new Rope[10];
 
-    tailRope.SaveCoordinates();
+    for (int i = 0; i < ropes.Length; i++)
+    {
+      ropes[i] = new(i.ToString());
+    }
+
+    ropes[9].ID = "Tail";
+    ropes[9].SaveCoordinates();
 
     foreach (string line in input)
     {
-      string[] splitLines = line.Split(' ');
+      string[] splitLines = line.Split(" ");
 
-      MoveHeadRope(headRope, tailRope, splitLines);
+      MoveHeadRope(ropes, splitLines);
     }
 
-    List<int[]> distinctCoordinates = tailRope.Coordinates.Distinct(new CompareInts()).ToList();
+    List<int[]> distinctCoordinates = ropes[9].Coordinates.Distinct(new CompareInts()).ToList();
 
     Console.WriteLine(distinctCoordinates.Count());
     Console.ReadLine();
   }
   
-  private static void MoveHeadRope(Rope _headRope, Rope _tailRope, string[] _splitLines)
+  private static void MoveHeadRope(Rope[] _ropes, string[] _splitLines)
   {
     for (int i = 0; i < int.Parse(_splitLines[1]); i++)
     {
       switch (_splitLines[0])
       {
         case "R":
-          _headRope.XIndex++;
-          if (TailRopeNeedsToMove(_headRope, _tailRope))
+          _ropes[0].XIndex++;
+
+          for (int j = 1; j < _ropes.Length; j++)
           {
-            MoveTailRope(_headRope, _tailRope);
+            if (NextRopeNeedsToMove(_ropes[j-1], _ropes[j]))
+            {
+              MoveNextRope(_ropes[j-1], _ropes[j]);
+            }
           }
           break;
 
         case "L":
-          _headRope.XIndex--;
-          if (TailRopeNeedsToMove(_headRope, _tailRope))
+          _ropes[0].XIndex--;
+
+          for (int j = 1; j < _ropes.Length; j++)
           {
-            MoveTailRope(_headRope, _tailRope);
+            if (NextRopeNeedsToMove(_ropes[j - 1], _ropes[j]))
+            {
+              MoveNextRope(_ropes[j - 1], _ropes[j]);
+            }
           }
           break;
 
         case "U":
-          _headRope.YIndex++;
-          if (TailRopeNeedsToMove(_headRope, _tailRope))
+          _ropes[0].YIndex++;
+
+          for (int j = 1; j < _ropes.Length; j++)
           {
-            MoveTailRope(_headRope, _tailRope);
+            if (NextRopeNeedsToMove(_ropes[j - 1], _ropes[j]))
+            {
+              MoveNextRope(_ropes[j - 1], _ropes[j]);
+            }
           }
           break;
 
         case "D":
-          _headRope.YIndex--;
-          if (TailRopeNeedsToMove(_headRope, _tailRope))
+          _ropes[0].YIndex--;
+
+          for (int j = 1; j < _ropes.Length; j++)
           {
-            MoveTailRope(_headRope, _tailRope);
+            if (NextRopeNeedsToMove(_ropes[j - 1], _ropes[j]))
+            {
+              MoveNextRope(_ropes[j - 1], _ropes[j]);
+            }
           }
           break;
       }
     }
   }
 
-  private static bool TailRopeNeedsToMove(Rope _headRope, Rope _tailRope)
+  private static bool NextRopeNeedsToMove(Rope _previousRope, Rope _nextRope)
   {
-    return (Math.Abs(_headRope.XIndex - _tailRope.XIndex) >= 2)
-      || (Math.Abs(_headRope.YIndex - _tailRope.YIndex) >= 2);
+    return (Math.Abs(_previousRope.XIndex - _nextRope.XIndex) >= 2)
+      || (Math.Abs(_previousRope.YIndex - _nextRope.YIndex) >= 2);
   }
 
-  private static void MoveTailRope(Rope _headRope, Rope _tailRope)
+  private static void MoveNextRope(Rope _previousRope, Rope _nextRope)
   {
-    if (((Math.Abs(_headRope.YIndex - _tailRope.YIndex) >= 1) && (Math.Abs(_headRope.XIndex - _tailRope.XIndex) >= 2)) 
-      || ((Math.Abs(_headRope.YIndex - _tailRope.YIndex) >= 2) && (Math.Abs(_headRope.XIndex - _tailRope.XIndex) >= 1)))
+    if (((Math.Abs(_previousRope.YIndex - _nextRope.YIndex) >= 1) && (Math.Abs(_previousRope.XIndex - _nextRope.XIndex) >= 2)) 
+      || ((Math.Abs(_previousRope.YIndex - _nextRope.YIndex) >= 2) && (Math.Abs(_previousRope.XIndex - _nextRope.XIndex) >= 1)))
     {
-      if (_headRope.XIndex > _tailRope.XIndex && _headRope.YIndex > _tailRope.YIndex)
+      if (_previousRope.XIndex > _nextRope.XIndex && _previousRope.YIndex > _nextRope.YIndex)
       {
-        _tailRope.XIndex++;
-        _tailRope.YIndex++;
+        _nextRope.XIndex++;
+        _nextRope.YIndex++;
       }
 
-      else if (_headRope.XIndex > _tailRope.XIndex && _headRope.YIndex < _tailRope.YIndex)
+      else if (_previousRope.XIndex > _nextRope.XIndex && _previousRope.YIndex < _nextRope.YIndex)
       {
-        _tailRope.XIndex++;
-        _tailRope.YIndex--;
+        _nextRope.XIndex++;
+        _nextRope.YIndex--;
       }
 
-      else if (_headRope.XIndex < _tailRope.XIndex && _headRope.YIndex > _tailRope.YIndex)
+      else if (_previousRope.XIndex < _nextRope.XIndex && _previousRope.YIndex > _nextRope.YIndex)
       {
-        _tailRope.XIndex--;
-        _tailRope.YIndex++;
+        _nextRope.XIndex--;
+        _nextRope.YIndex++;
       }
 
-      else if (_headRope.XIndex < _tailRope.XIndex && _headRope.YIndex < _tailRope.YIndex)
+      else if (_previousRope.XIndex < _nextRope.XIndex && _previousRope.YIndex < _nextRope.YIndex)
       {
-        _tailRope.XIndex--;
-        _tailRope.YIndex--;
+        _nextRope.XIndex--;
+        _nextRope.YIndex--;
       }
     }
 
-    else if (_headRope.XIndex - _tailRope.XIndex >= 2)
+    else if (_previousRope.XIndex - _nextRope.XIndex >= 2)
     {
-      _tailRope.XIndex++;
+      _nextRope.XIndex++;
     }
 
-    else if (_headRope.XIndex - _tailRope.XIndex <= -2)
+    else if (_previousRope.XIndex - _nextRope.XIndex <= -2)
     {
-      _tailRope.XIndex--;
+      _nextRope.XIndex--;
     }
 
-    else if (_headRope.YIndex - _tailRope.YIndex >= 2)
+    else if (_previousRope.YIndex - _nextRope.YIndex >= 2)
     {
-      _tailRope.YIndex++;
+      _nextRope.YIndex++;
     }
 
-    else if (_headRope.YIndex - _tailRope.YIndex <= -2)
+    else if (_previousRope.YIndex - _nextRope.YIndex <= -2)
     {
-      _tailRope.YIndex--;
+      _nextRope.YIndex--;
     }
 
-    _tailRope.SaveCoordinates();
+    if (_nextRope.ID == "Tail")
+    {
+      _nextRope.SaveCoordinates();
+    }
   }
 
   public class Rope
   {
+    public string ID { get; set;  }
     public int XIndex { get; set; } = 0;
     public int YIndex { get; set; } = 0;
     public List<int[]> Coordinates { get; set; } = new List<int[]>();
+
+    public Rope(string _id)
+    {
+      ID = _id;
+    }
 
     public void SaveCoordinates()
     {
