@@ -37,51 +37,34 @@ public class Program
       {
         case "R":
           _ropes[0].XIndex++;
-
-          for (int j = 1; j < _ropes.Length; j++)
-          {
-            if (NextRopeNeedsToMove(_ropes[j-1], _ropes[j]))
-            {
-              MoveNextRope(_ropes[j-1], _ropes[j]);
-            }
-          }
+          CheckAndMove(_ropes, _splitLines);
           break;
 
         case "L":
           _ropes[0].XIndex--;
-
-          for (int j = 1; j < _ropes.Length; j++)
-          {
-            if (NextRopeNeedsToMove(_ropes[j - 1], _ropes[j]))
-            {
-              MoveNextRope(_ropes[j - 1], _ropes[j]);
-            }
-          }
+          CheckAndMove(_ropes, _splitLines);
           break;
 
         case "U":
           _ropes[0].YIndex++;
-
-          for (int j = 1; j < _ropes.Length; j++)
-          {
-            if (NextRopeNeedsToMove(_ropes[j - 1], _ropes[j]))
-            {
-              MoveNextRope(_ropes[j - 1], _ropes[j]);
-            }
-          }
+          CheckAndMove(_ropes, _splitLines);
           break;
 
         case "D":
           _ropes[0].YIndex--;
-
-          for (int j = 1; j < _ropes.Length; j++)
-          {
-            if (NextRopeNeedsToMove(_ropes[j - 1], _ropes[j]))
-            {
-              MoveNextRope(_ropes[j - 1], _ropes[j]);
-            }
-          }
+          CheckAndMove(_ropes, _splitLines);
           break;
+      }
+    }
+  }
+
+  private static void CheckAndMove(Rope[] _ropes, string[] _splitLines)
+  {
+    for (int i = 1; i < _ropes.Length; i++)
+    {
+      if (NextRopeNeedsToMove(_ropes[i - 1], _ropes[i]))
+      {
+        MoveNextRope(_ropes[i - 1], _ropes[i]);
       }
     }
   }
