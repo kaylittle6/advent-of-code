@@ -80,7 +80,7 @@
         _tailRope.YIndex++;
       }
 
-      else if (_headRope.XIndex > _tailRope.XIndex && _headRope.YIndex < _tailRope.XIndex)
+      else if (_headRope.XIndex > _tailRope.XIndex && _headRope.YIndex < _tailRope.YIndex)
       {
         _tailRope.XIndex++;
         _tailRope.YIndex--;
@@ -109,7 +109,7 @@
       _tailRope.XIndex--;
     }
 
-    else if (_headRope.YIndex - _tailRope.XIndex >= 2)
+    else if (_headRope.YIndex - _tailRope.YIndex >= 2)
     {
       _tailRope.YIndex++;
     }
