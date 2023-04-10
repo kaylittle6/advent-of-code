@@ -2,7 +2,7 @@
 {
   public static void Main(string[] args)
   {
-    string[] input = File.ReadAllLines("D:\\Programming\\repos\\aventOfCode\\AdventOfCode\\2022\\Day9\\csharp\\ropes\\input.txt");
+    string[] input = File.ReadAllLines("C:\\Users\\klittle\\source\\vscPractice\\AoC\\2022\\Day9\\csharp\\ropes\\input.txt");
 
     Rope headRope = new();
     Rope tailRope = new();
@@ -65,8 +65,8 @@
 
   private static bool TailRopeNeedsToMove(Rope _headRope, Rope _tailRope)
   {
-    return (_headRope.XIndex - _tailRope.XIndex >= 2 || _headRope.XIndex - _tailRope.YIndex <= -2
-      || _headRope.YIndex - _tailRope.YIndex >= 2 || _headRope.YIndex - _tailRope.YIndex <= -2);
+    return (Math.Abs(_headRope.XIndex - _tailRope.XIndex) >= 2)
+      || (Math.Abs(_headRope.YIndex - _tailRope.YIndex) >= 2);
   }
 
   private static void MoveTailRope(Rope _headRope, Rope _tailRope)
