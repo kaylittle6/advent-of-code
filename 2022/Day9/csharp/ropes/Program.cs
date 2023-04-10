@@ -71,8 +71,8 @@
 
   private static void MoveTailRope(Rope _headRope, Rope _tailRope)
   {
-    if (((_headRope.YIndex - _tailRope.YIndex == 1) || (_headRope.YIndex - _tailRope.YIndex == -1))
-      && ((_headRope.XIndex - _tailRope.XIndex == 2) || (_headRope.XIndex - _tailRope.XIndex == -2)))
+    if (((Math.Abs(_headRope.YIndex - _tailRope.YIndex) >= 1) && (Math.Abs(_headRope.XIndex - _tailRope.XIndex) >= 2)) 
+      || ((Math.Abs(_headRope.YIndex - _tailRope.YIndex) >= 2) && (Math.Abs(_headRope.XIndex - _tailRope.XIndex) >= 1)))
     {
       if (_headRope.XIndex > _tailRope.XIndex && _headRope.YIndex > _tailRope.YIndex)
       {
@@ -92,7 +92,7 @@
         _tailRope.YIndex++;
       }
 
-      else
+      else if (_headRope.XIndex < _tailRope.XIndex && _headRope.YIndex < _tailRope.YIndex)
       {
         _tailRope.XIndex--;
         _tailRope.YIndex--;
