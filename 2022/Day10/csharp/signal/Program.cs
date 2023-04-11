@@ -4,70 +4,65 @@
   {
     string[] input = File.ReadAllLines("C:\\Users\\klittle\\source\\vscPractice\\AoC\\2022\\Day10\\csharp\\signal\\input.txt");
     int registerX = 1;
-    int cycleCount = 1;
-    int[] signalValues = new int[6];
+    int[] sprite = new int[3];
+    int internalIndex = 0;
 
+    UpdateSpritePosition(sprite, registerX);
 
-
-    foreach (string line in input)
+    for (int i = 0; i < 240; i++)
     {
-      var splitLines = line.Split(" ");
+      string instructions = input[internalIndex];
+      string[] splitInstructions = instructions.Split(" ");
 
-      CheckMilestoneAndUpdate(cycleCount, registerX, signalValues);
-
-      switch (splitLines[0])
+      if (splitInstructions[0] == "addx")
       {
-        case "noop":
-          cycleCount++;
-          break;
+        PrintNextCharacter(i, sprite);
 
-        case "addx":
-          cycleCount++;
+        i++;
 
-          CheckMilestoneAndUpdate(cycleCount, registerX, signalValues);
+        PrintNextCharacter(i, sprite);
 
-          cycleCount++;
-          registerX += int.Parse(splitLines[1]);
-          break;
+        registerX += int.Parse(splitInstructions[1]);
+        UpdateSpritePosition(sprite, registerX);
       }
+      else
+      {
+        PrintNextCharacter(i, sprite);
+      }
+
+      internalIndex++;
     }
 
-    Console.WriteLine(signalValues.Sum());
     Console.ReadLine();
   }
 
-  private static void CheckMilestoneAndUpdate(int _cycleCount, int _registerX, int[] _signalValues)
+  private static void PrintNextCharacter(int _index, int[] _sprite)
   {
-    if (_cycleCount == 20 || _cycleCount == 60 || _cycleCount == 100
-      || _cycleCount == 140 || _cycleCount == 180 || _cycleCount == 220)
+    if (_index % 40 == 0 && _index != 0)
     {
-      switch (_cycleCount)
+      if (_sprite.Contains(_index))
       {
-        case 20:
-          _signalValues[0] = _cycleCount * _registerX;
-          break;
-
-        case 60:
-          _signalValues[1] = _cycleCount * _registerX;
-          break;
-
-        case 100:
-          _signalValues[2] = _cycleCount * _registerX;
-          break;
-
-        case 140:
-          _signalValues[3] = _cycleCount * _registerX;
-          break;
-
-        case 180:
-          _signalValues[4] = _cycleCount * _registerX;
-          break;
-
-        case 220:
-          _signalValues[5] = _cycleCount * _registerX;
-          break;
+        Console.Write("\r\n#");
       }
+      else
+      {
+        Console.Write("\r\n.");
+      }
+    }
+    else if (_sprite.Contains(_index))
+    {
+      Console.Write("#");
+    }
+    else
+    {
+      Console.Write(".");
     }
   }
 
+  private static void UpdateSpritePosition(int[] _sprite, int _registerX)
+  {
+    _sprite[1] = _registerX;
+    _sprite[0] = _registerX - 1;
+    _sprite[2] = _registerX + 1;
+  }
 }
