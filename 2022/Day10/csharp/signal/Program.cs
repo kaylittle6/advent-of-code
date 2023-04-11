@@ -6,11 +6,14 @@
     int registerX = 1;
     int[] sprite = new int[3];
     int internalIndex = 0;
+    int cursorPosition = 0;
 
     UpdateSpritePosition(sprite, registerX);
 
     for (int i = 0; i < 240; i++)
     {
+      cursorPosition = cursorPosition > 39 ? 0 : cursorPosition;
+
       string instructions = input[internalIndex];
       string[] splitInstructions = instructions.Split(" ");
 
@@ -30,6 +33,7 @@
         PrintNextCharacter(i, sprite);
       }
 
+      cursorPosition++;
       internalIndex++;
     }
 
