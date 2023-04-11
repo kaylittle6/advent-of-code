@@ -4,8 +4,10 @@
   {
     string[] input = File.ReadAllLines("C:\\Users\\klittle\\source\\vscPractice\\AoC\\2022\\Day10\\csharp\\signal\\input.txt");
     int registerX = 1;
-    int cycleCount = 0;
+    int cycleCount = 1;
     int[] signalValues = new int[6];
+
+
 
     foreach (string line in input)
     {
