@@ -9,25 +9,25 @@
 
     UpdateSpritePosition(sprite, registerX);
 
-    for (int cycle = 0; cycle < 240; cycle++)
+    for (int i = 0; i < 240; i++)
     {
       string instructions = input[internalIndex];
       string[] splitInstructions = instructions.Split(" ");
 
       if (splitInstructions[0] == "addx")
       {
-        PrintNextCharacter(cycle, sprite);
+        PrintNextCharacter(i, sprite);
 
-        cycle++;
+        i++;
 
-        PrintNextCharacter(cycle, sprite);
+        PrintNextCharacter(i, sprite);
 
         registerX += int.Parse(splitInstructions[1]);
         UpdateSpritePosition(sprite, registerX);
       }
       else
       {
-        PrintNextCharacter(cycle, sprite);
+        PrintNextCharacter(i, sprite);
       }
 
       internalIndex++;
@@ -36,11 +36,11 @@
     Console.ReadLine();
   }
 
-  private static void PrintNextCharacter(int _cycle, int[] _sprite)
+  private static void PrintNextCharacter(int i, int[] _sprite)
   {
-    if (_cycle % 40 == 0 && _cycle != 0)
+    if (i % 40 == 0 && i != 0)
     {
-      if (_sprite.Contains(_cycle % 40))
+      if (_sprite.Contains(i % 40))
       {
         Console.Write("\r\n#");
       }
@@ -49,7 +49,7 @@
         Console.Write("\r\n.");
       }
     }
-    else if (_sprite.Contains(_cycle % 40))
+    else if (_sprite.Contains(i % 40))
     {
       Console.Write("#");
     }
