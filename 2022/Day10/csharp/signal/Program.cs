@@ -6,45 +6,41 @@
     int registerX = 1;
     int[] sprite = new int[3];
     int internalIndex = 0;
-    int cursorPosition = 0;
 
     UpdateSpritePosition(sprite, registerX);
 
-    for (int i = 0; i < 240; i++)
+    for (int cycle = 0; cycle < 240; cycle++)
     {
-      cursorPosition = cursorPosition > 39 ? 0 : cursorPosition;
-
       string instructions = input[internalIndex];
       string[] splitInstructions = instructions.Split(" ");
 
       if (splitInstructions[0] == "addx")
       {
-        PrintNextCharacter(i, sprite);
+        PrintNextCharacter(cycle, sprite);
 
-        i++;
+        cycle++;
 
-        PrintNextCharacter(i, sprite);
+        PrintNextCharacter(cycle, sprite);
 
         registerX += int.Parse(splitInstructions[1]);
         UpdateSpritePosition(sprite, registerX);
       }
       else
       {
-        PrintNextCharacter(i, sprite);
+        PrintNextCharacter(cycle, sprite);
       }
 
-      cursorPosition++;
       internalIndex++;
     }
 
     Console.ReadLine();
   }
 
-  private static void PrintNextCharacter(int _index, int[] _sprite)
+  private static void PrintNextCharacter(int _cycle, int[] _sprite)
   {
-    if (_index % 40 == 0 && _index != 0)
+    if (_cycle % 40 == 0 && _cycle != 0)
     {
-      if (_sprite.Contains(_index))
+      if (_sprite.Contains(_cycle % 40))
       {
         Console.Write("\r\n#");
       }
@@ -53,7 +49,7 @@
         Console.Write("\r\n.");
       }
     }
-    else if (_sprite.Contains(_index))
+    else if (_sprite.Contains(_cycle % 40))
     {
       Console.Write("#");
     }
