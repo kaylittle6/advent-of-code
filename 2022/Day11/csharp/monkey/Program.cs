@@ -8,19 +8,60 @@ public class Program
 
     Monkey[] monkeys = new Monkey[8];
 
+    for (int i = 0; i < 8; i++)
+    {
+      monkeys[i] = new Monkey();
+    }
+
     ParseInstructions(input, monkeys);
 
+    for (int round = 1; round <= 20; round++)
+    {
+      for (int monkey = 0; monkey < monkeys.Length; monkey++)
+      {
+        int listCount = monkeys[monkey].Items.Count();
 
+        for (int i = 0; i < listCount; i++ )
+        {
+          if (!monkeys[monkey].Items.Any())
+          {
+            continue;
+          }
+          else
+          {
+            monkeys[monkey].TotalInspections++;
 
+            bool test = monkeys[monkey].WorryLevel % monkeys[monkey].TestNumber == 0;
+
+            if (test)
+            {
+              monkeys[monkeys[monkey].TrueMonkey].Items.Add(monkeys[monkey].Items.First());
+              monkeys[monkey].Items.Remove(monkeys[monkey].Items.First());
+            }
+            else
+            {
+              monkeys[monkeys[monkey].FalseMonkey].Items.Add(monkeys[monkey].Items.First());
+              monkeys[monkey].Items.Remove(monkeys[monkey].Items.First());
+            }
+          }
+        }
+      }
+    }
+
+    Monkey[] sortedMonkeys = monkeys.OrderByDescending(t => t.TotalInspections).ToArray();
+
+    Console.WriteLine(sortedMonkeys[0].TotalInspections * sortedMonkeys[1].TotalInspections);
+    Console.ReadLine();
   }
 
   private static void ParseInstructions(string[] _input, Monkey[] _monkeys)
   {
-    for (int i = 0; i < 9; i++)
+    for (int i = 0; i < 8; i++)
     {
       foreach (string instruction in _input)
       {
-        string[] splitInstructions = instruction.Split(" ");
+        string trimmedInstructions = instruction.TrimStart();
+        string[] splitInstructions = trimmedInstructions.Split(" ");
 
         if (String.IsNullOrEmpty(instruction))
         {
@@ -39,10 +80,15 @@ public class Program
 
               foreach (string line in splitInstructions)
               {
-                int.TryParse(line, out int number);
+                string trimComma = line.Trim(',');
+
+                int.TryParse(trimComma, out int number);
 
                 _monkeys[i].Items.Add(number);
               }
+
+              _monkeys[i].Items = _monkeys[i].Items.Where(x => x != 0).ToList();
+
               break;
 
             case "Operation:":
@@ -63,36 +109,35 @@ public class Program
 
             case "If":
 
-              foreach (string line in splitInstructions)
-              {
-                int.TryParse(line, out int number);
+              string trimmedLine = splitInstructions[1].Trim(':');
 
-                _monkeys[i].TrueMonkey = splitInstructions[1] == "true" ? number : 0;
-                _monkeys[i].FalseMonkey = splitInstructions[1] == "false" ? number : 0;
+              if (trimmedLine == "true")
+              {
+                _monkeys[i].TrueMonkey = int.Parse(splitInstructions[5]);
+              }
+              else
+              {
+                _monkeys[i].FalseMonkey = int.Parse(splitInstructions[5]);
               }
               break;
           }
         }
-
-        i++;
       }
     }
   }
-
-
-
 
   public class Monkey
   {
     public List<int> Items { get; set; } = new List<int>();
     public string[] OperationEquation { get; set; } = new string[6];
-    public int OperationValue { get; set; }
     public int WorryLevel => GetWorryLevel();
     public int TestNumber { get; set; }
     public int TrueMonkey { get; set; }
     public int FalseMonkey { get; set; }
+    public int TotalInspections { get; set; } = 0;
+    private int OperationValue { get; set; }
 
-    private int GetWorryLevel()
+    public int GetWorryLevel()
     {
       foreach (string line in OperationEquation)
       {
@@ -101,7 +146,7 @@ public class Program
         OperationValue = success ? number : Items.FirstOrDefault();
       }
       
-      if (Items.Any() && Items.First() != 0)
+      if (Items.Any())
       {
         if (OperationEquation[4] == "*")
         {
