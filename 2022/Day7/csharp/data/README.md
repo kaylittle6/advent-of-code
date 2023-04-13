@@ -1,7 +1,7 @@
 # aoc-2022-d7
 Advent of Code Puzzle - Day 7
 
-##--- Day 7: No Space Left On Device ---
+## --- Day 7: No Space Left On Device ---
 
 You can hear birds chirping and raindrops hitting leaves as the expedition proceeds. Occasionally, you can even hear much louder sounds in the distance; how big do the animals get out here, anyway?
 
@@ -83,7 +83,7 @@ To begin, find all of the directories with a total size of at most ``100000``, t
 
 Find all of the directories with a total size of at most ``100000``. What is the sum of the total sizes of those directories?
 
-##--- Part Two ---
+## --- Part Two ---
 
 Now, you're ready to choose a directory to delete.
 
