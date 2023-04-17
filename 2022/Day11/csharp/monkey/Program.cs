@@ -35,12 +35,12 @@ public class Program
 
             if (test)
             {
-              monkeys[monkeys[monkey].TrueMonkey].Items.Add(monkeys[monkey].Items.First());
+              monkeys[monkeys[monkey].TrueMonkey].Items.Add(monkeys[monkey].WorryLevel);
               monkeys[monkey].Items.Remove(monkeys[monkey].Items.First());
             }
             else
             {
-              monkeys[monkeys[monkey].FalseMonkey].Items.Add(monkeys[monkey].Items.First());
+              monkeys[monkeys[monkey].FalseMonkey].Items.Add(monkeys[monkey].WorryLevel);
               monkeys[monkey].Items.Remove(monkeys[monkey].Items.First());
             }
           }
