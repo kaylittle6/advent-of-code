@@ -29,7 +29,7 @@
           {
             monkeys[monkey].TotalInspections++;
 
-            Int64 newWorryLevel = monkeys[monkey].WorryLevel / 3;
+            int newWorryLevel = monkeys[monkey].WorryLevel / 3;
             bool test = newWorryLevel % monkeys[monkey].TestNumber == 0;
 
             if (test)
@@ -127,14 +127,14 @@
 
   public class Monkey
   {
-    public List<Int64> Items { get; set; } = new List<Int64>();
+    public List<int> Items { get; set; } = new List<int>();
     public string[] OperationEquation { get; set; } = new string[6];
-    public Int64 WorryLevel => GetWorryLevel();
+    public int WorryLevel => GetWorryLevel();
     public int TestNumber { get; set; }
     public int TrueMonkey { get; set; }
     public int FalseMonkey { get; set; }
     public int TotalInspections { get; set; } = 0;
-    private Int64 OperationValue { get; set; }
+    private int OperationValue { get; set; }
 
     public int GetWorryLevel()
     {
