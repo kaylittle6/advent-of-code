@@ -37,7 +37,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "csharp", "csharp", "{D07494
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "csharp", "csharp", "{06AFC3E1-D7CF-429D-B80D-BFEB696B9BC6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iteams", "2022\Day3\csharp\iteams\iteams.csproj", "{3E7F1842-6961-4BA7-A420-15F04E2019AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "items", "2022\Day3\csharp\iteams\items.csproj", "{3E7F1842-6961-4BA7-A420-15F04E2019AE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ranges", "2022\Day4\csharp\ranges\ranges.csproj", "{936B6B91-0F3E-4DC7-B8AB-AAA4E01B29E3}"
 EndProject
