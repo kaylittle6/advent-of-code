@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "monkeyTests": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

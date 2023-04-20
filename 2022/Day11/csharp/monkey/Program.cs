@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-public class Program
+﻿public class Program
 {
   public static void Main(string[] args)
   {
@@ -15,7 +13,7 @@ public class Program
 
     ParseInstructions(input, monkeys);
 
-    for (int round = 1; round <= 20; round++)
+    for (int round = 0; round < 20; round++)
     {
       for (int monkey = 0; monkey < monkeys.Length; monkey++)
       {
@@ -31,16 +29,17 @@ public class Program
           {
             monkeys[monkey].TotalInspections++;
 
-            bool test = monkeys[monkey].WorryLevel % monkeys[monkey].TestNumber == 0;
+            Int64 newWorryLevel = monkeys[monkey].WorryLevel / 3;
+            bool test = newWorryLevel % monkeys[monkey].TestNumber == 0;
 
             if (test)
             {
-              monkeys[monkeys[monkey].TrueMonkey].Items.Add(monkeys[monkey].WorryLevel);
+              monkeys[monkeys[monkey].TrueMonkey].Items.Add(newWorryLevel);
               monkeys[monkey].Items.Remove(monkeys[monkey].Items.First());
             }
             else
             {
-              monkeys[monkeys[monkey].FalseMonkey].Items.Add(monkeys[monkey].WorryLevel);
+              monkeys[monkeys[monkey].FalseMonkey].Items.Add(newWorryLevel);
               monkeys[monkey].Items.Remove(monkeys[monkey].Items.First());
             }
           }
@@ -128,14 +127,14 @@ public class Program
 
   public class Monkey
   {
-    public List<int> Items { get; set; } = new List<int>();
+    public List<Int64> Items { get; set; } = new List<Int64>();
     public string[] OperationEquation { get; set; } = new string[6];
-    public int WorryLevel => GetWorryLevel();
+    public Int64 WorryLevel => GetWorryLevel();
     public int TestNumber { get; set; }
     public int TrueMonkey { get; set; }
     public int FalseMonkey { get; set; }
     public int TotalInspections { get; set; } = 0;
-    private int OperationValue { get; set; }
+    private Int64 OperationValue { get; set; }
 
     public int GetWorryLevel()
     {
@@ -150,11 +149,11 @@ public class Program
       {
         if (OperationEquation[4] == "*")
         {
-          return Items.First() * OperationValue;
+          return (int)(Items.First() * OperationValue);
         }
         else
         {
-          return Items.First() + OperationValue;
+          return (int)(Items.First() + OperationValue);
         }
       }
 
