@@ -1,14 +1,15 @@
 {
   "name": "calories",
-  "version": "0.0.0",
-  "description": "calories",
+  "version": "1.0.0",
+  "description": "",
   "main": "app.js",
-  "author": {
-    "name": ""
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "devDependencies": {
-    "eslint": "^8.21.0"
-  },
-  "eslintConfig": {
+    "eslint": "^8.38.0"
   }
 }
