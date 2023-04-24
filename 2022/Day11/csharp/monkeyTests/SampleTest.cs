@@ -51,6 +51,8 @@ namespace monkeyTests
       }
 
       Assert.Equal(10605, monkeys[0].TotalInspections * monkeys[3].TotalInspections);
+      Assert.Equal(95, monkeys[1].TotalInspections);
+      Assert.Equal(7, monkeys[2].TotalInspections);
     }
 
     private static void ParseInstructions(string[] _input, Monkey[] _monkeys)

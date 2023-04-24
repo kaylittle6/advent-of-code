@@ -21,27 +21,20 @@
 
         for (int i = 0; i < listCount; i++ )
         {
-          if (!monkeys[monkey].Items.Any())
+          monkeys[monkey].TotalInspections++;
+
+          int newWorryLevel = monkeys[monkey].WorryLevel / 3;
+          bool test = newWorryLevel % monkeys[monkey].TestNumber == 0;
+
+          if (test)
           {
-            continue;
+            monkeys[monkeys[monkey].TrueMonkey].Items.Add(newWorryLevel);
+            monkeys[monkey].Items.Remove(monkeys[monkey].Items.First());
           }
           else
           {
-            monkeys[monkey].TotalInspections++;
-
-            int newWorryLevel = monkeys[monkey].WorryLevel / 3;
-            bool test = newWorryLevel % monkeys[monkey].TestNumber == 0;
-
-            if (test)
-            {
-              monkeys[monkeys[monkey].TrueMonkey].Items.Add(newWorryLevel);
-              monkeys[monkey].Items.Remove(monkeys[monkey].Items.First());
-            }
-            else
-            {
-              monkeys[monkeys[monkey].FalseMonkey].Items.Add(newWorryLevel);
-              monkeys[monkey].Items.Remove(monkeys[monkey].Items.First());
-            }
+            monkeys[monkeys[monkey].FalseMonkey].Items.Add(newWorryLevel);
+            monkeys[monkey].Items.Remove(monkeys[monkey].Items.First());
           }
         }
       }
@@ -138,22 +131,19 @@
 
     public int GetWorryLevel()
     {
-      foreach (string line in OperationEquation)
-      {
-        bool success = int.TryParse(line, out int number);
+      bool success = int.TryParse(OperationEquation[5], out int number);
 
-        OperationValue = success ? number : Items.FirstOrDefault();
-      }
+      OperationValue = success ? number : Items.FirstOrDefault();
       
       if (Items.Any())
       {
         if (OperationEquation[4] == "*")
         {
-          return (int)(Items.First() * OperationValue);
+          return Items.First() * OperationValue;
         }
         else
         {
-          return (int)(Items.First() + OperationValue);
+          return Items.First() + OperationValue;
         }
       }
 
