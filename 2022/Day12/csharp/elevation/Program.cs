@@ -12,6 +12,10 @@
 
     Node currentNode = startingNode;
 
+    List<Node> openNodes = new();
+    List<Node> closedNoses = new();
+
+
 
     Console.WriteLine(indexField);
     Console.ReadLine();
@@ -63,9 +67,15 @@
     }
   }
 
-  public static void CheckSurrondingNodes(Node[][] _indexField, Node _currentNode)
+  public static List<Node> GetNeighborNodesAndMovementCost(Node[][] _indexField, Node _currentNode)
   {
-
+    for (int i = 0; i < _indexField.Length; i++)
+    {
+      foreach (Node node in _indexField[i])
+      {
+        if (node.CurrentPosition[0] == Math.Abs(_currentNode.CurrentPosition[0] + 1))
+      }
+    }
   }
 
   public class Node
