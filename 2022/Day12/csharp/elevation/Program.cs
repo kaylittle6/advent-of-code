@@ -2,15 +2,8 @@
 {
   public static void Main(string[] args)
   {
-    string[] input = File.ReadAllLines("D:\\Programming\\repos\\aventOfCode\\AdventOfCode\\2022\\Day12\\csharp\\elevation\\input.txt");
+    string[] input = File.ReadAllLines("C:\\Users\\klittle\\source\\vscPractice\\AoC\\2022\\Day12\\csharp\\elevation\\input.txt");
     Node[][] indexField = ParseAndConvertInput(input);
-
-    Node startingNode = new();
-    Node goalNode = new();
-
-    GetStartingNodes(indexField, startingNode, goalNode);
-
-    Node currentNode = startingNode;
 
     List<Node> openNodes = new();
     List<Node> closedNoses = new();
@@ -47,52 +40,83 @@
     return indexField;
   }
 
-  public static void GetStartingNodes(Node[][] _indexField, Node _startingNode, Node _goalNode)
-  {
-    for (int i = 0; i < _indexField.Length; i++)
-    {
-      for (int j = 0; j < _indexField[i].Length; j++)
-      {
-        if (_indexField[i][j].LetterValue == 'S')
-        {
-          _startingNode.CurrentPosition[0] = j;
-          _startingNode.CurrentPosition[1] = i;
-        }
-        else if (_indexField[i][j].LetterValue == 'E')
-        {
-          _goalNode.CurrentPosition[0] = j;
-          _goalNode.CurrentPosition[1] = i;
-        }
-      }
-    }
-  }
+  //public static List<Node> GetNeighborNodes(Node[][] _indexField, Node _currentNode)
+  //{
+  //  for (int i = 0; i < _indexField.Length; i++)
+  //  {
+  //    foreach (Node node in _indexField[i])
+  //    {
+  //      if ((node.CurrentPosition[0] == _currentNode.CurrentPosition[0])
+  //        || (node.CurrentPosition[1] == _currentNode.CurrentPosition[1]))
+  //      {
 
-  public static List<Node> GetNeighborNodesAndMovementCost(Node[][] _indexField, Node _currentNode)
-  {
-    for (int i = 0; i < _indexField.Length; i++)
-    {
-      foreach (Node node in _indexField[i])
-      {
-        if (node.CurrentPosition[0] == Math.Abs(_currentNode.CurrentPosition[0] + 1))
-      }
-    }
-  }
+  //      }
+  //    }
+  //  }
+  //}
 
   public class Node
   {
     public int LetterValue { get; set; }
     public int[] CurrentPosition { get; set; } = new int[2];
-    public int FromStartNode { get; set; }
-    public int FromEndNode { get; set; }
-    public int MovementCost => FromStartNode + FromEndNode;
+    public int[] StartNode { get; set; } = new int[] { 0, 20 };
+    public int[] GoalNode { get; set; } = new int[] { 55, 20 };
+    public int SCost => GetSCost();
+    public int GCost => GetGCost();
+    public int MovementCost => SCost + GCost;
 
-    public int GetFromStartNodeValue(Node[][] _indexField, Node _startingNode)
+    private int GetSCost()
     {
-      int xdiff = Math.Abs(_startingNode.CurrentPosition[0] - CurrentPosition[0]);
-      int ydiff = Math.Abs(_startingNode.CurrentPosition[1] - CurrentPosition[1]);
+      var xCost = Math.Abs(CurrentPosition[0] - StartNode[0]);
+      var yCost = Math.Abs(CurrentPosition[1] - StartNode[1]);
 
+      if (xCost < yCost)
+      {
+        var dCost = xCost * 14;
+        var leftOver = Math.Abs(xCost - yCost);
+        var lCost = leftOver * 10;
 
+        return lCost + dCost;
+      }
+      else if (yCost < xCost)
+      {
+        var dCost = yCost * 14;
+        var leftOver = Math.Abs(xCost - yCost);
+        var lCost = leftOver * 10;
+
+        return lCost + dCost;
+      }
+      else
+      {
+        return xCost * 14;
+      }
+    }
+
+    private int GetGCost()
+    {
+      var xCost = Math.Abs(CurrentPosition[0] - GoalNode[0]);
+      var yCost = Math.Abs(CurrentPosition[1] - GoalNode[1]);
+
+      if (xCost < yCost)
+      {
+        var dCost = xCost * 14;
+        var leftOver = Math.Abs(xCost - yCost);
+        var lCost = leftOver * 10;
+
+        return lCost + dCost;
+      }
+      else if (yCost < xCost)
+      {
+        var dCost = yCost * 14;
+        var leftOver = Math.Abs(xCost - yCost);
+        var lCost = leftOver * 10;
+
+        return lCost + dCost;
+      }
+      else
+      {
+        return xCost * 14;
+      }
     }
   }
 }
-
