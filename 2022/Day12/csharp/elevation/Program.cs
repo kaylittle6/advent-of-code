@@ -4,11 +4,23 @@
   {
     string[] input = File.ReadAllLines("C:\\Users\\klittle\\source\\vscPractice\\AoC\\2022\\Day12\\csharp\\elevation\\input.txt");
     Node[][] indexField = ParseAndConvertInput(input);
-
     List<Node> openNodes = new();
-    List<Node> closedNoses = new();
+    Node currentNode = new()
+    {
+      LetterValue = 'S',
+      CurrentPosition = new int[] { 0, 20 }
+    };
+
+    do
+    {
+      openNodes = GetNeighborNodes(indexField, currentNode, openNodes);
+
+      
 
 
+
+
+    } while (currentNode.CurrentPosition[0] != 55 && currentNode.CurrentPosition[1] != 20);
 
     Console.WriteLine(indexField);
     Console.ReadLine();
@@ -40,20 +52,39 @@
     return indexField;
   }
 
-  //public static List<Node> GetNeighborNodes(Node[][] _indexField, Node _currentNode)
-  //{
-  //  for (int i = 0; i < _indexField.Length; i++)
-  //  {
-  //    foreach (Node node in _indexField[i])
-  //    {
-  //      if ((node.CurrentPosition[0] == _currentNode.CurrentPosition[0])
-  //        || (node.CurrentPosition[1] == _currentNode.CurrentPosition[1]))
-  //      {
+  public static List<Node> GetNeighborNodes(Node[][] _indexField, Node _currentNode, List<Node> _openNodes)
+  {
+    for (int i = 0; i < _indexField.Length; i++)
+    {
+      foreach (Node node in _indexField[i])
+      {
+        if (Math.Abs(node.CurrentPosition[0] - _currentNode.CurrentPosition[0]) < 2
+          && Math.Abs(node.CurrentPosition[1] = _currentNode.CurrentPosition[1]) < 2)
+        {
+          _openNodes.Add(node);
+        }
+      }
+    }
 
-  //      }
-  //    }
-  //  }
-  //}
+    return _openNodes;
+  }
+
+  public static void MoveCurrentNode(Node _currentNode, List<Node> _openNodes)
+  {
+    List<Node> letterList = new();
+
+    foreach (Node node in _openNodes)
+    {
+      if (_currentNode.LetterValue + 1 <= node.LetterValue)
+      {
+        letterList.Add(node);
+      }
+    }
+
+    var lowestNode = letterList.Min();
+
+
+  }
 
   public class Node
   {
