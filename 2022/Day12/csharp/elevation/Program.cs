@@ -2,12 +2,13 @@
 {
   public static void Main(string[] args)
   {
-    string[] input = File.ReadAllLines("C:\\Users\\klittle\\source\\vscPractice\\AoC\\2022\\Day12\\csharp\\elevation\\input.txt");
+    string[] input = File.ReadAllLines("D:\\Programming\\repos\\aventOfCode\\AdventOfCode\\2022\\Day12\\csharp\\elevation\\input.txt");
     Node[][] indexField = ParseAndConvertInput(input);
+    int stepCounter = 0;
     List<Node> openNodes = new();
     Node currentNode = new()
     {
-      LetterValue = 'S',
+      LetterValue = 'a',
       CurrentPosition = new int[] { 0, 20 }
     };
 
@@ -15,14 +16,13 @@
     {
       openNodes = GetNeighborNodes(indexField, currentNode, openNodes);
 
-      
+      MoveCurrentNode(currentNode, openNodes);
 
+      stepCounter++;
 
+    } while (currentNode.CurrentPosition[0] != 55 || currentNode.CurrentPosition[1] != 20);
 
-
-    } while (currentNode.CurrentPosition[0] != 55 && currentNode.CurrentPosition[1] != 20);
-
-    Console.WriteLine(indexField);
+    Console.WriteLine(stepCounter);
     Console.ReadLine();
   }
 
@@ -59,9 +59,13 @@
       foreach (Node node in _indexField[i])
       {
         if (Math.Abs(node.CurrentPosition[0] - _currentNode.CurrentPosition[0]) < 2
-          && Math.Abs(node.CurrentPosition[1] = _currentNode.CurrentPosition[1]) < 2)
+          && Math.Abs(node.CurrentPosition[1] - _currentNode.CurrentPosition[1]) < 2)
         {
-          _openNodes.Add(node);
+          if (node.CurrentPosition[0] != _currentNode.CurrentPosition[0]
+            || node.CurrentPosition[1] != _currentNode.CurrentPosition[1])
+          {
+            _openNodes.Add(node);
+          }
         }
       }
     }
@@ -75,15 +79,30 @@
 
     foreach (Node node in _openNodes)
     {
-      if (_currentNode.LetterValue + 1 <= node.LetterValue)
+      if (_currentNode.LetterValue + 1 >= node.LetterValue)
       {
         letterList.Add(node);
       }
     }
 
-    var lowestNode = letterList.Min();
+    var groupedList = letterList.GroupBy(gc => gc.GCost).ToList();
+    var orderedList = groupedList.OrderBy(gc => gc.Key).First();
 
+    if (orderedList.Count() == 1)
+    {
+      var flattenGroup = orderedList.Select(group => group).ToList();
+      _currentNode = flattenGroup.First();
+    }
+    else
+    {
+      groupedList = letterList.GroupBy(mc => mc.MovementCost).ToList();
+      orderedList = groupedList.OrderBy(mc => mc.Key).First();
+      var flattenGroup = groupedList.SelectMany(_group => _group).ToList();
 
+      _currentNode = flattenGroup.First();
+    }
+
+    _openNodes.Clear();
   }
 
   public class Node
