@@ -2,10 +2,11 @@
 {
   public static void Main(string[] args)
   {
-    string[] input = File.ReadAllLines("D:\\Programming\\repos\\aventOfCode\\AdventOfCode\\2022\\Day12\\csharp\\elevation\\input.txt");
+    string[] input = File.ReadAllLines("C:\\Users\\klittle\\source\\vscPractice\\AoC\\2022\\Day12\\csharp\\elevation\\input.txt");
     Node[][] indexField = ParseAndConvertInput(input);
     int stepCounter = 0;
     List<Node> openNodes = new();
+    List<Node> closedNodes = new();
     Node currentNode = new()
     {
       LetterValue = 'a',
@@ -16,7 +17,7 @@
     {
       openNodes = GetNeighborNodes(indexField, currentNode, openNodes);
 
-      MoveCurrentNode(currentNode, openNodes);
+      currentNode = MoveCurrentNode(currentNode, openNodes, closedNodes);
 
       stepCounter++;
 
@@ -73,16 +74,23 @@
     return _openNodes;
   }
 
-  public static void MoveCurrentNode(Node _currentNode, List<Node> _openNodes)
+  public static Node MoveCurrentNode(Node _currentNode, List<Node> _openNodes, List<Node> _closedNodes)
   {
     List<Node> letterList = new();
 
     foreach (Node node in _openNodes)
     {
-      if (_currentNode.LetterValue + 1 >= node.LetterValue)
+      if (_currentNode.LetterValue + 1 >= node.LetterValue 
+        && !_closedNodes.Contains(node))
       {
         letterList.Add(node);
       }
+    }
+
+    if (letterList.Count == 0)
+    {
+      Console.WriteLine("No Moves left on step");
+      Console.ReadLine();
     }
 
     var groupedList = letterList.GroupBy(gc => gc.GCost).ToList();
@@ -102,7 +110,10 @@
       _currentNode = flattenGroup.First();
     }
 
+    _closedNodes.AddRange(_openNodes);
     _openNodes.Clear();
+
+    return _currentNode;
   }
 
   public class Node
