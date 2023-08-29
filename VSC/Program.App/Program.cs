@@ -1,12 +1,9 @@
 ﻿public class Program
 {
-  // int hiya = 0;
-
   public static void Main(string[] args)
   {
     string[] input = File.ReadAllLines(
-    "C:\\Users\\klittle\\source\\vscPractice\\AoC\\VSC\\Program.App\\inputtest.txt");
-
+    "C:\\Users\\klittle\\source\\vscPractice\\AoC\\VSC\\Program.App\\input.txt");
 
     var monkeyList = ParseInstructions(input);
 
@@ -41,7 +38,7 @@
     List<Monkey> monkeyList = new List<Monkey>();
     List<string> trimmedList = new List<string>();
 
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 8; i++)
     {
       monkeyList.Add(new Monkey(i));
     }
@@ -66,15 +63,14 @@
 
         var splitLine = line.Split(" ");
 
-        AssignValue(splitLine[0], line, monkeyList, trimmedList, i);
+        AssignValue(splitLine[0], line, monkeyList, i);
       }
     }
 
     return monkeyList;
   }
 
-  public static void AssignValue(string keyword, string line, List<Monkey> monkeyList,
-    List<string> trimmedList, int index)
+  public static void AssignValue(string keyword, string line, List<Monkey> monkeyList, int index)
   {
     if (keyword == "Starting")
     {
