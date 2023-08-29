@@ -1,4 +1,6 @@
-﻿public class Program
+﻿using System.Security.Cryptography.X509Certificates;
+
+public class Program
 {
   public static void Main(string[] args)
   {
@@ -6,7 +8,7 @@
     Node[][] indexField = ParseAndConvertInput(input);
     int stepCounter = 0;
     List<Node> openNodes = new();
-    List<Node> closedNodes = new();
+    List<Node> evaluatedNodes = new();
     Node currentNode = new()
     {
       LetterValue = 'a',
@@ -16,6 +18,8 @@
     do
     {
       openNodes = GetNeighborNodes(indexField, currentNode, openNodes);
+
+
 
       currentNode = MoveCurrentNode(currentNode, openNodes, closedNodes);
 
@@ -59,8 +63,8 @@
     {
       foreach (Node node in _indexField[i])
       {
-        if (Math.Abs(node.CurrentPosition[0] - _currentNode.CurrentPosition[0]) < 2
-          && Math.Abs(node.CurrentPosition[1] - _currentNode.CurrentPosition[1]) < 2)
+        if (Math.Abs(node.CurrentPosition[0] - _currentNode.CurrentPosition[0]) <= 1
+          && Math.Abs(node.CurrentPosition[1] - _currentNode.CurrentPosition[1]) <= 1)
         {
           if (node.CurrentPosition[0] != _currentNode.CurrentPosition[0]
             || node.CurrentPosition[1] != _currentNode.CurrentPosition[1])
@@ -72,6 +76,10 @@
     }
 
     return _openNodes;
+  }
+  public static void EvaluateMovementCost(List<Node> _openNodes, List<Node> _evaluatedNodes)
+  {
+
   }
 
   public static Node MoveCurrentNode(Node _currentNode, List<Node> _openNodes, List<Node> _closedNodes)
@@ -85,12 +93,6 @@
       {
         letterList.Add(node);
       }
-    }
-
-    if (letterList.Count == 0)
-    {
-      Console.WriteLine("No Moves left on step");
-      Console.ReadLine();
     }
 
     var groupedList = letterList.GroupBy(gc => gc.GCost).ToList();
@@ -122,62 +124,25 @@
     public int[] CurrentPosition { get; set; } = new int[2];
     public int[] StartNode { get; set; } = new int[] { 0, 20 };
     public int[] GoalNode { get; set; } = new int[] { 55, 20 };
-    public int SCost => GetSCost();
-    public int GCost => GetGCost();
+    public Node? ParentNode { get; set; }
+    public int SCost { get; set; }
+    public int GCost { get; set; }
     public int MovementCost => SCost + GCost;
 
-    private int GetSCost()
+    private void GetSCost()
     {
       var xCost = Math.Abs(CurrentPosition[0] - StartNode[0]);
       var yCost = Math.Abs(CurrentPosition[1] - StartNode[1]);
 
-      if (xCost < yCost)
-      {
-        var dCost = xCost * 14;
-        var leftOver = Math.Abs(xCost - yCost);
-        var lCost = leftOver * 10;
-
-        return lCost + dCost;
-      }
-      else if (yCost < xCost)
-      {
-        var dCost = yCost * 14;
-        var leftOver = Math.Abs(xCost - yCost);
-        var lCost = leftOver * 10;
-
-        return lCost + dCost;
-      }
-      else
-      {
-        return xCost * 14;
-      }
+      SCost = xCost + yCost;  
     }
 
-    private int GetGCost()
+    private void GetGCost()
     {
       var xCost = Math.Abs(CurrentPosition[0] - GoalNode[0]);
       var yCost = Math.Abs(CurrentPosition[1] - GoalNode[1]);
 
-      if (xCost < yCost)
-      {
-        var dCost = xCost * 14;
-        var leftOver = Math.Abs(xCost - yCost);
-        var lCost = leftOver * 10;
-
-        return lCost + dCost;
-      }
-      else if (yCost < xCost)
-      {
-        var dCost = yCost * 14;
-        var leftOver = Math.Abs(xCost - yCost);
-        var lCost = leftOver * 10;
-
-        return lCost + dCost;
-      }
-      else
-      {
-        return xCost * 14;
-      }
+      GCost = xCost + yCost;
     }
   }
 }
