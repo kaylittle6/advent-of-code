@@ -5,19 +5,20 @@
     string[] input = File.ReadAllLines(
     "C:\\Users\\klittle\\source\\vscPractice\\AoC\\VSC\\Program.App\\input.txt");
 
+    const long modulasMath = 9699690;
     var monkeyList = ParseInstructions(input);
-
-    for (int round = 0; round < 20; round++)
+    
+    for (int round = 0; round < 10000; round++)
     {
       for (int monkey = 0; monkey < monkeyList.Count; monkey++)
       {
         for (int item = 0; item < monkeyList[monkey].Items.Count; item++)
         {
           long newWorryLevel = monkeyList[monkey].InspectItem(item);
-          int throwMonkey = monkeyList[monkey].TestAndFindNextMonkey(newWorryLevel);
-          long dividedWorryLevel = newWorryLevel / 3;
+          long reliefLevel = newWorryLevel % modulasMath;
+          int throwMonkey = monkeyList[monkey].TestAndFindNextMonkey(reliefLevel);
 
-          monkeyList[throwMonkey].Items.Add(dividedWorryLevel);
+          monkeyList[throwMonkey].Items.Add(reliefLevel);
         }
 
         monkeyList[monkey].Items.Clear();
@@ -26,6 +27,11 @@
 
     var orderedList = monkeyList.OrderByDescending(i => i.Inspections).ToList();
     long monkeyBusiness = orderedList[0].Inspections * orderedList[1].Inspections;
+
+    //Console.WriteLine(monkeyList[0].Inspections);
+    //Console.WriteLine(monkeyList[1].Inspections);
+    //Console.WriteLine(monkeyList[2].Inspections);
+    //Console.WriteLine(monkeyList[3].Inspections);
 
     Console.WriteLine(monkeyBusiness);
     Console.ReadLine();
@@ -166,18 +172,10 @@ public class Monkey
     return 0;
   }
 
-  public int TestAndFindNextMonkey(long newWorryLevel)
+  public int TestAndFindNextMonkey(long reliefLevel)
   {
-    long updatedWorryLevel = newWorryLevel / 3;
-    long testWorryLevel = updatedWorryLevel % TestNumber;
+    var test = reliefLevel % TestNumber;
 
-    if (testWorryLevel == 0)
-    {
-      return TrueMonkey;
-    }
-    else
-    {
-      return FalseMonkey;
-    }
+    return (test == 0) ? TrueMonkey : FalseMonkey;
   }
 }
