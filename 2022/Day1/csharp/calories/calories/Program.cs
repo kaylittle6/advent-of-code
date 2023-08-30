@@ -8,7 +8,7 @@
 
   public static void Main(string[] args)
   {
-    string[] input = File.ReadAllLines("D:\\Programming\\repos\\aventOfCode\\AdventOfCode\\2022\\Day1\\csharp\\calories\\input.txt");
+    string[] input = File.ReadAllLines("C:\\Users\\klittle\\source\\vscPractice\\advent-of-code\\2022\\Day1\\csharp\\calories\\calories\\input.txt");
 
     Program totals = new();
 
