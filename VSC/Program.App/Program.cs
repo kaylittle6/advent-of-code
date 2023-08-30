@@ -13,9 +13,9 @@
       {
         for (int item = 0; item < monkeyList[monkey].Items.Count; item++)
         {
-          var newWorryLevel = monkeyList[monkey].InspectItem(item);
-          var throwMonkey = monkeyList[monkey].TestAndFindNextMonkey(newWorryLevel);
-          var dividedWorryLevel = newWorryLevel / 3;
+          long newWorryLevel = monkeyList[monkey].InspectItem(item);
+          int throwMonkey = monkeyList[monkey].TestAndFindNextMonkey(newWorryLevel);
+          long dividedWorryLevel = newWorryLevel / 3;
 
           monkeyList[throwMonkey].Items.Add(dividedWorryLevel);
         }
@@ -25,13 +25,11 @@
     }
 
     var orderedList = monkeyList.OrderByDescending(i => i.Inspections).ToList();
-    var monkeyBusiness = orderedList[0].Inspections * orderedList[1].Inspections;
+    long monkeyBusiness = orderedList[0].Inspections * orderedList[1].Inspections;
 
     Console.WriteLine(monkeyBusiness);
-
     Console.ReadLine();
   }
-
 
   public static List<Monkey> ParseInstructions(string[] input)
   {
@@ -129,7 +127,7 @@
 public class Monkey
 {
   public int MonkeyId { get; set; }
-  public List<int> Items { get; set; }
+  public List<long> Items { get; set; }
   public string? OperationOperator { get; set; }
   public int OperationNumber { get; set; }
   public int TestNumber { get; set; }
@@ -140,10 +138,10 @@ public class Monkey
   public Monkey(int monkeyId)
   {
     MonkeyId = monkeyId;
-    Items = new List<int>();
+    Items = new List<long>();
   }
 
-  public int InspectItem(int index)
+  public long InspectItem(int index)
   {
     Inspections++;
 
@@ -168,12 +166,10 @@ public class Monkey
     return 0;
   }
 
-  public int TestAndFindNextMonkey(int newWorryLevel)
+  public int TestAndFindNextMonkey(long newWorryLevel)
   {
-    int updatedWorryLevel = newWorryLevel / 3;
-    var testWorryLevel = updatedWorryLevel % TestNumber;
-
-    // hiya = updatedWorryLevel;
+    long updatedWorryLevel = newWorryLevel / 3;
+    long testWorryLevel = updatedWorryLevel % TestNumber;
 
     if (testWorryLevel == 0)
     {
