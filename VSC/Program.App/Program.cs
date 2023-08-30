@@ -6,6 +6,7 @@
     "C:\\Users\\klittle\\source\\vscPractice\\AoC\\VSC\\Program.App\\input.txt");
 
     const long modulasMath = 9699690;
+    const long testModulasMath = 96577;
     var monkeyList = ParseInstructions(input);
     
     for (int round = 0; round < 10000; round++)
@@ -26,12 +27,12 @@
     }
 
     var orderedList = monkeyList.OrderByDescending(i => i.Inspections).ToList();
-    long monkeyBusiness = orderedList[0].Inspections * orderedList[1].Inspections;
+    ulong monkeyBusiness = (ulong)orderedList[0].Inspections * (ulong)orderedList[1].Inspections;
 
-    //Console.WriteLine(monkeyList[0].Inspections);
-    //Console.WriteLine(monkeyList[1].Inspections);
-    //Console.WriteLine(monkeyList[2].Inspections);
-    //Console.WriteLine(monkeyList[3].Inspections);
+    Console.WriteLine(monkeyList[0].Inspections);
+    Console.WriteLine(monkeyList[1].Inspections);
+    Console.WriteLine(monkeyList[2].Inspections);
+    Console.WriteLine(monkeyList[3].Inspections);
 
     Console.WriteLine(monkeyBusiness);
     Console.ReadLine();
