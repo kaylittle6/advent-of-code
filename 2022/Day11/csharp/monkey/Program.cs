@@ -2,152 +2,175 @@
 {
   public static void Main(string[] args)
   {
-    string[] input = File.ReadAllLines("C:\\Users\\klittle\\source\\vscPractice\\AoC\\2022\\Day11\\csharp\\monkey\\input.txt");
+    string[] input = File.ReadAllLines(
+    "C:\\Users\\klittle\\source\\vscPractice\\AoC\\VSC\\Program.App\\input.txt");
 
-    Monkey[] monkeys = new Monkey[8];
+    const long modulasMath = 9699690;
+    var monkeyList = ParseInstructions(input);
 
-    for (int i = 0; i < 8; i++)
+    for (int round = 0; round < 10000; round++)
     {
-      monkeys[i] = new Monkey();
-    }
-
-    ParseInstructions(input, monkeys);
-
-    for (int round = 0; round < 20; round++)
-    {
-      for (int monkey = 0; monkey < monkeys.Length; monkey++)
+      for (int monkey = 0; monkey < monkeyList.Count; monkey++)
       {
-        int listCount = monkeys[monkey].Items.Count();
-
-        for (int i = 0; i < listCount; i++ )
+        for (int item = 0; item < monkeyList[monkey].Items.Count; item++)
         {
-          monkeys[monkey].TotalInspections++;
+          long newWorryLevel = monkeyList[monkey].InspectItem(item);
+          long reliefLevel = newWorryLevel % modulasMath;
+          int throwMonkey = monkeyList[monkey].TestAndFindNextMonkey(reliefLevel);
 
-          int newWorryLevel = monkeys[monkey].WorryLevel / 3;
-          bool test = newWorryLevel % monkeys[monkey].TestNumber == 0;
-
-          if (test)
-          {
-            monkeys[monkeys[monkey].TrueMonkey].Items.Add(newWorryLevel);
-            monkeys[monkey].Items.Remove(monkeys[monkey].Items.First());
-          }
-          else
-          {
-            monkeys[monkeys[monkey].FalseMonkey].Items.Add(newWorryLevel);
-            monkeys[monkey].Items.Remove(monkeys[monkey].Items.First());
-          }
+          monkeyList[throwMonkey].Items.Add(reliefLevel);
         }
+
+        monkeyList[monkey].Items.Clear();
       }
     }
 
-    Monkey[] sortedMonkeys = monkeys.OrderByDescending(t => t.TotalInspections).ToArray();
+    var orderedList = monkeyList.OrderByDescending(i => i.Inspections).ToList();
+    ulong monkeyBusiness = (ulong)orderedList[0].Inspections * (ulong)orderedList[1].Inspections;
 
-    Console.WriteLine(sortedMonkeys[0].TotalInspections * sortedMonkeys[1].TotalInspections);
+    Console.WriteLine(monkeyBusiness);
     Console.ReadLine();
   }
 
-  private static void ParseInstructions(string[] _input, Monkey[] _monkeys)
+  public static List<Monkey> ParseInstructions(string[] input)
   {
+    List<Monkey> monkeyList = new List<Monkey>();
+    List<string> trimmedList = new List<string>();
+
     for (int i = 0; i < 8; i++)
     {
-      foreach (string instruction in _input)
-      {
-        string trimmedInstructions = instruction.TrimStart();
-        string[] splitInstructions = trimmedInstructions.Split(" ");
+      monkeyList.Add(new Monkey(i));
+    }
 
-        if (String.IsNullOrEmpty(instruction))
+    foreach (string line in input)
+    {
+      var replaceLine = line.Replace(",", "").Replace(":", "");
+      var trimmedLine = replaceLine.TrimStart();
+
+      trimmedList.Add(trimmedLine);
+    }
+
+    for (int i = 0; i < monkeyList.Count; i++)
+    {
+      foreach (string line in trimmedList)
+      {
+        if (String.IsNullOrEmpty(line))
         {
           i++;
           continue;
         }
-        else if (splitInstructions[0] == "Monkey")
+
+        var splitLine = line.Split(" ");
+
+        AssignValue(splitLine[0], line, monkeyList, i);
+      }
+    }
+
+    return monkeyList;
+  }
+
+  public static void AssignValue(string keyword, string line, List<Monkey> monkeyList, int index)
+  {
+    if (keyword == "Starting")
+    {
+      var parts = line.Split(" ");
+
+      foreach (string part in parts)
+      {
+        if (int.TryParse(part, out int value))
         {
-          continue;
+          monkeyList[index].Items.Add(value);
         }
-        else
-        {
-          switch (splitInstructions[0])
-          {
-            case "Starting":
+      }
+    }
 
-              foreach (string line in splitInstructions)
-              {
-                string trimComma = line.Trim(',');
+    else if (keyword == "Operation")
+    {
+      var splitLines = line.Split(" ");
 
-                int.TryParse(trimComma, out int number);
+      monkeyList[index].OperationOperator = splitLines[4];
 
-                _monkeys[i].Items.Add(number);
-              }
+      if (int.TryParse(splitLines[5], out int result))
+      {
+        monkeyList[index].OperationNumber = result;
+      }
 
-              _monkeys[i].Items = _monkeys[i].Items.Where(x => x != 0).ToList();
+      else
+      {
+        monkeyList[index].OperationNumber = 0;
+      }
+    }
 
-              break;
+    else if (keyword == "Test")
+    {
+      var splitLines = line.Split(" ");
 
-            case "Operation:":
+      monkeyList[index].TestNumber = int.Parse(splitLines[3]);
+    }
 
-              _monkeys[i].OperationEquation = splitInstructions;
+    else if (keyword == "If")
+    {
+      var splitLines = line.Split(" ");
 
-              break;
+      if (splitLines[1] == "true")
+      {
+        monkeyList[index].TrueMonkey = int.Parse(splitLines[5]);
+      }
 
-            case "Test:":
-
-              foreach (string line in splitInstructions)
-              {
-                int.TryParse(line, out int number);
-
-                _monkeys[i].TestNumber = number;
-              }
-              break;
-
-            case "If":
-
-              string trimmedLine = splitInstructions[1].Trim(':');
-
-              if (trimmedLine == "true")
-              {
-                _monkeys[i].TrueMonkey = int.Parse(splitInstructions[5]);
-              }
-              else
-              {
-                _monkeys[i].FalseMonkey = int.Parse(splitInstructions[5]);
-              }
-              break;
-          }
-        }
+      else
+      {
+        monkeyList[index].FalseMonkey = int.Parse(splitLines[5]);
       }
     }
   }
+}
 
-  public class Monkey
+public class Monkey
+{
+  public int MonkeyId { get; set; }
+  public List<long> Items { get; set; }
+  public string? OperationOperator { get; set; }
+  public int OperationNumber { get; set; }
+  public int TestNumber { get; set; }
+  public int TrueMonkey { get; set; }
+  public int FalseMonkey { get; set; }
+  public int Inspections { get; set; } = 0;
+
+  public Monkey(int monkeyId)
   {
-    public List<int> Items { get; set; } = new List<int>();
-    public string[] OperationEquation { get; set; } = new string[6];
-    public int WorryLevel => GetWorryLevel();
-    public int TestNumber { get; set; }
-    public int TrueMonkey { get; set; }
-    public int FalseMonkey { get; set; }
-    public int TotalInspections { get; set; } = 0;
-    private int OperationValue { get; set; }
+    MonkeyId = monkeyId;
+    Items = new List<long>();
+  }
 
-    public int GetWorryLevel()
+  public long InspectItem(int index)
+  {
+    Inspections++;
+
+    if (OperationOperator == "+")
     {
-      bool success = int.TryParse(OperationEquation[5], out int number);
+      return Items[index] + OperationNumber;
+    }
 
-      OperationValue = success ? number : Items.FirstOrDefault();
-      
-      if (Items.Any())
+    else if (OperationOperator == "*")
+    {
+      if (OperationNumber == 0)
       {
-        if (OperationEquation[4] == "*")
-        {
-          return Items.First() * OperationValue;
-        }
-        else
-        {
-          return Items.First() + OperationValue;
-        }
+        return Items[index] * Items[index];
       }
 
-      return 0;
+      else
+      {
+        return Items[index] * OperationNumber;
+      }
     }
+
+    return 0;
+  }
+
+  public int TestAndFindNextMonkey(long reliefLevel)
+  {
+    var test = reliefLevel % TestNumber;
+
+    return (test == 0) ? TrueMonkey : FalseMonkey;
   }
 }
