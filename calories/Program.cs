@@ -2,7 +2,7 @@
 {
   public int CurrentTotal { get; set; } = 0;
   public int Highest { get; set; } = 0;
-  public int SecondHighest {  get; set; } = 0;
+  public int SecondHighest { get; set; } = 0;
   public int ThirdHighest { get; set; } = 0;
   public int TopThreeTotal => Highest + SecondHighest + ThirdHighest;
 
