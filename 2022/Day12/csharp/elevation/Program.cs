@@ -1,12 +1,14 @@
 ﻿public class Program
 {
+  public string[] Input = File.ReadAllLines(
+      "C:\\Users\\klittle\\Source\\advent-of-code\\2022\\Day11\\csharp\\monkey\\input.txt");
+
   public List<Node> OpenNodes = new List<Node>();
   public List<Node> ClosedNodes = new List<Node>();
 
   public void Main(string[] args)
   {
-    string[] input = File.ReadAllLines(
-      "C:\\Users\\klittle\\Source\\advent-of-code\\2022\\Day11\\csharp\\monkey\\input.txt");
+    
 
     var currentNode = new Node(0, 20) { LetterElevation = 'a' };
     
@@ -19,23 +21,22 @@
   {
     var newNodes = new List<Node>()
     {
-      new Node(currentNode.XPos - 1, currentNode.YPos)
-      {
-
-      },
-
+      new Node(currentNode.XPos - 1, currentNode.YPos),
       new Node(currentNode.XPos + 1, currentNode.YPos),
       new Node(currentNode.XPos, currentNode.YPos - 1),
       new Node(currentNode.XPos, currentNode.YPos + 1)
     };
 
-    var nonZeroNodes = newNodes.Where(n => n.XPos >= 0 && n.YPos >= 0).ToList();
+    var nonZeroNodes = newNodes.Where(n => n.XPos >= 0 && n.XPos <= 79 && n.YPos >= 0 && n.YPos <= 79).ToList();
     var filterNodes = nonZeroNodes.
                         Where(node => !ClosedNodes.
                         Any(closedNode => closedNode.XPos == node.XPos && closedNode.YPos == node.YPos)).
                         ToList();
 
-
+    foreach (var node in newNodes)
+    {
+      node.LetterElevation = Input[node.XPos][node.YPos];
+    }
   }
 
 
