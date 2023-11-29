@@ -1,44 +1,79 @@
 ﻿public class Program
 {
-  public string[] Input = File.ReadAllLines(
-      "C:\\Users\\klittle\\Source\\advent-of-code\\2022\\Day11\\csharp\\monkey\\input.txt");
+  public static string[] Input = File.ReadAllLines(
+      "C:\\Users\\klittle\\Source\\advent-of-code\\2022\\Day12\\csharp\\elevation\\input.txt");
 
-  public List<Node> OpenNodes = new List<Node>();
-  public List<Node> ClosedNodes = new List<Node>();
+  public static List<Node> OpenNodes = new List<Node>();
+  public static List<Node> ClosedNodes = new List<Node>();
 
-  public void Main(string[] args)
+  public static void Main(string[] args)
   {
+    var starterNode = new Node(0, 20) { LetterElevation = 'a' };
+
+    ClosedNodes.Add(starterNode);
+    GetSurroundingNodes(starterNode);
+
+    do
+    {
+      CheckAndMove();
     
 
-    var currentNode = new Node(0, 20) { LetterElevation = 'a' };
+    } while (ClosedNodes.Any(n => n.XPos == 55 && n.YPos == 20));
+
+    Console.WriteLine();
+
+    Console.ReadLine();
+    Console.ReadLine();
     
-
-
-
   }
 
-  public void GetSurroundingNodes(Node currentNode)
+  public static void CheckAndMove()
   {
-    var newNodes = new List<Node>()
-    {
-      new Node(currentNode.XPos - 1, currentNode.YPos),
-      new Node(currentNode.XPos + 1, currentNode.YPos),
-      new Node(currentNode.XPos, currentNode.YPos - 1),
-      new Node(currentNode.XPos, currentNode.YPos + 1)
-    };
+    var sortedOpenNodes = OpenNodes.OrderBy(n => n.FCost).ToList();
+    var lowestFCost = sortedOpenNodes[0].FCost;
+    List<Node> lowestFCostNodes = new List<Node>();
 
-    var nonZeroNodes = newNodes.Where(n => n.XPos >= 0 && n.XPos <= 79 && n.YPos >= 0 && n.YPos <= 79).ToList();
-    var filterNodes = nonZeroNodes.
-                        Where(node => !ClosedNodes.
-                        Any(closedNode => closedNode.XPos == node.XPos && closedNode.YPos == node.YPos)).
-                        ToList();
-
-    foreach (var node in newNodes)
+    foreach (var node in sortedOpenNodes)
     {
-      node.LetterElevation = Input[node.XPos][node.YPos];
+      if (node.FCost == lowestFCost)
+      {
+        lowestFCostNodes.Add(node);
+      }
+    }
+
+    foreach (var node in lowestFCostNodes)
+    {
+      GetSurroundingNodes(node);
+      ClosedNodes.Add(node);
+      OpenNodes.Remove(node);
     }
   }
 
+  public static void GetSurroundingNodes(Node node)
+  {
+    var newNodes = new List<Node>()
+    {
+      new Node(node.XPos - 1, node.YPos),
+      new Node(node.XPos + 1, node.YPos),
+      new Node(node.XPos, node.YPos - 1),
+      new Node(node.XPos, node.YPos + 1)
+    };
+
+    var nonZeroNodes = newNodes.Where(n => n.XPos >= 0 && n.XPos <= 79 && n.YPos >= 0 && n.YPos <= 79).ToList();
+    var filterNodes = nonZeroNodes
+                        .Where(node => !OpenNodes
+                        .Any(openNode => openNode.XPos == node.XPos && openNode.YPos == node.YPos)
+                              && !ClosedNodes
+                              .Any(closedNode => closedNode.XPos == node.XPos && closedNode.YPos == node.YPos)).ToList();
+
+    foreach (var n in filterNodes)
+    {
+      n.LetterElevation = Input[n.XPos][n.YPos];
+      n.PreviousElevation = node.LetterElevation;
+    }
+
+    OpenNodes.AddRange(filterNodes);
+  }
 
   public class Node
   {
@@ -52,6 +87,7 @@
     public int HCost => Math.Abs((XPos - EndingXPos) * 10) + Math.Abs((YPos - EndingYPos) * 10);
     public int FCost => GCost + HCost;
     public int LetterElevation { get; set; }
+    public int PreviousElevation { get; set; }
 
     public Node(int xPos, int yPos)
     {
