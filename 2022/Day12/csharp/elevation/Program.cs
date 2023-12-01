@@ -6,21 +6,42 @@
   public static List<Node> OpenNodes = new List<Node>();
   public static List<Node> ClosedNodes = new List<Node>();
 
+  public static Node[][] MapNodes = new Node[Input.Length][];
+
   public static void Main(string[] args)
   {
-    var starterNode = new Node(0, 20) { LetterElevation = 'a' };
+    for (int array = 0; array < Input.Length; array++)
+    {
+      MapNodes[array] = new Node[Input[array].Length];
 
-    ClosedNodes.Add(starterNode);
-    GetSurroundingNodes(starterNode);
+      for (int node = 0; node < Input[array].Length; node++)
+      {
+        MapNodes[array][node] = new Node(array, node)
+        {
+          Letter = Input[array][node],
+          LetterElevation = Input[array][node]
+        };
+      }
+    }
+
+    GetSurroundingNodes(MapNodes[20][0]);
+    ClosedNodes.Add(MapNodes[20][0]);
 
     do
     {
       CheckAndMove();
-    
+      RefreshMap(MapNodes);
 
-    } while (ClosedNodes.Any(n => n.XPos == 55 && n.YPos == 20));
+      //Thread.Sleep(1500);
 
-    Console.WriteLine();
+    } while (!ClosedNodes.Any(n => n.XPos == 55 && n.YPos == 20));
+
+    foreach (var node in ClosedNodes)
+    {
+      Console.WriteLine(node.ToString());
+    }
+
+    RefreshMap(MapNodes);
 
     Console.ReadLine();
     Console.ReadLine();
@@ -44,6 +65,7 @@
     foreach (var node in lowestFCostNodes)
     {
       GetSurroundingNodes(node);
+      node.Letter = '0';
       ClosedNodes.Add(node);
       OpenNodes.Remove(node);
     }
@@ -51,28 +73,61 @@
 
   public static void GetSurroundingNodes(Node node)
   {
-    var newNodes = new List<Node>()
-    {
-      new Node(node.XPos - 1, node.YPos),
-      new Node(node.XPos + 1, node.YPos),
-      new Node(node.XPos, node.YPos - 1),
-      new Node(node.XPos, node.YPos + 1)
-    };
+    var newNodes = new List<Node>();
 
-    var nonZeroNodes = newNodes.Where(n => n.XPos >= 0 && n.XPos <= 79 && n.YPos >= 0 && n.YPos <= 79).ToList();
-    var filterNodes = nonZeroNodes
-                        .Where(node => !OpenNodes
-                        .Any(openNode => openNode.XPos == node.XPos && openNode.YPos == node.YPos)
+    if (node.Letter == 'S')
+    {
+      node.Letter = 'a';
+      node.LetterElevation = 97;
+    }
+
+    if (node.XPos - 1 >= 0)
+    {
+      newNodes.Add(MapNodes[node.XPos - 1][node.YPos]);
+    }
+    if (node.XPos + 1 < MapNodes.Length)
+    {
+      newNodes.Add(MapNodes[node.XPos + 1][node.YPos]);
+    }
+    if (node.YPos - 1 >= 0)
+    {
+      newNodes.Add(MapNodes[node.XPos][node.YPos - 1]);
+    }
+    if (node.YPos + 1 < MapNodes[0].Length)
+    {
+      newNodes.Add(MapNodes[node.XPos][node.YPos + 1]);
+    }
+
+    //var nonZeroNodes = newNodes.Where(n => n.XPos >= 0 && n.XPos <= 79 && n.YPos >= 0 && n.YPos <= 40).ToList();
+    var filterNodes = newNodes
+                        .Where(n => !OpenNodes
+                        .Any(openNode => openNode.XPos == n.XPos && openNode.YPos == n.YPos)
                               && !ClosedNodes
-                              .Any(closedNode => closedNode.XPos == node.XPos && closedNode.YPos == node.YPos)).ToList();
+                              .Any(closedNode => closedNode.XPos == n.XPos && closedNode.YPos == n.YPos)
+                              && Math.Abs(node.LetterElevation - n.LetterElevation) <= 1)
+                        .ToList();
 
     foreach (var n in filterNodes)
     {
-      n.LetterElevation = Input[n.XPos][n.YPos];
-      n.PreviousElevation = node.LetterElevation;
+      n.Letter = '1';
     }
 
     OpenNodes.AddRange(filterNodes);
+  }
+
+  public static void RefreshMap(Node[][] mapNodes)
+  {
+    Console.Clear();
+
+    foreach (var array in mapNodes)
+    {
+      foreach (var node in array)
+      {
+        Console.Write(node.Letter.ToString());
+      }
+
+      Console.WriteLine();
+    }
   }
 
   public class Node
@@ -86,8 +141,8 @@
     public int GCost => Math.Abs((XPos - StartingXPos) * 10) + Math.Abs((YPos - StartingYPos) * 10);
     public int HCost => Math.Abs((XPos - EndingXPos) * 10) + Math.Abs((YPos - EndingYPos) * 10);
     public int FCost => GCost + HCost;
+    public char Letter { get; set; }
     public int LetterElevation { get; set; }
-    public int PreviousElevation { get; set; }
 
     public Node(int xPos, int yPos)
     {
