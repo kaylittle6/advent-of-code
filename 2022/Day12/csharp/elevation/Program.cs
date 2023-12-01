@@ -32,9 +32,9 @@
     do
     {
       CheckAndMove();
-      //RefreshMap(MapNodes);
+      RefreshMap(MapNodes);
 
-      //Thread.Sleep(500);
+      Thread.Sleep(500);
 
     } while (!ClosedNodes.Any(n => n.XPos == 20 && n.YPos == 55));
 
@@ -85,12 +85,13 @@
       }
     }
 
-    var lowestHCostNodes = lowestFCostNodes.OrderBy(n => n.HCost).ToList();
-
-    GetSurroundingNodes(lowestHCostNodes[0]);
-    //lowestFCostNodes[0].Letter = '-';
-    ClosedNodes.Add(lowestHCostNodes[0]);
-    OpenNodes.Remove(lowestHCostNodes[0]);
+    foreach (var node in lowestFCostNodes)
+    {
+      GetSurroundingNodes(node);
+      node.Letter = '-';
+      ClosedNodes.Add(node);
+      OpenNodes.Remove(node);
+    }
   }
 
   // Uses the current Node to find the surrounding Nodes, filters out existing and < 0 value Nodes, assigns Node parent
@@ -132,7 +133,7 @@
     foreach (var n in filterNodes)
     {
       n.ParentNode = node;
-      // n.Letter = 'X';
+      n.Letter = 'X';
     }
 
     OpenNodes.AddRange(filterNodes);
@@ -146,7 +147,7 @@
 
     while (currentNode.XPos != 20 || currentNode.YPos != 0)
     {
-      currentNode.Letter = '-';
+      currentNode.Letter = '+';
       pathNodes.Add(currentNode);
       currentNode = currentNode.ParentNode;
 
