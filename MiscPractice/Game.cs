@@ -6,6 +6,8 @@
     public DeckDealer Dealer { get; set; }
     public Referee Referee { get; set; }
     public List<Card> CommunityCards { get; set; }
+    public int CurrentBet { get; set; } = 0;
+    public int TotalPot { get; set; } = 0;
 
     public Dictionary<string, Card> Deck = new();
     

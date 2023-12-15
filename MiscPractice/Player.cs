@@ -12,5 +12,76 @@
       Name = name;
       Cards = new List<Card>();
     }
+
+    public string MakePreFlopBet(Game game)
+    {
+      game.CurrentBet = game.Referee.BigBlind;
+
+      if (Cards.Sum(c => c.CardValue) >= 20
+        || Cards.GroupBy(c => c.CardValue).Any(g => g.Count() >= 2))
+      {
+        if (game.CurrentBet != game.Referee.BigBlind)
+        {
+          var bet = game.CurrentBet * 3;
+
+          if (Money <= bet)
+          {
+            game.TotalPot += Money;
+            Money = 0;
+          }
+          else
+          {
+            Money -= bet;
+            game.TotalPot += bet;
+          }
+
+          game.CurrentBet = bet;
+        }
+        else
+        {
+          var bet = game.Referee.BigBlind * 3;
+
+          if (Money <= bet)
+          {
+            game.TotalPot += Money;
+            Money = 0;
+          }
+          else
+          {
+            Money -= bet;
+            game.TotalPot += bet;
+          }
+
+          game.CurrentBet = bet;
+        }
+
+        return "Raise";
+      }
+
+      else if (Cards.Sum(c=> c.CardValue) <= 15)
+      {
+        return "Fold";
+      }
+
+      else
+      {
+        var bet = game.CurrentBet;
+
+        if (Money <= bet)
+        {
+          game.TotalPot += Money;
+          Money = 0;
+        }
+        else
+        {
+          Money -= bet;
+          game.TotalPot += bet;
+        }
+
+        game.CurrentBet = bet;
+
+        return "Call";
+      }
+    }
   }
 }

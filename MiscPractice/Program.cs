@@ -11,32 +11,37 @@
       mainGame.Players.Add(new Player("Matt") { IsNPC = true });
       mainGame.Players.Add(new Player("Kyle") { IsNPC = false });
 
-      mainGame.Dealer.DealInitialCards(mainGame);
       mainGame.Referee.DistributePlayerMoney(mainGame, 20000);
-      mainGame.Referee.CollectBlinds(mainGame);
-      
 
-
-
-
-
-      foreach (var player in mainGame.Players)
+      do
       {
-        foreach (var card in player.Cards)
+        mainGame.Referee.CollectBlinds(mainGame);
+        mainGame.Dealer.DealInitialCards(mainGame);
+        mainGame.Referee.RoundOfBets(mainGame);
+
+
+
+
+        foreach (var player in mainGame.Players)
         {
-          Console.WriteLine($"{player.Name} has the {card.CardNumber} of {card.CardSuit}");  
+          foreach (var card in player.Cards)
+          {
+            Console.WriteLine($"{player.Name} has the {card.CardNumber} of {card.CardSuit}");
+          }
+
+          Console.WriteLine($"{player.Name} has ${player.Money} dollars");
+          Console.WriteLine();
         }
 
-        Console.WriteLine($"{player.Name} has ${player.Money} dollars");
-        Console.WriteLine();
-      }
+        foreach (var keys in mainGame.Deck)
+        {
+          Console.WriteLine(keys.Key);
+        }
 
-      foreach (var keys in mainGame.Deck)
-      {
-        Console.WriteLine(keys.Key);
-      }
-      
-      
+
+
+      } while (mainGame.Players.Count > 2);
+
     }
   }
 }
