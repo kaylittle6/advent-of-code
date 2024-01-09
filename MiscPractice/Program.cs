@@ -6,18 +6,19 @@
     {
       var mainGame = new Game();
 
-      mainGame.Players.Add(new Player("Chris") { IsNPC = true });
-      mainGame.Players.Add(new Player("Ed") { IsNPC = true });
-      mainGame.Players.Add(new Player("Matt") { IsNPC = true });
-      mainGame.Players.Add(new Player("Kyle") { IsNPC = false });
+      mainGame.StartNewGame();
 
-      mainGame.Referee.DistributePlayerMoney(mainGame, 20000);
+      Console.WriteLine("New Game created...");
+
+      mainGame.Dealer.DistributePlayerMoney(mainGame, 20000);
+
+      Console.WriteLine("Money Distributed...");
 
       do
       {
-        mainGame.Referee.CollectBlinds(mainGame);
+        mainGame.Dealer.CollectBlinds(mainGame);
         mainGame.Dealer.DealInitialCards(mainGame);
-        mainGame.Referee.RoundOfBets(mainGame);
+        mainGame.Dealer.RoundOfBets(mainGame);
 
 
 

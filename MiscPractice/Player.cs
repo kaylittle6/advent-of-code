@@ -15,12 +15,12 @@
 
     public string MakePreFlopBet(Game game)
     {
-      game.CurrentBet = game.Referee.BigBlind;
+      game.CurrentBet = game.Dealer.BigBlind;
 
       if (Cards.Sum(c => c.CardValue) >= 20
         || Cards.GroupBy(c => c.CardValue).Any(g => g.Count() >= 2))
       {
-        if (game.CurrentBet != game.Referee.BigBlind)
+        if (game.CurrentBet != game.Dealer.BigBlind)
         {
           var bet = game.CurrentBet * 3;
 
@@ -39,7 +39,7 @@
         }
         else
         {
-          var bet = game.Referee.BigBlind * 3;
+          var bet = game.Dealer.BigBlind * 3;
 
           if (Money <= bet)
           {

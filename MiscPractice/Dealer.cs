@@ -1,14 +1,15 @@
 ﻿namespace MiscPractice
 {
-  public class Referee
+  public class Dealer
   {
     public int SmallBlind { get; set; } = 25;
     public int BigBlind { get; set; } = 50;
+    public int DealerButton { get; set; } = 0;
     public int SmallBlindIndex { get; set; } = 1;
     public int BigBlindIndex { get; set; } = 2;
     public HandRankings HandRankings { get; set; }
 
-    public Referee()
+    public Dealer()
     {
       HandRankings = new HandRankings();
     }
@@ -16,11 +17,64 @@
     public void DistributePlayerMoney(Game game, int totalMoney)
     {
       int splitMoney = totalMoney / game.Players.Count();
-
+      
       foreach (var player in game.Players)
       {
         player.Money = splitMoney;
       }
+
+      if (game.Players.Count < 3)
+      {
+        DealerButton = SmallBlindIndex;
+      }
+    }
+
+    public Dictionary<string, Card> CreateDeck()
+    {
+      Dictionary<string, Card> deck = new Dictionary<string, Card>();
+      string[] values = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
+      string[] suits = { "Hearts", "Diamonds", "Spades", "Clubs" };
+
+      foreach (var value in values)
+      {
+        foreach (var suit in suits)
+        {
+          var cardName = $"{value} of {suit}";
+          deck.Add(cardName, new Card(value, suit));
+        }
+      }
+
+      return deck;
+    }
+
+    public void DealInitialCards(Game game)
+    {
+      for (int c = 0; c < 2; c++)
+      {
+        foreach (var player in game.Players)
+        {
+          Random random = new();
+          var randomIndex = random.Next(game.Deck.Count);
+          var randomCard = game.Deck.ElementAt(randomIndex);
+
+          player.Cards.Add(randomCard.Value);
+          game.Deck.Remove(randomCard.Key);
+        }
+      }
+    }
+
+    public void DealFlopCards(Game game)
+    {
+
+
+
+    }
+
+    public void DealTurnOrRiverCard(Game game)
+    {
+
+
+
     }
 
     public void RaiseBlinds()
@@ -84,9 +138,9 @@
               break;
 
             case "2":
-              var raiseBet = game.CurrentBet != game.Referee.BigBlind 
+              var raiseBet = game.CurrentBet != game.Dealer.BigBlind 
                 ? game.CurrentBet * 3 
-                : game.Referee.BigBlind * 3;
+                : game.Dealer.BigBlind * 3;
 
               if (player.Money <= raiseBet)
               {
