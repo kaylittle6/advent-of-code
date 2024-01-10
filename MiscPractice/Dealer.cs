@@ -57,7 +57,7 @@
           var randomIndex = random.Next(game.Deck.Count);
           var randomCard = game.Deck.ElementAt(randomIndex);
 
-          player.Cards.Add(randomCard.Value);
+          player.HoleCards.Add(randomCard.Value);
           game.Deck.Remove(randomCard.Key);
         }
       }
@@ -108,7 +108,7 @@
 
           if (result == "Fold")
           {
-            player.Cards.Clear();
+            player.HoleCards.Clear();
           }
         }
         else
@@ -123,39 +123,39 @@
           switch (response)
           {
             case "1":
-              var callBet = game.CurrentBet;
+              var callBet = game.State.CurrentBet;
 
               if (player.Money <= callBet)
               {
-                game.TotalPot += player.Money;
+                game.State.CurrentPotTotal += player.Money;
                 player.Money = 0;
               }
               else
               {
-                game.TotalPot += callBet;
+                game.State.CurrentPotTotal += callBet;
                 player.Money -= callBet;
               }
               break;
 
             case "2":
-              var raiseBet = game.CurrentBet != game.Dealer.BigBlind 
-                ? game.CurrentBet * 3 
+              var raiseBet = game.State.CurrentBet != game.Dealer.BigBlind 
+                ? game.State.CurrentBet * 3 
                 : game.Dealer.BigBlind * 3;
 
               if (player.Money <= raiseBet)
               {
-                game.TotalPot += player.Money;
+                game.State.CurrentPotTotal += player.Money;
                 player.Money = 0;
               }
               else
               {
-                game.TotalPot += raiseBet;
+                game.State.CurrentPotTotal += raiseBet;
                 player.Money -= raiseBet;
               }
               break;
 
             case "3":
-              player.Cards.Clear();
+              player.HoleCards.Clear();
               break;
           }
         }

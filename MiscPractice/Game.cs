@@ -2,13 +2,13 @@
 {
   public class Game
   {
+    private static Game? mainGame;
+
     public List<Player> Players { get; set; }
     public Dealer Dealer { get; set; }
     public List<Card> CommunityCards { get; set; }
-    public int CurrentBet { get; set; } = 0;
-    public int TotalPot { get; set; } = 0;
-
-    public Dictionary<string, Card> Deck = new();
+    public GameState State { get; set; }
+    public Dictionary<string, Card> Deck { get; set; }
     
     public Game()
     {
@@ -16,6 +16,20 @@
       Dealer = new Dealer();
       CommunityCards = new List<Card>();
       Deck = Dealer.CreateDeck();
+      State = new GameState();
+    }
+
+    public static Game MainGame
+    {
+      get
+      {
+        if (mainGame == null)
+        {
+          mainGame = new Game();
+        }
+
+        return mainGame;
+      }
     }
 
     public void StartNewGame()

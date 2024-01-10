@@ -4,28 +4,26 @@
   {
     public static void Main(string[] args)
     {
-      var mainGame = new Game();
+      var game = new Game();
 
-      mainGame.StartNewGame();
+      game.StartNewGame();
 
       Console.WriteLine("New Game created...");
 
-      mainGame.Dealer.DistributePlayerMoney(mainGame, 20000);
+      game.Dealer.DistributePlayerMoney(game, 20000);
 
       Console.WriteLine("Money Distributed...");
 
       do
       {
-        mainGame.Dealer.CollectBlinds(mainGame);
-        mainGame.Dealer.DealInitialCards(mainGame);
-        mainGame.Dealer.RoundOfBets(mainGame);
+        game.Dealer.CollectBlinds(game);
+        game.Dealer.DealInitialCards(game);
+        game.Dealer.RoundOfBets(game);
 
 
-
-
-        foreach (var player in mainGame.Players)
+        foreach (var player in game.Players)
         {
-          foreach (var card in player.Cards)
+          foreach (var card in player.HoleCards)
           {
             Console.WriteLine($"{player.Name} has the {card.CardNumber} of {card.CardSuit}");
           }
@@ -34,15 +32,12 @@
           Console.WriteLine();
         }
 
-        foreach (var keys in mainGame.Deck)
+        foreach (var keys in game.Deck)
         {
           Console.WriteLine(keys.Key);
         }
 
-
-
-      } while (mainGame.Players.Count > 2);
-
+      } while (game.Players.Count > 2);
     }
   }
 }
