@@ -7,6 +7,9 @@
     public List<Card> AllCards { get; set; }
     public int Money { get; set; }
     public bool IsNPC { get; set; }
+    public bool IsButton { get; set; }
+    public bool IsSmallBlind { get; set; }
+    public bool IsBigBlind { get; set; }
 
     public Player(string name)
     {
@@ -17,44 +20,44 @@
 
     public string MakePreFlopBet(Game game)
     {
-      game.State.CurrentBet = game.Dealer.BigBlind;
+      GameState.CurrentBet = GameState.CurrentBigBlind;
 
       if (HoleCards.Sum(c => c.CardValue) >= 20
         || HoleCards.GroupBy(c => c.CardValue).Any(g => g.Count() >= 2))
       {
-        if (game.State.CurrentBet != game.Dealer.BigBlind)
+        if (GameState.CurrentBet != GameState.CurrentBigBlind)
         {
-          var bet = game.State.CurrentBet * 3;
+          var bet = GameState.CurrentBet * 3;
 
           if (Money <= bet)
           {
-            game.State.CurrentPotTotal += Money;
+            GameState.CurrentPotTotal += Money;
             Money = 0;
           }
           else
           {
             Money -= bet;
-            game.State.CurrentPotTotal += bet;
+            GameState.CurrentPotTotal += bet;
           }
 
-          game.State.CurrentPotTotal = bet;
+          GameState.CurrentPotTotal = bet;
         }
         else
         {
-          var bet = game.Dealer.BigBlind * 3;
+          var bet = GameState.CurrentBigBlind * 3;
 
           if (Money <= bet)
           {
-            game.State.CurrentPotTotal += Money;
+            GameState.CurrentPotTotal += Money;
             Money = 0;
           }
           else
           {
             Money -= bet;
-            game.State.CurrentPotTotal += bet;
+            GameState.CurrentPotTotal += bet;
           }
 
-          game.State.CurrentBet = bet;
+          GameState.CurrentBet = bet;
         }
 
         return "Raise";
@@ -67,20 +70,20 @@
 
       else
       {
-        var bet = game.State.CurrentBet;
+        var bet = GameState.CurrentBet;
 
         if (Money <= bet)
         {
-          game.State.CurrentPotTotal += Money;
+          GameState.CurrentPotTotal += Money;
           Money = 0;
         }
         else
         {
           Money -= bet;
-          game.State.CurrentPotTotal += bet;
+          GameState.CurrentPotTotal += bet;
         }
 
-        game.State.CurrentBet = bet;
+        GameState.CurrentBet = bet;
 
         return "Call";
       }

@@ -1,14 +1,17 @@
 ﻿namespace MiscPractice
 {
-  public class GameState
+  public static class GameState
   {
-    public int NumberOfPlayers { get; set; }
-    public int StartingMoney { get; set; }
-    public string? CurrentPlayerAction { get; set; }
-    public int CurrentBet { get; set; }
-    public int CurrentDealerButton { get; set; }
-    public int CurrentSmallBlind { get; set; }
-    public int CurrentBigBlind { get; set; }
-    public int CurrentPotTotal { get; set; }
+    public static int NumberOfPlayers { get; set; }
+    public static int StartingMoney { get; set; }
+    public static string? CurrentPlayerAction { get; set; }
+    public static int CurrentBet { get; set; }
+    public static int CurrentDealerButton { get; set; }
+    public static int CurrentSmallBlind { get; set; }
+    public static int CurrentBigBlind { get; set; }
+    public static int CurrentPotTotal { get; set; }
+    public static int DealerButtonIndex { get; set; } = 0;
+    public static int SmallBlindIndex { get; set; } = 1;
+    public static int BigBlindIndex { get; set; } = 2;
   }
 }

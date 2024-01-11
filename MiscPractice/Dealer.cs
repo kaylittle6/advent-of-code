@@ -2,30 +2,25 @@
 {
   public class Dealer
   {
-    public int SmallBlind { get; set; } = 25;
-    public int BigBlind { get; set; } = 50;
-    public int DealerButton { get; set; } = 0;
-    public int SmallBlindIndex { get; set; } = 1;
-    public int BigBlindIndex { get; set; } = 2;
-    public HandRankings HandRankings { get; set; }
+    private Game _game { get; set; }
 
-    public Dealer()
+    public Dealer(Game game)
     {
-      HandRankings = new HandRankings();
+      _game = game;  
     }
 
-    public void DistributePlayerMoney(Game game, int totalMoney)
+    public void DistributePlayerMoney(int totalMoney)
     {
-      int splitMoney = totalMoney / game.Players.Count();
+      int splitMoney = totalMoney / _game.Players.Count();
       
-      foreach (var player in game.Players)
+      foreach (var player in _game.Players)
       {
         player.Money = splitMoney;
       }
 
-      if (game.Players.Count < 3)
+      if (_game.Players.Count < 3)
       {
-        DealerButton = SmallBlindIndex;
+        GameState.DealerButtonIndex = GameState.SmallBlindIndex;
       }
     }
 
@@ -54,7 +49,7 @@
         foreach (var player in game.Players)
         {
           Random random = new();
-          var randomIndex = random.Next(game.Deck.Count);
+          var randomIndex = random.Next(game!.Deck!.Count);
           var randomCard = game.Deck.ElementAt(randomIndex);
 
           player.HoleCards.Add(randomCard.Value);
@@ -63,14 +58,14 @@
       }
     }
 
-    public void DealFlopCards(Game game)
+    public void DealFlopCards()
     {
 
 
 
     }
 
-    public void DealTurnOrRiverCard(Game game)
+    public void DealTurnOrRiverCard()
     {
 
 
@@ -79,28 +74,28 @@
 
     public void RaiseBlinds()
     {
-      SmallBlind *= 2;
-      BigBlind *= 2;
+      GameState.CurrentSmallBlind *= 2;
+      GameState.CurrentBigBlind *= 2;
     }
 
     public void ResetBlinds()
     {
-      SmallBlind = 25;
-      BigBlind = 50;
+      GameState.CurrentSmallBlind = 25;
+      GameState.CurrentBigBlind = 50;
     }
 
-    public void CollectBlinds(Game game)
+    public void CollectBlinds()
     {
-      game.Players[SmallBlindIndex].Money -= SmallBlind;
-      game.Players[BigBlindIndex].Money -= BigBlind;
+      _game.Players[GameState.SmallBlindIndex].Money -= GameState.CurrentSmallBlind;
+      _game.Players[GameState.BigBlindIndex].Money -= GameState.CurrentBigBlind;
 
-      SmallBlindIndex = SmallBlindIndex + 1 >= game.Players.Count ? 0 : ++SmallBlindIndex;
-      BigBlindIndex = BigBlindIndex + 1 >= game.Players.Count ? 0 : ++BigBlindIndex;
+      GameState.SmallBlindIndex = GameState.SmallBlindIndex + 1 >= _game.Players.Count ? 0 : ++GameState.SmallBlindIndex;
+      GameState.BigBlindIndex = GameState.BigBlindIndex + 1 >= _game.Players.Count ? 0 : ++GameState.BigBlindIndex;
     }
 
-    public void RoundOfBets(Game game)
+    public void RoundOfBets()
     {
-      foreach (var player in game.Players)
+      foreach (var player in _game.Players)
       {
         if (player.IsNPC)
         {
@@ -123,33 +118,33 @@
           switch (response)
           {
             case "1":
-              var callBet = game.State.CurrentBet;
+              var callBet = GameState.CurrentBet;
 
               if (player.Money <= callBet)
               {
-                game.State.CurrentPotTotal += player.Money;
+                GameState.CurrentPotTotal += player.Money;
                 player.Money = 0;
               }
               else
               {
-                game.State.CurrentPotTotal += callBet;
+                GameState.CurrentPotTotal += callBet;
                 player.Money -= callBet;
               }
               break;
 
             case "2":
-              var raiseBet = game.State.CurrentBet != game.Dealer.BigBlind 
-                ? game.State.CurrentBet * 3 
-                : game.Dealer.BigBlind * 3;
+              var raiseBet = GameState.CurrentBet != GameState.CurrentBigBlind 
+                ? GameState.CurrentBet * 3 
+                : GameState.CurrentBigBlind * 3;
 
               if (player.Money <= raiseBet)
               {
-                game.State.CurrentPotTotal += player.Money;
+                GameState.CurrentPotTotal += player.Money;
                 player.Money = 0;
               }
               else
               {
-                game.State.CurrentPotTotal += raiseBet;
+                GameState.CurrentPotTotal += raiseBet;
                 player.Money -= raiseBet;
               }
               break;

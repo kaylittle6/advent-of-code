@@ -5,18 +5,14 @@
     private static Game? mainGame;
 
     public List<Player> Players { get; set; }
-    public Dealer Dealer { get; set; }
     public List<Card> CommunityCards { get; set; }
-    public GameState State { get; set; }
-    public Dictionary<string, Card> Deck { get; set; }
+    public Dictionary<string, Card>? Deck { get; set; }
     
     public Game()
     {
       Players = new List<Player>();
-      Dealer = new Dealer();
       CommunityCards = new List<Card>();
-      Deck = Dealer.CreateDeck();
-      State = new GameState();
+      Deck = new Dictionary<string, Card>();
     }
 
     public static Game MainGame

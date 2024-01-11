@@ -2,23 +2,34 @@
 {
   public class Program
   {
+    private static Dealer? _dealer;
+
     public static void Main(string[] args)
     {
       var game = new Game();
+      _dealer = new Dealer(game);
 
+      game.Deck = _dealer!.CreateDeck();
       game.StartNewGame();
+
+      var tm = new TableMap();
+      tm.DrawTable();
 
       Console.WriteLine("New Game created...");
 
-      game.Dealer.DistributePlayerMoney(game, 20000);
+      _dealer!.DistributePlayerMoney(20000);
 
       Console.WriteLine("Money Distributed...");
 
+      tm.ReplacePlaceholders(game);
+
+      Console.ReadLine();
+
       do
       {
-        game.Dealer.CollectBlinds(game);
-        game.Dealer.DealInitialCards(game);
-        game.Dealer.RoundOfBets(game);
+        _dealer.CollectBlinds(game);
+        _dealer.DealInitialCards(game);
+        _dealer.RoundOfBets(game);
 
 
         foreach (var player in game.Players)
