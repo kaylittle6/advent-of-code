@@ -3,7 +3,7 @@
   public class TableMap
   {
     string[] tableMap = File.ReadAllLines(
-      "C:\\Users\\klittle\\source\\advent-of-code\\MiscPractice\\table-map.txt");
+      "D:\\Programming\\repos\\advent-of-code\\MiscPractice\\table-map.txt");
 
     public void DrawTable()
     {
@@ -24,14 +24,16 @@
     {
       for (int i = 0; i < game.Players.Count(); i++)
       {
-        foreach (var line in tableMap)
+        for (int j = 0; j < tableMap.Length; j++)
         {
-          if (line.Contains("player" + i.ToString()))
+          if (tableMap[j].Contains("{player" + i.ToString() + "}"))
           {
-            line.Replace("player" + i.ToString(), game.Players[i].Name);
+            tableMap[j] = tableMap[j].Replace("{player" + i.ToString() + "}", game.Players[i].Name);
           }
         }
       }
+
+      DrawTable();
     }
   }
 }

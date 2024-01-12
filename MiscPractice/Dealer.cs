@@ -42,18 +42,18 @@
       return deck;
     }
 
-    public void DealInitialCards(Game game)
+    public void DealInitialCards()
     {
       for (int c = 0; c < 2; c++)
       {
-        foreach (var player in game.Players)
+        foreach (var player in _game.Players)
         {
           Random random = new();
-          var randomIndex = random.Next(game!.Deck!.Count);
-          var randomCard = game.Deck.ElementAt(randomIndex);
+          var randomIndex = random.Next(_game!.Deck!.Count);
+          var randomCard = _game.Deck.ElementAt(randomIndex);
 
           player.HoleCards.Add(randomCard.Value);
-          game.Deck.Remove(randomCard.Key);
+          _game.Deck.Remove(randomCard.Key);
         }
       }
     }
@@ -99,7 +99,7 @@
       {
         if (player.IsNPC)
         {
-          var result = player.MakePreFlopBet(game);
+          var result = player.MakePreFlopBet();
 
           if (result == "Fold")
           {

@@ -27,9 +27,9 @@
 
       do
       {
-        _dealer.CollectBlinds(game);
-        _dealer.DealInitialCards(game);
-        _dealer.RoundOfBets(game);
+        _dealer.CollectBlinds();
+        _dealer.DealInitialCards();
+        _dealer.RoundOfBets();
 
 
         foreach (var player in game.Players)

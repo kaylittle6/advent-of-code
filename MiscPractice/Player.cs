@@ -2,6 +2,8 @@
 {
   public class Player
   {
+    private static Game? mainGame;
+
     public string Name { get; set; }
     public List<Card> HoleCards { get; set; }
     public List<Card> AllCards { get; set; }
@@ -18,7 +20,20 @@
       AllCards = new List<Card>();
     }
 
-    public string MakePreFlopBet(Game game)
+    public static Game? MainGame
+    {
+      get
+      {
+        if (mainGame == null)
+        {
+          mainGame = new Game();
+        }
+
+        return mainGame;
+      }
+    }
+
+    public string MakePreFlopBet()
     {
       GameState.CurrentBet = GameState.CurrentBigBlind;
 
