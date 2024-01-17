@@ -1,9 +1,0 @@
-		    {b}			   {b}
-   {b}     ------{player0}----Dealer----{player1}------     {b}
-{player7} -	 {p1money}     	 	{p2money}      - {player2}
-{p8money}-					        -{p3money}
-	-		    {PotTotal}			 -
-   {b}	 -					        -   {b}
-{player6} -	    {b}			   {b}	       - {player3}
-{p7money}  ------{player5}--------------{player4}------  {p4money}
-		 {p6money}		{p5money}

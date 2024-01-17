@@ -53,6 +53,7 @@
           var randomCard = _game.Deck.ElementAt(randomIndex);
 
           player.HoleCards.Add(randomCard.Value);
+          player.AllCards.Add(randomCard.Value);
           _game.Deck.Remove(randomCard.Key);
         }
       }

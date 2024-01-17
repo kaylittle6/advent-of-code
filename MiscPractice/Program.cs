@@ -12,16 +12,13 @@
       game.Deck = _dealer!.CreateDeck();
       game.StartNewGame();
 
-      var tm = new TableMap();
-      tm.DrawTable();
+      GameState.NumberOfPlayers = game.Players.Count;
 
       Console.WriteLine("New Game created...");
 
       _dealer!.DistributePlayerMoney(20000);
 
       Console.WriteLine("Money Distributed...");
-
-      tm.ReplacePlaceholders(game);
 
       Console.ReadLine();
 
