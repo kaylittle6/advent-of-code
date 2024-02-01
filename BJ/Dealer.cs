@@ -3,7 +3,6 @@
   public class Dealer
   {
     public List<Card> Deck { get; set; } = new List<Card>();
-    public bool NeedsReshuffle { get; set; } = false;
 
     public Dealer() { }
 
@@ -28,6 +27,22 @@
       }
       Deck = masterDeck.SelectMany(l => l).ToList();
       ShuffleDeck();
+    }
+
+    public void DealCards(List<Player> players)
+    {
+      foreach (var player in players)
+      {
+        for (int i = 0; i < 2; i++)
+        {
+          Random random = new();
+          var randomIndex = random.Next(players.Count);
+          var randomCard = Deck.ElementAt(randomIndex);
+
+          player.Cards.Add(randomCard);
+          Deck.Remove(randomCard);
+        }
+      }
     }
 
     public void ShuffleDeck()

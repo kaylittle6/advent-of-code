@@ -8,11 +8,8 @@
 
       game.StartNewGame();
       game.Dealer.GetDeck(2);
-
-      foreach (var card in game.Dealer.Deck)
-      {
-        Console.WriteLine(card.Display);
-      }
+      game.Dealer.DealCards(game.Players);
+      game.Display.ShowTable(game.Players);
 
       Console.ReadLine();
     }

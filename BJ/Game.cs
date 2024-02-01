@@ -6,6 +6,7 @@
 
     public List<Player> Players { get; set; } = new List<Player>();
     public Dealer Dealer { get; set; } = new Dealer();
+    public Display Display { get; set; } = new Display();
     public int MinimumBet { get; set; }
 
     public Game() { }
@@ -68,6 +69,8 @@
         player.CurrentMoney = Int32.Parse(money!);
         Players.Add(player);
       }
+
+      Players.Add(new Player("Dealer"));
     }
   }
 }
