@@ -2,6 +2,7 @@
 {
   public class Card
   {
+    public string? Display => GetCardDisplay();
     public string CardNumber { get; set; }
     public string CardSuit { get; set; }
     public int? CardValue
@@ -46,6 +47,11 @@
     {
       CardNumber = cardNumber;
       CardSuit = cardSuit;
+    }
+
+    private string GetCardDisplay()
+    {
+      return $"{CardNumber}{CardSuit.First()}";
     }
   }
 }

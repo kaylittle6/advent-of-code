@@ -2,35 +2,37 @@
 {
   public class Dealer
   {
-    public Dictionary<string, Card>? Deck { get; set; }
+    public List<Card> Deck { get; set; } = new List<Card>();
     public bool NeedsReshuffle { get; set; } = false;
 
     public Dealer() { }
 
-    public Dictionary<string, Card> GetOrShuffleDeck(int numberOfDecks)
+    public void GetDeck(int numberOfDecks)
     {
-      Dictionary<string, Card> deck = new Dictionary<string, Card>();
-      string[] values = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
-      string[] suits = { "Hearts", "Diamonds", "Spades", "Clubs" };
+      List<List<Card>> masterDeck = new List<List<Card>>();
 
       for (int i = 0; i < numberOfDecks; i++)
       {
+        List<Card> deck = new List<Card>();
+        string[] values = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
+        string[] suits = { "Hearts", "Diamonds", "Spades", "Clubs" };
+
         foreach (var value in values)
         {
           foreach (var suit in suits)
           {
-            var cardName = $"{value} of {suit}";
-            deck.Add(cardName, new Card(value, suit));
+            deck.Add(new Card(value, suit));
           }
         }
+        masterDeck.Add(deck);
       }
-
-      return deck;
+      Deck = masterDeck.SelectMany(l => l).ToList();
+      ShuffleDeck();
     }
 
-    public void SetupNewPlayer()
+    public void ShuffleDeck()
     {
-
+      Deck = Deck.OrderBy(c => Guid.NewGuid()).ToList();
     }
   }
 }

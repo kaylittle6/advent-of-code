@@ -25,25 +25,25 @@
 
     public void StartNewGame()
     {
-      var goodNOP = false;
-      int p;
+      int p = 0;
+      bool goodNOP;
 
       do
       {
-        Console.WriteLine();
+        goodNOP = true;
+
+        Console.Clear();
         Console.WriteLine("How many players will play? (Maximum 4 players)");
         Console.WriteLine();
 
         var nOP = Console.ReadLine();
 
-        if (nOP == null && nOP != "1" && nOP != "2" && nOP != "3" && nOP != "4")
+        if (nOP == null || (nOP != "1" && nOP != "2" && nOP != "3" && nOP != "4"))
         {
-          Console.WriteLine();
+          Console.Clear();
           Console.WriteLine("Please select a valid response");
-        }
-        else
-        {
-          goodNOP = true;
+          Thread.Sleep(4000);
+          goodNOP = false;
         }
 
         p = Int32.Parse(nOP!);
@@ -52,13 +52,13 @@
 
       for (int i = 0; i < p; i++)
       {
-        Console.WriteLine();
+        Console.Clear();
         Console.WriteLine("What is this Player's name?");
         Console.WriteLine();
 
         var playerName = Console.ReadLine();
 
-        Console.WriteLine();
+        Console.Clear();
         Console.WriteLine("Please select a starting amount of money (Numbers Only)");
         Console.WriteLine();
 
