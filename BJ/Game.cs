@@ -7,6 +7,7 @@
     public List<Player> Players { get; set; } = new List<Player>();
     public Dealer Dealer { get; set; } = new Dealer();
     public Display Display { get; set; } = new Display();
+    public RuleBook Rules { get; set; } = new RuleBook();
     public int MinimumBet { get; set; }
 
     public Game() { }
@@ -24,9 +25,9 @@
       }
     }
 
-    public void StartNewGame()
+    public void StartNewGame(Dealer dealer)
     {
-      int p = 0;
+      int p;
       bool goodNOP;
 
       do
@@ -43,7 +44,7 @@
         {
           Console.Clear();
           Console.WriteLine("Please select a valid response");
-          Thread.Sleep(4000);
+          Thread.Sleep(3000);
           goodNOP = false;
         }
 
@@ -71,6 +72,68 @@
       }
 
       Players.Add(new Player("Dealer"));
+
+      Console.Clear();
+      Console.WriteLine("How many decks would you like to play with?");
+      Console.WriteLine();
+
+      dealer.DeckCount = Int32.Parse(Console.ReadLine()!);
+
+      dealer.GetDeck(dealer.DeckCount);
+
+      Console.Clear();
+      Console.WriteLine("What is the minimum bet for this table?");
+      Console.WriteLine();
+
+      MinimumBet = Int32.Parse(Console.ReadLine()!);
+    }
+
+    public void NextRound()
+    {
+      bool goodHOS;
+      string hitOrStay;
+
+      Display.ShowTable(this);
+      Console.WriteLine();
+      Console.WriteLine();
+
+      foreach (var player in Players)
+      {
+        if (player.Name != "Dealer")
+        {
+          do
+          {
+            goodHOS = true;
+
+            Console.WriteLine();
+            Console.WriteLine($"{player.Name}, would you like to hit or stay? (hit/stay)");
+            Console.WriteLine();
+
+            hitOrStay = Console.ReadLine()!;
+
+            if (hitOrStay == null || (hitOrStay != "hit" && hitOrStay != "Hit" && hitOrStay != "stay"
+              && hitOrStay != "Stay" && hitOrStay != "h" && hitOrStay != "s"))
+            {
+              Console.Clear();
+              Console.WriteLine("Please select a valid response");
+              Thread.Sleep(3000);
+              goodHOS = false;
+            }
+          } while (goodHOS == false);
+          
+          // Action for Hit
+          if (hitOrStay == "hit" || hitOrStay == "Hit" || hitOrStay == "h")
+          {
+            Dealer.DealCard(player);
+            var busted = Rules.CheckForBust();
+          }
+          // Action for Stay
+          else
+          {
+
+          }
+        }
+      }
     }
   }
 }

@@ -2,7 +2,7 @@
 {
   public class Display
   {
-    public void ShowTable(Game game, int decks)
+    public void ShowTable(Game game)
     {
       Console.Clear();
 
@@ -44,7 +44,7 @@
         Console.WriteLine();
         Console.WriteLine();
       }
-      Console.WriteLine($"Total Decks: {decks} -- Cards Remaining: {game.Dealer.Deck.Count}");
+      Console.WriteLine($"Total Decks: {game.Dealer.DeckCount} -- Cards Remaining: {game.Dealer.Deck.Count}");
     }
   }
 }
