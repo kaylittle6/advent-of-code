@@ -91,7 +91,9 @@
     public void NextRound()
     {
       bool goodHOS;
+      bool stay = false;
       string hitOrStay;
+      bool[] results = new bool[3];
 
       Display.ShowTable(this);
       Console.WriteLine();
@@ -103,35 +105,43 @@
         {
           do
           {
-            goodHOS = true;
-
-            Console.WriteLine();
-            Console.WriteLine($"{player.Name}, would you like to hit or stay? (hit/stay)");
-            Console.WriteLine();
-
-            hitOrStay = Console.ReadLine()!;
-
-            if (hitOrStay == null || (hitOrStay != "hit" && hitOrStay != "Hit" && hitOrStay != "stay"
-              && hitOrStay != "Stay" && hitOrStay != "h" && hitOrStay != "s"))
+            do
             {
-              Console.Clear();
-              Console.WriteLine("Please select a valid response");
-              Thread.Sleep(3000);
-              goodHOS = false;
-            }
-          } while (goodHOS == false);
-          
-          // Action for Hit
-          if (hitOrStay == "hit" || hitOrStay == "Hit" || hitOrStay == "h")
-          {
-            Dealer.DealCard(player);
-            var busted = Rules.CheckForBust();
-          }
-          // Action for Stay
-          else
-          {
+              goodHOS = true;
 
-          }
+              Console.WriteLine();
+              Console.WriteLine($"{player.Name}, would you like to hit or stay? (hit/stay)");
+              Console.WriteLine();
+
+              hitOrStay = Console.ReadLine()!;
+
+              if (hitOrStay == null || (hitOrStay != "hit" && hitOrStay != "Hit" && hitOrStay != "stay"
+                && hitOrStay != "Stay" && hitOrStay != "h" && hitOrStay != "s"))
+              {
+                Console.Clear();
+                Console.WriteLine("Please select a valid response");
+                Thread.Sleep(3000);
+                goodHOS = false;
+              }
+            } while (goodHOS == false);
+
+            if (hitOrStay == "hit" || hitOrStay == "Hit" || hitOrStay == "h")
+            {
+              Dealer.DealCard(player);
+              player.CheckAceValue();
+            }
+            else
+            {
+              stay = true;
+            }
+
+            results = Rules.CheckForResult(player);
+
+          } while (stay == false);
+        }
+        else
+        {
+          Dealer.MakeSmartMove(Players);
         }
       }
     }

@@ -5,13 +5,18 @@
     public string? Display => GetCardDisplay();
     public string CardNumber { get; set; }
     public string CardSuit { get; set; }
-    public int? CardValue { get; set; }
+    public int CardValue { get; set; }
 
     public Card(string cardNumber, string cardSuit)
     {
       CardNumber = cardNumber;
       CardSuit = cardSuit;
       CardValue = GetCardValue();
+    }
+
+    private string GetCardDisplay()
+    {
+      return $"{CardNumber} of {CardSuit}";
     }
 
     private int GetCardValue()
@@ -47,11 +52,6 @@
         default:
           return 0;
       }
-    }
-
-    private string GetCardDisplay()
-    {
-      return $"{CardNumber} of {CardSuit}";
     }
   }
 }

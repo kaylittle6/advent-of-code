@@ -5,10 +5,27 @@
     public string? Name { get; set; }
     public int CurrentMoney { get; set; } = 0;
     public List<Card> Cards { get; set; } = new List<Card>();
+    public int HandValue => Cards.Sum(c => c.CardValue);
 
     public Player(string name)
     {
       Name = name;
     }
+
+    public void CheckAceValue()
+    {
+      if (HandValue > 21 && Cards.Any(c => c.CardNumber == "Ace"))
+      {
+        foreach (var card in Cards)
+        {
+          if (card.CardNumber == "Ace")
+          {
+            card.CardValue = 1;
+          } 
+        }
+      }
+
+    }
+ 
   }
 }

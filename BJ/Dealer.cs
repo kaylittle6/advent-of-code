@@ -56,6 +56,20 @@
       Deck.Remove(randomCard);
     }
 
+    public void MakeSmartMove(List<Player> players)
+    {
+      bool done = false;
+      var dealer = players.FirstOrDefault(p => p.Name == "Dealer");
+
+      do
+      {
+        if (dealer!.HandValue > 15)
+        {
+
+        }
+      } while (done == false);
+    }
+
     public void ShuffleDeck()
     {
       Deck = Deck.OrderBy(c => Guid.NewGuid()).ToList();

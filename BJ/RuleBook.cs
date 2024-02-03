@@ -1,16 +1,27 @@
-﻿namespace BJ
+﻿using System.Runtime.InteropServices;
+
+namespace BJ
 {
   public class RuleBook
   {
-    public bool CheckForBust(Player player)
+    // 0 = Bust, 1 = Win, 2 = No Action
+    public bool[] CheckForResult(Player player)
     {
-      if (player.Cards.Sum(cv => cv.CardValue) > 21 && player.Cards.Any(c => c.CardNumber == "Ace"))
-      {
-        foreach (var card in player.Cards.Where(c => c.CardNumber == "Ace"))
-        {
-          card.CardValue = 1;
-        }
-      }
+      bool[] results = new bool[3];
+
+      // Did player Bust (more than 21 total)?
+      results[0] = player.Cards.Sum(cv => cv.CardValue) > 21
+        ? true : false;
+
+      // Did player Win (21 total)?
+      results[1] = player.Cards.Sum(cv => cv.CardValue) == 21
+        ? true : false;
+
+      // No Action (less than 21 total)?
+      results[2] = player.Cards.Sum(cv => cv.CardValue) < 21
+        ? true : false;
+
+      return results;
     }
   }
 }
