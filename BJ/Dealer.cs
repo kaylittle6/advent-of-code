@@ -46,6 +46,51 @@
       }
     }
 
+    public void CollectAntes(Game game)
+    {
+      bool goodResponse = true;
+
+      foreach (var player in game.Players)
+      {
+        do
+        {
+          Console.Clear();
+          Console.WriteLine($"Minimum bet is ${game.MinimumBet}, would you like to play {player.Name}");
+          Console.WriteLine();
+          Console.WriteLine("Type in at least the minimum bet to play, or 'no' to sit this hand out:");
+
+          var response = Console.ReadLine();
+
+          if (response != null && Int32.TryParse(response, out int result))
+          {
+
+          }
+
+        } while (goodResponse == false);
+
+
+
+        
+
+
+
+      }
+    }
+
+    // Under construction
+    //public void MakeSmartMove(List<Player> players)
+    //{
+    //  bool done = false;
+    //  var dealer = players.FirstOrDefault(p => p.Name == "Dealer");
+
+    //  do
+    //  {
+    //    if (dealer!.HandValue > 15)
+    //    {
+
+    //    }
+    //  } while (done == false);
+    //}
     public void DealCard(Player player)
     {
       Random random = new();
@@ -54,20 +99,6 @@
 
       player.Cards.Add(randomCard);
       Deck.Remove(randomCard);
-    }
-
-    public void MakeSmartMove(List<Player> players)
-    {
-      bool done = false;
-      var dealer = players.FirstOrDefault(p => p.Name == "Dealer");
-
-      do
-      {
-        if (dealer!.HandValue > 15)
-        {
-
-        }
-      } while (done == false);
     }
 
     public void ShuffleDeck()

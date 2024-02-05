@@ -77,9 +77,9 @@
       Console.WriteLine("How many decks would you like to play with?");
       Console.WriteLine();
 
-      dealer.DeckCount = Int32.Parse(Console.ReadLine()!);
+      Dealer.DeckCount = Int32.Parse(Console.ReadLine()!);
 
-      dealer.GetDeck(dealer.DeckCount);
+      Dealer.GetDeck(Dealer.DeckCount);
 
       Console.Clear();
       Console.WriteLine("What is the minimum bet for this table?");
