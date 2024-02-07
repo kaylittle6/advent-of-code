@@ -5,10 +5,16 @@
     public static void Main(string[] args)
     {
       var game = Game.GetGameClient;
+      var gameOn = true;
 
-      game.StartNewGame(game.Dealer);
-      game.Dealer.DealStartingCards(game.Players);
-      game.Display.ShowTable(game);
+      game.LetsPlayBlackJack(game);
+
+      game.Dealer.CollectAntes(game);
+
+      //do
+      //{
+      //  game.CommenceRound();
+      //} while (gameOn);
 
       Console.ReadLine();
     }

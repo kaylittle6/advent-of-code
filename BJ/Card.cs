@@ -5,7 +5,8 @@
     public string? Display => GetCardDisplay();
     public string CardNumber { get; set; }
     public string CardSuit { get; set; }
-    public int CardValue { get; set; }
+    public int CardValue { get; private set; }
+    public bool IsAce => CardNumber == "Ace";
 
     public Card(string cardNumber, string cardSuit)
     {
@@ -40,17 +41,22 @@
         case "9":
           return 9;
         case "10":
-          return 10;
         case "Jack":
-          return 10;
         case "Queen":
-          return 10;
         case "King":
           return 10;
         case "Ace":
           return 11;
         default:
           return 0;
+      }
+    }
+
+    public void ChangeAceValueToOne()
+    {
+      if (IsAce)
+      {
+        CardValue = 1;
       }
     }
   }

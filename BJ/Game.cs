@@ -25,6 +25,13 @@
       }
     }
 
+    public void LetsPlayBlackJack(Game game)
+    {
+      StartNewGame(Dealer);
+      Dealer.DealStartingCards(Players);
+      Display.ShowTable(this);
+    }
+
     public void StartNewGame(Dealer dealer)
     {
       int p;
@@ -50,7 +57,7 @@
 
         p = Int32.Parse(nOP!);
 
-      } while (goodNOP == false);
+      } while (!goodNOP);
 
       for (int i = 0; i < p; i++)
       {
@@ -78,7 +85,6 @@
       Console.WriteLine();
 
       Dealer.DeckCount = Int32.Parse(Console.ReadLine()!);
-
       Dealer.GetDeck(Dealer.DeckCount);
 
       Console.Clear();
@@ -88,7 +94,7 @@
       MinimumBet = Int32.Parse(Console.ReadLine()!);
     }
 
-    public void NextRound()
+    public void CommenceRound()
     {
       bool goodHOS;
       bool stay = false;
@@ -98,6 +104,8 @@
       Display.ShowTable(this);
       Console.WriteLine();
       Console.WriteLine();
+
+      Dealer.CollectAntes(this);
 
       foreach (var player in Players)
       {
@@ -123,12 +131,12 @@
                 Thread.Sleep(3000);
                 goodHOS = false;
               }
-            } while (goodHOS == false);
+            } while (!goodHOS);
 
             if (hitOrStay == "hit" || hitOrStay == "Hit" || hitOrStay == "h")
             {
               Dealer.DealCard(player);
-              player.CheckAceValue();
+              //player.CheckAceValue();
             }
             else
             {
@@ -137,11 +145,11 @@
 
             results = Rules.CheckForResult(player);
 
-          } while (stay == false);
+          } while (!stay);
         }
         else
         {
-          Dealer.MakeSmartMove(Players);
+          //Dealer.MakeSmartMove(Players);
         }
       }
     }

@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace BJ
+﻿namespace BJ
 {
   public class RuleBook
   {

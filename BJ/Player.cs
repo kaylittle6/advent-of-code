@@ -13,21 +13,5 @@
     {
       Name = name;
     }
-
-    public void CheckAceValue()
-    {
-      if (HandValue > 21 && Cards.Any(c => c.CardNumber == "Ace"))
-      {
-        foreach (var card in Cards)
-        {
-          if (card.CardNumber == "Ace")
-          {
-            card.CardValue = 1;
-          } 
-        }
-      }
-
-    }
- 
   }
 }

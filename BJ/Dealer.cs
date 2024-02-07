@@ -3,6 +3,7 @@
   public class Dealer
   {
     public List<Card> Deck { get; set; } = new List<Card>();
+    public List<int> PlayerBets { get; set; } = new List<int>();
     public int DeckCount { get; set; }
 
     public Dealer() { }
@@ -36,12 +37,15 @@
       {
         for (int i = 0; i < 2; i++)
         {
-          Random random = new();
-          var randomIndex = random.Next(Deck.Count);
-          var randomCard = Deck.ElementAt(randomIndex);
+          if (player.InHand)
+          {
+            Random random = new();
+            var randomIndex = random.Next(Deck.Count);
+            var randomCard = Deck.ElementAt(randomIndex);
 
-          player.Cards.Add(randomCard);
-          Deck.Remove(randomCard);
+            player.Cards.Add(randomCard);
+            Deck.Remove(randomCard);
+          }
         }
       }
     }
@@ -55,25 +59,43 @@
         do
         {
           Console.Clear();
-          Console.WriteLine($"Minimum bet is ${game.MinimumBet}, would you like to play {player.Name}");
+
+          game.Display.ShowTable(game);
+
+          Console.WriteLine();
+          Console.WriteLine($"Minimum bet is ${game.MinimumBet}, would you like to play, {player.Name}?");
           Console.WriteLine();
           Console.WriteLine("Type in at least the minimum bet to play, or 'no' to sit this hand out:");
+          Console.WriteLine();
 
-          var response = Console.ReadLine();
-
-          if (response != null && Int32.TryParse(response, out int result))
+          var response = Console.ReadLine()?.ToLower();
+          var isNumber = int.TryParse(response, out int number);
+          
+          if (response != null)
           {
-
+            if (!isNumber)
+            {
+              player.InHand = false;
+            }
+            else if (number < game.MinimumBet)
+            {
+              goodResponse = false;
+              Console.WriteLine("Please bet more than the minimum");
+              Console.WriteLine();
+              Thread.Sleep(3000);
+            }
+          }
+          else
+          {
+            goodResponse = false;
+            Console.WriteLine("Please either place a bet, or sit this hand out");
+            Console.WriteLine();
+            Thread.Sleep(3000);
           }
 
-        } while (goodResponse == false);
+          player.CurrentMoney = player.InHand ? player.CurrentMoney -= number : player.CurrentMoney;
 
-
-
-        
-
-
-
+        } while (!goodResponse);
       }
     }
 
@@ -91,6 +113,7 @@
     //    }
     //  } while (done == false);
     //}
+
     public void DealCard(Player player)
     {
       Random random = new();

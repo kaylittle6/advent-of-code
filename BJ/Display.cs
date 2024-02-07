@@ -31,7 +31,7 @@
         {
           foreach (var card in player.Cards.Where(c => c.CardNumber == "Ace"))
           {
-            card.CardValue = 1;
+            card.ChangeAceValueToOne();
           }
         }
 
@@ -44,7 +44,9 @@
         Console.WriteLine();
         Console.WriteLine();
       }
-      Console.WriteLine($"Total Decks: {game.Dealer.DeckCount} -- Cards Remaining: {game.Dealer.Deck.Count}");
+      Console.WriteLine($"Total Decks: {game.Dealer.DeckCount}");
+      Console.WriteLine($"Cards Remaining: {game.Dealer.Deck.Count}");
+      Console.WriteLine($"Minimum Bet: {game.MinimumBet}");
     }
   }
 }
