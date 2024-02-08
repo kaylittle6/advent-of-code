@@ -4,7 +4,9 @@
   {
     public List<Card> Deck { get; set; } = new List<Card>();
     public List<int> PlayerBets { get; set; } = new List<int>();
+    public RuleBook Rules { get; set; } = new RuleBook();
     public int DeckCount { get; set; }
+    public int MinimumBet { get; set; }
 
     public Dealer() { }
 
@@ -56,46 +58,50 @@
 
       foreach (var player in game.Players)
       {
-        do
+        if (player.Name != "Dealer")
         {
-          Console.Clear();
-
-          game.Display.ShowTable(game);
-
-          Console.WriteLine();
-          Console.WriteLine($"Minimum bet is ${game.MinimumBet}, would you like to play, {player.Name}?");
-          Console.WriteLine();
-          Console.WriteLine("Type in at least the minimum bet to play, or 'no' to sit this hand out:");
-          Console.WriteLine();
-
-          var response = Console.ReadLine()?.ToLower();
-          var isNumber = int.TryParse(response, out int number);
-          
-          if (response != null)
+          do
           {
-            if (!isNumber)
+            Console.Clear();
+
+            game.Display.ShowTable(game);
+
+            Console.WriteLine();
+            Console.WriteLine($"Minimum bet is {MinimumBet.ToString("C2")}, would you like to play, {player.Name}?");
+            Console.WriteLine();
+            Console.WriteLine("Type in at least the minimum bet to play, or 'no' to sit this hand out:");
+            Console.WriteLine();
+
+            var response = Console.ReadLine()?.ToLower();
+            var isNumber = int.TryParse(response, out int number);
+
+            if (response != null)
             {
-              player.InHand = false;
+              if (!isNumber)
+              {
+                player.InHand = false;
+              }
+              else if (number < MinimumBet)
+              {
+                goodResponse = false;
+                Console.WriteLine("Please bet more than the minimum");
+                Console.WriteLine();
+                Thread.Sleep(3000);
+              }
             }
-            else if (number < game.MinimumBet)
+            else
             {
               goodResponse = false;
-              Console.WriteLine("Please bet more than the minimum");
+              Console.WriteLine("Please either place a bet, or sit this hand out");
               Console.WriteLine();
               Thread.Sleep(3000);
             }
-          }
-          else
-          {
-            goodResponse = false;
-            Console.WriteLine("Please either place a bet, or sit this hand out");
-            Console.WriteLine();
-            Thread.Sleep(3000);
-          }
 
-          player.CurrentMoney = player.InHand ? player.CurrentMoney -= number : player.CurrentMoney;
+            player.CurrentMoney = player.InHand ? player.CurrentMoney -= number : player.CurrentMoney;
+            player.PreviousBet = number;
 
-        } while (!goodResponse);
+          } while (!goodResponse);
+        }
       }
     }
 

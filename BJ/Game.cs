@@ -7,8 +7,6 @@
     public List<Player> Players { get; set; } = new List<Player>();
     public Dealer Dealer { get; set; } = new Dealer();
     public Display Display { get; set; } = new Display();
-    public RuleBook Rules { get; set; } = new RuleBook();
-    public int MinimumBet { get; set; }
 
     public Game() { }
 
@@ -25,14 +23,7 @@
       }
     }
 
-    public void LetsPlayBlackJack(Game game)
-    {
-      StartNewGame(Dealer);
-      Dealer.DealStartingCards(Players);
-      Display.ShowTable(this);
-    }
-
-    public void StartNewGame(Dealer dealer)
+    public void StartNewGame()
     {
       int p;
       bool goodNOP;
@@ -74,7 +65,7 @@
         var money = Console.ReadLine();
 
         Player player = new(playerName!);
-        player.CurrentMoney = Int32.Parse(money!);
+        player.CurrentMoney = int.Parse(money!);
         Players.Add(player);
       }
 
@@ -84,74 +75,29 @@
       Console.WriteLine("How many decks would you like to play with?");
       Console.WriteLine();
 
-      Dealer.DeckCount = Int32.Parse(Console.ReadLine()!);
+      Dealer.DeckCount = int.Parse(Console.ReadLine()!);
       Dealer.GetDeck(Dealer.DeckCount);
 
       Console.Clear();
       Console.WriteLine("What is the minimum bet for this table?");
       Console.WriteLine();
 
-      MinimumBet = Int32.Parse(Console.ReadLine()!);
+      Dealer.MinimumBet = int.Parse(Console.ReadLine()!);
+
+      Display.ShowTable(this);
     }
 
     public void CommenceRound()
     {
-      bool goodHOS;
-      bool stay = false;
-      string hitOrStay;
-      bool[] results = new bool[3];
+      Dealer.CollectAntes(this);
+      Dealer.DealStartingCards(Players);
+
+      Console.Clear();
 
       Display.ShowTable(this);
-      Console.WriteLine();
-      Console.WriteLine();
+      Dealer.Rules.CheckForBlackJack(this);
 
-      Dealer.CollectAntes(this);
-
-      foreach (var player in Players)
-      {
-        if (player.Name != "Dealer")
-        {
-          do
-          {
-            do
-            {
-              goodHOS = true;
-
-              Console.WriteLine();
-              Console.WriteLine($"{player.Name}, would you like to hit or stay? (hit/stay)");
-              Console.WriteLine();
-
-              hitOrStay = Console.ReadLine()!;
-
-              if (hitOrStay == null || (hitOrStay != "hit" && hitOrStay != "Hit" && hitOrStay != "stay"
-                && hitOrStay != "Stay" && hitOrStay != "h" && hitOrStay != "s"))
-              {
-                Console.Clear();
-                Console.WriteLine("Please select a valid response");
-                Thread.Sleep(3000);
-                goodHOS = false;
-              }
-            } while (!goodHOS);
-
-            if (hitOrStay == "hit" || hitOrStay == "Hit" || hitOrStay == "h")
-            {
-              Dealer.DealCard(player);
-              //player.CheckAceValue();
-            }
-            else
-            {
-              stay = true;
-            }
-
-            results = Rules.CheckForResult(player);
-
-          } while (!stay);
-        }
-        else
-        {
-          //Dealer.MakeSmartMove(Players);
-        }
-      }
+      Console.ReadLine();
     }
   }
 }

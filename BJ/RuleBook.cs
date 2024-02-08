@@ -21,5 +21,25 @@
 
       return results;
     }
+
+    public void CheckForBlackJack(Game game)
+    {
+      foreach (var player in game.Players)
+      {
+        if (player.InHand && player.Cards.Sum(cv => cv.CardValue) == 21)
+        {
+          var payout = player.PreviousBet * 1.5m;
+          player.CurrentMoney += payout + player.PreviousBet;
+          
+          Console.Clear();
+          game.Display.ShowTable(game);
+          Console.WriteLine();
+          Console.WriteLine();
+          Console.WriteLine($"{player.Name} has Blackjack! They win ${payout}");
+          Thread.Sleep(3000);
+          game.Display.ShowTable(game);
+        }
+      }
+    }
   }
 }

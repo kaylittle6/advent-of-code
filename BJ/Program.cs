@@ -7,9 +7,8 @@
       var game = Game.GetGameClient;
       var gameOn = true;
 
-      game.LetsPlayBlackJack(game);
-
-      game.Dealer.CollectAntes(game);
+      game.StartNewGame();
+      game.CommenceRound();
 
       //do
       //{
