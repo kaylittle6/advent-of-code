@@ -99,6 +99,21 @@
       Display.ShowTable(this);
       Dealer.Rules.CheckAndResolveBlackJack(this);
 
+      if (Dealer.Cards.Any(c => c.IsAce && !c.IsFaceDown))
+      {
+        
+      }
+
+      foreach (var player in Players)
+      {
+        if (!player.IsDealer && player.InHand)
+        {
+          Display.ShowTable(this, player);
+        }
+      }
+
+      Console.ReadLine();
+
       // Check for Insurance
       if (dealer.Cards.Any(c => c.CardNumber == "Ace" && !c.IsFaceDown))
       {

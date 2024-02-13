@@ -110,6 +110,11 @@
       }
     }
 
+    public void OfferInsuranceAndResolve(Player player)
+    {
+
+    }
+
     public bool AskToHitOrStay(Player player)
     {
       bool goodResp = true;
@@ -118,8 +123,8 @@
       do
       {
         Console.WriteLine();
-        Console.WriteLine();
         Console.WriteLine($"{player.Name}, would you like to hit or stay?");
+        Console.WriteLine();
 
         var response = Console.ReadLine()?.ToLower();
 
