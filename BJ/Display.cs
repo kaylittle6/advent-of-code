@@ -17,17 +17,25 @@ namespace BJ
           Console.WriteLine($"Player: {player.Name}");
 
           // Write Money & Current Bet if not Dealer
-          if (player.Name != "Dealer")
+          if (!player.IsDealer)
           {
             Console.WriteLine($"Money: {player.CurrentMoney.ToString("C2")}");
-            Console.WriteLine($"Current Bet: {player.PreviousBet.ToString("C2")}");
+            Console.WriteLine($"Current Bet: {player.CurrentBet.ToString("C2")}");
           }
 
           Console.WriteLine();
 
-          // Write Cards
+          // Write Cards & Hide Dealer Card
           foreach (var card in player.Cards)
           {
+            if (player.IsDealer && card == player.Cards[0])
+            {
+              card.IsFaceDown = true;
+
+              Console.WriteLine("[Card Face Down]");
+
+              continue;
+            }
             Console.Write($"{card.Display}");
             Console.WriteLine();
           }
@@ -42,7 +50,7 @@ namespace BJ
           }
 
           // Write total hand value
-          Console.WriteLine($"Total: {player.Cards.Sum(cv => cv.CardValue)}");
+          Console.WriteLine($"Total: {player.Cards.Where(c => !c.IsFaceDown).Sum(cv => cv.CardValue)}");
           Console.WriteLine("------------------------");
 
           Console.WriteLine();

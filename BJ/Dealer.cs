@@ -1,6 +1,6 @@
 ﻿namespace BJ
 {
-  public class Dealer
+  public class Dealer : Player
   {
     public List<Card> Deck { get; set; } = new List<Card>();
     public List<int> PlayerBets { get; set; } = new List<int>();
@@ -8,7 +8,11 @@
     public int DeckCount { get; set; }
     public int MinimumBet { get; set; }
 
-    public Dealer() { }
+    public Dealer(string name, bool isDealer) : base(name)
+    {
+      Name = name;
+      IsDealer = isDealer;
+    }
 
     public void GetDeck(int numberOfDecks)
     {
@@ -58,7 +62,7 @@
 
       foreach (var player in game.Players)
       {
-        if (player.Name != "Dealer")
+        if (!player.IsDealer)
         {
           do
           {
@@ -99,26 +103,48 @@
 
             player.CurrentMoney = player.InHand ? player.CurrentMoney -= number : player.CurrentMoney;
             player.PreviousBet = number;
+            player.CurrentBet += number;
 
           } while (!goodResponse);
         }
       }
     }
 
-    // Under construction
-    //public void MakeSmartMove(List<Player> players)
-    //{
-    //  bool done = false;
-    //  var dealer = players.FirstOrDefault(p => p.Name == "Dealer");
+    public bool AskToHitOrStay(Player player)
+    {
+      bool goodResp = true;
+      bool isHitting = false;
 
-    //  do
-    //  {
-    //    if (dealer!.HandValue > 15)
-    //    {
+      do
+      {
+        Console.WriteLine();
+        Console.WriteLine();
+        Console.WriteLine($"{player.Name}, would you like to hit or stay?");
 
-    //    }
-    //  } while (done == false);
-    //}
+        var response = Console.ReadLine()?.ToLower();
+
+        if (response != null)
+        {
+          if (response == "hit")
+          {
+            isHitting = true;
+          }
+          else
+          {
+            isHitting = false;
+          }
+        }
+        else
+        {
+          goodResp = false;
+          Console.WriteLine();
+          Console.WriteLine("Please select a valid response");
+          Thread.Sleep(3000);
+        }
+      } while (!goodResp);
+
+      return isHitting;
+    }
 
     public void DealCard(Player player)
     {

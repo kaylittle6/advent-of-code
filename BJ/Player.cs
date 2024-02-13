@@ -7,6 +7,8 @@
     public List<Card> Cards { get; set; } = new List<Card>();
     public int HandValue => Cards.Sum(c => c.CardValue);
     public bool InHand { get; set; } = true;
+    public bool IsDealer { get; set; } = false;
+    public decimal CurrentBet { get; set; }
     public decimal PreviousBet { get; set; }
 
     public Player(string name)

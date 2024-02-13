@@ -5,7 +5,7 @@
     private static Game? gameClient;
 
     public List<Player> Players { get; set; } = new List<Player>();
-    public Dealer Dealer { get; set; } = new Dealer();
+    public Dealer Dealer { get; set; } = new Dealer("Dealer", true);
     public Display Display { get; set; } = new Display();
 
     public Game() { }
@@ -69,7 +69,7 @@
         Players.Add(player);
       }
 
-      Players.Add(new Player("Dealer"));
+      Players.Add(Dealer);
 
       Console.Clear();
       Console.WriteLine("How many decks would you like to play with?");
@@ -89,15 +89,78 @@
 
     public void CommenceRound()
     {
+      var dealer = Players.Where(p => p.Name == "Dealer").FirstOrDefault()!;
+
       Dealer.CollectAntes(this);
       Dealer.DealStartingCards(Players);
 
       Console.Clear();
 
       Display.ShowTable(this);
-      Dealer.Rules.CheckForBlackJack(this);
+      Dealer.Rules.CheckAndResolveBlackJack(this);
 
-      Console.ReadLine();
+      // Check for Insurance
+      if (dealer.Cards.Any(c => c.CardNumber == "Ace" && !c.IsFaceDown))
+      {
+        Dealer.Rules.CheckAndIssueInsurance(Players);
+        dealer.Cards[0].IsFaceDown = false;
+
+        Console.Clear();
+        Display.ShowTable(this);
+        Console.WriteLine();
+        
+        var dealerWin = Dealer.Rules.CheckForResult(dealer);
+
+        // If Dealer has 21
+        if (dealerWin[1] == true)
+        {
+
+        }
+      }
+
+      // Start round
+      foreach (var player in Players)
+      {
+        // Check for Split Hand
+        if (player.Cards[0].CardNumber == player.Cards[1].CardNumber)
+        {
+          bool goodResp = true;
+
+          do
+          {
+            Console.WriteLine($"{player.Name}, would you like to split you hand?");
+            Console.WriteLine();
+
+            var splitHand = Console.ReadLine()?.ToLower();
+
+            if (splitHand != null)
+            {
+              if (splitHand == "yes")
+              {
+                Dealer.Rules.PlaySplitHand(player);
+              }
+              else
+              {
+                continue;
+              }
+            }
+            else
+            {
+              Console.WriteLine("Please select a valid response");
+              Thread.Sleep(3000);
+              goodResp = false;
+            }
+
+          } while (!goodResp);
+          
+
+          
+        }
+
+
+      }
+
+
     }
   }
 }

@@ -22,7 +22,7 @@
       return results;
     }
 
-    public void CheckForBlackJack(Game game)
+    public void CheckAndResolveBlackJack(Game game)
     {
       foreach (var player in game.Players)
       {
@@ -36,10 +36,62 @@
           Console.WriteLine();
           Console.WriteLine();
           Console.WriteLine($"{player.Name} has Blackjack! They win ${payout}");
-          Thread.Sleep(3000);
+          Thread.Sleep(5000);
           game.Display.ShowTable(game);
+          player.InHand = false;
         }
       }
+    }
+
+    public void PlaySplitHand(Player player)
+    {
+      List<List<Card>> splitHands = new List<List<Card>>();
+      splitHands[0] = new List<Card>();
+      splitHands[1] = new List<Card>();
+
+      //splitHands[0].Add(player.Cards);
+
+      
+    }
+
+    public void CheckAndIssueInsurance(List<Player> players)
+    {
+      bool goodResp = true;
+
+      do
+      {
+        foreach (var player in players)
+        {
+          Console.Clear();
+          Console.WriteLine();
+          Console.WriteLine($"{player.Name}, the Dealer is showing an Ace, would you like insurance?");
+          Console.WriteLine();
+          Console.WriteLine($"Insurance Cost: {player.PreviousBet}");
+          Console.WriteLine();
+
+          var response = Console.ReadLine()?.ToLower();
+
+          if (response != null)
+          {
+            if (response == "yes")
+            {
+              var halfBet = player.PreviousBet / 2;
+              player.CurrentMoney -= halfBet;
+            }
+            else
+            {
+              continue;
+            }
+          }
+          else
+          {
+            goodResp = false;
+            Console.WriteLine();
+            Console.WriteLine("Please select a valid response");
+            Thread.Sleep(3000);
+          }
+        }
+      } while (!goodResp);
     }
   }
 }
