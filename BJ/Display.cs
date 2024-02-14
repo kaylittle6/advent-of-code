@@ -2,60 +2,11 @@
 {
   public class Display
   {
-    // Overload method to show table for an individual Player & Dealer
-    public void ShowTable(Player player)
+    // Overload method to show table for all Players
+    public void ShowTable()
     {
       Game game = Game.GetGameClient;
 
-      Console.Clear(); 
-
-      Player[] pAD = { game.Dealer, player };
-
-      for (int i = 0; i < pAD.Length; i++)
-      {
-        Console.WriteLine("------------------------");
-        Console.WriteLine($"Player: {pAD[i].Name}");
-
-        if (!pAD[i].IsDealer)
-        {
-          Console.WriteLine($"Money: {pAD[i].CurrentMoney.ToString("C2")}");
-          Console.WriteLine($"Current Bet: {player.CurrentBet.ToString("C2")}");
-          Console.WriteLine();
-        }
-
-        foreach (var card in pAD[i].Cards)
-        {
-          if (pAD[i].IsDealer && card == pAD[i].Cards[0])
-          {
-            card.IsFaceDown = true;
-
-            Console.WriteLine();
-            Console.WriteLine("[Card Face Down]");
-
-            continue;
-          }
-          Console.Write($"{card.Display}");
-          Console.WriteLine();
-        }
-
-        if (pAD[i].Cards.Sum(cv => cv.CardValue) > 21 && pAD[i].Cards.Any(c => c.CardNumber == "Ace"))
-        {
-          foreach (var card in player.Cards.Where(c => c.CardNumber == "Ace"))
-          {
-            card.ChangeAceValueToOne();
-          }
-        }
-
-        Console.WriteLine($"Total: {pAD[i].Cards.Where(c => !c.IsFaceDown).Sum(cv => cv.CardValue)}");
-        Console.WriteLine("------------------------");
-
-        Console.WriteLine();
-      }
-    }
-
-    // Overload method to show table for all Players
-    public void ShowTable(Game game)
-    {
       Console.Clear();
 
       foreach (var player in game.Players)
@@ -65,12 +16,29 @@
           // Write Name
           Console.WriteLine("------------------------");
           Console.WriteLine($"Player: {player.Name}");
+          Console.WriteLine();
 
           // Write Money & Current Bet if not Dealer
           if (!player.IsDealer)
           {
             Console.WriteLine($"Money: {player.CurrentMoney.ToString("C2")}");
             Console.WriteLine($"Current Bet: {player.CurrentBet.ToString("C2")}");
+          }
+
+          if (player.HasInsurance)
+          {
+            Console.WriteLine($"Insurance Bet: {player.CurrentBet / 2}");
+          }
+
+          Console.WriteLine("Doubled Down: ");
+
+          if (player.DoubledDown)
+          {
+            Console.Write("Yes");
+          }
+          else
+          {
+            Console.Write("No");
           }
 
           Console.WriteLine();
@@ -112,6 +80,73 @@
       Console.WriteLine($"Cards Remaining: {game.Dealer.Deck.Count}");
       Console.WriteLine($"Minimum Bet: {game.Dealer.MinimumBet.ToString("C2")}");
       Console.WriteLine("------------------------");
+    }
+
+    // Overload method to show table for a Player & Dealer
+    public void ShowTable(Player player)
+    {
+      Game game = Game.GetGameClient;
+
+      Console.Clear(); 
+
+      Player[] pAD = { game.Dealer, player };
+
+      for (int i = 0; i < pAD.Length; i++)
+      {
+        Console.WriteLine("------------------------");
+        Console.WriteLine($"Player: {pAD[i].Name}");
+
+        if (!pAD[i].IsDealer)
+        {
+          Console.WriteLine($"Money: {pAD[i].CurrentMoney.ToString("C2")}");
+          Console.WriteLine($"Current Bet: {player.CurrentBet.ToString("C2")}");
+          Console.WriteLine();
+        }
+
+        if (player.HasInsurance)
+        {
+          Console.WriteLine($"Insurance Bet: {player.CurrentBet / 2}");
+        }
+
+        Console.WriteLine("Doubled Down: ");
+
+        if (player.DoubledDown)
+        {
+          Console.Write("Yes");
+        }
+        else
+        {
+          Console.Write("No");
+        }
+
+        foreach (var card in pAD[i].Cards)
+        {
+          if (pAD[i].IsDealer && card == pAD[i].Cards[0])
+          {
+            card.IsFaceDown = true;
+
+            Console.WriteLine();
+            Console.WriteLine("[Card Face Down]");
+
+            continue;
+          }
+          Console.Write($"{card.Display}");
+          Console.WriteLine();
+        }
+
+        if (pAD[i].Cards.Sum(cv => cv.CardValue) > 21 && pAD[i].Cards.Any(c => c.CardNumber == "Ace"))
+        {
+          foreach (var card in player.Cards.Where(c => c.CardNumber == "Ace"))
+          {
+            card.ChangeAceValueToOne();
+          }
+        }
+
+        Console.WriteLine($"Total: {pAD[i].Cards.Where(c => !c.IsFaceDown).Sum(cv => cv.CardValue)}");
+        Console.WriteLine("------------------------");
+
+        Console.WriteLine();
+      }
     }
   }
 }

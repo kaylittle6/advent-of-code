@@ -9,7 +9,9 @@
     public bool InHand { get; set; } = true;
     public bool IsDealer { get; set; } = false;
     public decimal CurrentBet { get; set; }
-    public decimal PreviousBet { get; set; }
+    public decimal PreviousBet { get; set; } = 0;
+    public bool HasInsurance { get; set; } = false;
+    public bool DoubledDown { get; set; } = false;
 
     public Player(string name)
     {

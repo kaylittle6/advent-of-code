@@ -56,8 +56,9 @@
       }
     }
 
-    public void CollectAntes(Game game)
+    public void CollectAntes()
     {
+      Game game = Game.GetGameClient;
       bool goodResponse = true;
 
       foreach (var player in game.Players)
@@ -68,7 +69,7 @@
           {
             Console.Clear();
 
-            game.Display.ShowTable(game);
+            game.Display.ShowTable();
 
             Console.WriteLine();
             Console.WriteLine($"Minimum bet is {MinimumBet.ToString("C2")}, would you like to play, {player.Name}?");

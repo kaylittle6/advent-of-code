@@ -84,47 +84,58 @@
 
       Dealer.MinimumBet = int.Parse(Console.ReadLine()!);
 
-      Display.ShowTable(this);
+      Display.ShowTable();
     }
 
     public void CommenceRound()
     {
-      var dealer = Players.Where(p => p.Name == "Dealer").FirstOrDefault()!;
-
-      Dealer.CollectAntes(this);
+      Dealer.CollectAntes();
       Dealer.DealStartingCards(Players);
 
       Console.Clear();
 
-      Display.ShowTable(this);
-      Dealer.Rules.CheckAndResolveBlackJack(this);
+      Display.ShowTable();
 
       if (Dealer.Cards.Any(c => c.IsAce && !c.IsFaceDown))
       {
         
       }
 
+
+
+
+
+
+
+
+
+
+
+      Dealer.Rules.CheckAndResolveBlackJack();
+
+      
+
       foreach (var player in Players)
       {
         if (!player.IsDealer && player.InHand)
         {
-          Display.ShowTable(this, player);
+          Display.ShowTable(player);
         }
       }
 
       Console.ReadLine();
 
       // Check for Insurance
-      if (dealer.Cards.Any(c => c.CardNumber == "Ace" && !c.IsFaceDown))
+      if (Dealer.Cards.Any(c => c.CardNumber == "Ace" && !c.IsFaceDown))
       {
         Dealer.Rules.CheckAndIssueInsurance(Players);
-        dealer.Cards[0].IsFaceDown = false;
+        Dealer.Cards[0].IsFaceDown = false;
 
         Console.Clear();
-        Display.ShowTable(this);
+        Display.ShowTable();
         Console.WriteLine();
         
-        var dealerWin = Dealer.Rules.CheckForResult(dealer);
+        var dealerWin = Dealer.Rules.CheckForResult(Dealer);
 
         // If Dealer has 21
         if (dealerWin[1] == true)

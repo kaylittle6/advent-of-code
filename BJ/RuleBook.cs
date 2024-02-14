@@ -22,8 +22,10 @@
       return results;
     }
 
-    public void CheckAndResolveBlackJack(Game game)
+    public void CheckAndResolveBlackJack()
     {
+      Game game = Game.GetGameClient;
+
       foreach (var player in game.Players)
       {
         if (player.InHand && player.Cards.Sum(cv => cv.CardValue) == 21)
@@ -32,12 +34,12 @@
           player.CurrentMoney += payout + player.PreviousBet;
           
           Console.Clear();
-          game.Display.ShowTable(game);
+          game.Display.ShowTable();
           Console.WriteLine();
           Console.WriteLine();
           Console.WriteLine($"{player.Name} has Blackjack! They win ${payout}");
           Thread.Sleep(5000);
-          game.Display.ShowTable(game);
+          game.Display.ShowTable();
           player.InHand = false;
         }
       }
@@ -57,6 +59,7 @@
     public void CheckAndIssueInsurance(List<Player> players)
     {
       bool goodResp = true;
+      var dealer = players.Where(p => p.IsDealer).FirstOrDefault();
 
       do
       {
@@ -66,7 +69,7 @@
           Console.WriteLine();
           Console.WriteLine($"{player.Name}, the Dealer is showing an Ace, would you like insurance?");
           Console.WriteLine();
-          Console.WriteLine($"Insurance Cost: {player.PreviousBet}");
+          Console.WriteLine($"Insurance Cost: {player.PreviousBet / 2}");
           Console.WriteLine();
 
           var response = Console.ReadLine()?.ToLower();
@@ -75,8 +78,7 @@
           {
             if (response == "yes")
             {
-              var halfBet = player.PreviousBet / 2;
-              player.CurrentMoney -= halfBet;
+              player.CurrentMoney -= player.PreviousBet / 2;
             }
             else
             {
@@ -92,6 +94,23 @@
           }
         }
       } while (!goodResp);
+
+
+    }
+
+    public void WinStandardBet(Player player)
+    {
+      player.CurrentMoney += player.CurrentBet * 2;
+    }
+
+    public void PushBet(Player player)
+    {
+      player.CurrentMoney += player.CurrentBet;
+    }
+
+    public void WinBlackJackBet(Player player)
+    {
+      player.CurrentMoney += player.CurrentBet * 1.5m;
     }
   }
 }
