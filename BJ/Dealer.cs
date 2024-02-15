@@ -111,8 +111,44 @@
       }
     }
 
-    public void OfferInsuranceAndResolve(Player player)
+    public void OfferInsurance(Player player)
     {
+      bool goodResp = true;
+
+      if (player.InHand)
+      {
+        do
+        {
+          Console.Clear();
+          Console.WriteLine();
+          Console.WriteLine($"The Dealer is showing an Ace, {player.Name}. Would you like insurance?");
+          Console.WriteLine();
+          Console.WriteLine($"Insurance Cost: {player.CurrentBet / 2}");
+          Console.WriteLine();
+
+          var response = Console.ReadLine()?.ToLower();
+
+          if (response != null)
+          {
+            if (response == "yes")
+            {
+              player.CurrentMoney -= player.CurrentBet / 2;
+              player.HasInsurance = true;
+            }
+            else
+            {
+              Console.WriteLine("Fine then");
+              Thread.Sleep(4000); 
+            }
+          }
+          else
+          {
+            Console.WriteLine("Please select a valid answer");
+            goodResp = false;
+          }
+        } while (!goodResp);
+      }
+
 
     }
 

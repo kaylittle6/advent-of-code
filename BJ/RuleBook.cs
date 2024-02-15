@@ -56,51 +56,13 @@
       
     }
 
-    public void CheckAndIssueInsurance(List<Player> players)
-    {
-      bool goodResp = true;
-      var dealer = players.Where(p => p.IsDealer).FirstOrDefault();
-
-      do
-      {
-        foreach (var player in players)
-        {
-          Console.Clear();
-          Console.WriteLine();
-          Console.WriteLine($"{player.Name}, the Dealer is showing an Ace, would you like insurance?");
-          Console.WriteLine();
-          Console.WriteLine($"Insurance Cost: {player.PreviousBet / 2}");
-          Console.WriteLine();
-
-          var response = Console.ReadLine()?.ToLower();
-
-          if (response != null)
-          {
-            if (response == "yes")
-            {
-              player.CurrentMoney -= player.PreviousBet / 2;
-            }
-            else
-            {
-              continue;
-            }
-          }
-          else
-          {
-            goodResp = false;
-            Console.WriteLine();
-            Console.WriteLine("Please select a valid response");
-            Thread.Sleep(3000);
-          }
-        }
-      } while (!goodResp);
-
-
-    }
-
     public void WinStandardBet(Player player)
     {
       player.CurrentMoney += player.CurrentBet * 2;
+    }
+    public void WinBlackJackBet(Player player)
+    {
+      player.CurrentMoney += player.CurrentBet * 1.5m;
     }
 
     public void PushBet(Player player)
@@ -108,9 +70,14 @@
       player.CurrentMoney += player.CurrentBet;
     }
 
-    public void WinBlackJackBet(Player player)
+    public void PlayerLoses(Player player)
     {
-      player.CurrentMoney += player.CurrentBet * 1.5m;
+      player.InHand = false;
+      player.HasInsurance = false;
+      player.DoubledDown = false;
+      player.PreviousBet = player.CurrentBet;
+      player.CurrentBet = 0;
+      player.Cards.Clear();
     }
   }
 }

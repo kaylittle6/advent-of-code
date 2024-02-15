@@ -98,8 +98,19 @@
 
       if (Dealer.Cards.Any(c => c.IsAce && !c.IsFaceDown))
       {
-        
-      }
+        foreach (var player in Players)
+        {
+          Dealer.OfferInsurance(player);
+
+          if (!player.HasInsurance && Dealer.Cards.Sum(c => c.CardValue) == 21)
+          {
+            Dealer.Rules.PlayerLoses(player);
+          }
+          else if (Dealer.Cards.Sum(c => c.CardValue) == 21)
+          {
+
+          }
+        }
 
 
 
