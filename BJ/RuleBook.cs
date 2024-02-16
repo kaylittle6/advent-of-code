@@ -28,19 +28,18 @@
 
       foreach (var player in game.Players)
       {
-        if (player.InHand && player.Cards.Sum(cv => cv.CardValue) == 21)
+        if (player.InHand && player.HasBlackJack)
         {
-          var payout = player.PreviousBet * 1.5m;
-          player.CurrentMoney += payout + player.PreviousBet;
-          
+          WinBlackJackBet(player);
+
           Console.Clear();
-          game.Display.ShowTable();
+          game.Display.ShowTable(false);
           Console.WriteLine();
           Console.WriteLine();
-          Console.WriteLine($"{player.Name} has Blackjack! They win ${payout}");
+          Console.WriteLine($"{player.Name} has Blackjack! They win ${player.CurrentBet * 1.5m}");
           Thread.Sleep(5000);
-          game.Display.ShowTable();
-          player.InHand = false;
+          game.Display.ShowTable(false);
+          ResetPlayer(player);
         }
       }
     }
@@ -70,7 +69,13 @@
       player.CurrentMoney += player.CurrentBet;
     }
 
-    public void PlayerLoses(Player player)
+    public void DoubleDownBet(Player player)
+    {
+      player.CurrentMoney -= player.CurrentBet;
+      player.DoubledDown = true;
+    }
+
+    public void ResetPlayer(Player player)
     {
       player.InHand = false;
       player.HasInsurance = false;

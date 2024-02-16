@@ -84,7 +84,7 @@
 
       Dealer.MinimumBet = int.Parse(Console.ReadLine()!);
 
-      Display.ShowTable();
+      Display.ShowTable(false);
     }
 
     public void CommenceRound()
@@ -94,110 +94,45 @@
 
       Console.Clear();
 
-      Display.ShowTable();
+      Display.ShowTable(false);
 
+      // Check if Dealer has Blackjack
       if (Dealer.Cards.Any(c => c.IsAce && !c.IsFaceDown))
       {
         foreach (var player in Players)
         {
           Dealer.OfferInsurance(player);
+          Dealer.FlipFaceDownCard();
+          Display.ShowTable(player, true);
 
-          if (!player.HasInsurance && Dealer.Cards.Sum(c => c.CardValue) == 21)
+          if (Dealer.HasBlackJack && !player.HasBlackJack && player.HasInsurance)
           {
-            Dealer.Rules.PlayerLoses(player);
+            player.CurrentMoney += player.CurrentBet / 2;
+            Console.WriteLine();
+            Console.WriteLine($"The Dealer has Blackjack, {player.Name}");
+            Console.WriteLine();
+            Console.WriteLine($"{player.Name} has Insurance, though! They win {player.CurrentBet / 2} dollars");
+            Dealer.Rules.ResetPlayer(player);
+            Thread.Sleep(4000);
           }
-          else if (Dealer.Cards.Sum(c => c.CardValue) == 21)
+          else if (Dealer.HasBlackJack && !player.HasBlackJack && !player.HasInsurance)
           {
+            Console.WriteLine();
+            Console.WriteLine($"The Dealer has Blackjack, {player.Name}");
+            Console.WriteLine();
+            Console.WriteLine($"Sorry, {player.Name}. You don't have Insurance. You lose.");
+            Dealer.Rules.ResetPlayer(player);
+            Thread.Sleep(4000);
+          }
 
-          }
+
         }
-
-
-
-
-
-
-
-
-
-
+      }
 
       Dealer.Rules.CheckAndResolveBlackJack();
 
-      
-
-      foreach (var player in Players)
-      {
-        if (!player.IsDealer && player.InHand)
-        {
-          Display.ShowTable(player);
-        }
-      }
 
       Console.ReadLine();
-
-      // Check for Insurance
-      if (Dealer.Cards.Any(c => c.CardNumber == "Ace" && !c.IsFaceDown))
-      {
-        Dealer.Rules.CheckAndIssueInsurance(Players);
-        Dealer.Cards[0].IsFaceDown = false;
-
-        Console.Clear();
-        Display.ShowTable();
-        Console.WriteLine();
-        
-        var dealerWin = Dealer.Rules.CheckForResult(Dealer);
-
-        // If Dealer has 21
-        if (dealerWin[1] == true)
-        {
-
-        }
-      }
-
-      // Start round
-      foreach (var player in Players)
-      {
-        // Check for Split Hand
-        if (player.Cards[0].CardNumber == player.Cards[1].CardNumber)
-        {
-          bool goodResp = true;
-
-          do
-          {
-            Console.WriteLine($"{player.Name}, would you like to split you hand?");
-            Console.WriteLine();
-
-            var splitHand = Console.ReadLine()?.ToLower();
-
-            if (splitHand != null)
-            {
-              if (splitHand == "yes")
-              {
-                Dealer.Rules.PlaySplitHand(player);
-              }
-              else
-              {
-                continue;
-              }
-            }
-            else
-            {
-              Console.WriteLine("Please select a valid response");
-              Thread.Sleep(3000);
-              goodResp = false;
-            }
-
-          } while (!goodResp);
-          
-
-          
-        }
-
-
-      }
-
-
     }
   }
 }

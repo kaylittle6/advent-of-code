@@ -69,7 +69,7 @@
           {
             Console.Clear();
 
-            game.Display.ShowTable();
+            game.Display.ShowTable(false);
 
             Console.WriteLine();
             Console.WriteLine($"Minimum bet is {MinimumBet.ToString("C2")}, would you like to play, {player.Name}?");
@@ -115,7 +115,7 @@
     {
       bool goodResp = true;
 
-      if (player.InHand)
+      if (player.InHand && player.HasBlackJack)
       {
         do
         {
@@ -152,12 +152,15 @@
 
     }
 
-    public bool AskToHitOrStay(Player player)
+    public void AskForPlayerOptions(Player player, bool firstAsk)
     {
       bool goodResp = true;
-      bool isHitting = false;
 
-      do
+      if (firstAsk)
+      {
+
+      }
+        do
       {
         Console.WriteLine();
         Console.WriteLine($"{player.Name}, would you like to hit or stay?");
@@ -184,8 +187,6 @@
           Thread.Sleep(3000);
         }
       } while (!goodResp);
-
-      return isHitting;
     }
 
     public void DealCard(Player player)
@@ -196,6 +197,18 @@
 
       player.Cards.Add(randomCard);
       Deck.Remove(randomCard);
+    }
+
+    public void FlipFaceDownCard()
+    {
+      foreach (var card in Cards)
+      {
+        if (card.IsFaceDown)
+        {
+          card.IsFaceDown = false;
+        }
+      }
+      Console.Clear();
     }
 
     public void ShuffleDeck()

@@ -3,13 +3,13 @@
   public class Player
   {
     public string? Name { get; set; }
-    public decimal CurrentMoney { get; set; } = 0;
     public List<Card> Cards { get; set; } = new List<Card>();
-    public int HandValue => Cards.Sum(c => c.CardValue);
-    public bool InHand { get; set; } = true;
-    public bool IsDealer { get; set; } = false;
+    public decimal CurrentMoney { get; set; } = 0;
     public decimal CurrentBet { get; set; }
     public decimal PreviousBet { get; set; } = 0;
+    public bool IsDealer { get; set; } = false;
+    public bool HasBlackJack => Cards.Sum(cv => cv.CardValue) == 21 ? true : false;
+    public bool InHand { get; set; } = true;
     public bool HasInsurance { get; set; } = false;
     public bool DoubledDown { get; set; } = false;
 

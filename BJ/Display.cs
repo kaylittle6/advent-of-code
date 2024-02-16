@@ -3,7 +3,7 @@
   public class Display
   {
     // Overload method to show table for all Players
-    public void ShowTable()
+    public void ShowTable(bool dealerFlipped)
     {
       Game game = Game.GetGameClient;
 
@@ -23,6 +23,17 @@
           {
             Console.WriteLine($"Money: {player.CurrentMoney.ToString("C2")}");
             Console.WriteLine($"Current Bet: {player.CurrentBet.ToString("C2")}");
+
+            Console.Write("Doubled Down: ");
+
+            if (player.DoubledDown)
+            {
+              Console.Write("Yes");
+            }
+            else
+            {
+              Console.Write("No");
+            }
           }
 
           if (player.HasInsurance)
@@ -30,23 +41,13 @@
             Console.WriteLine($"Insurance Bet: {player.CurrentBet / 2}");
           }
 
-          Console.WriteLine("Doubled Down: ");
-
-          if (player.DoubledDown)
-          {
-            Console.Write("Yes");
-          }
-          else
-          {
-            Console.Write("No");
-          }
-
+          Console.WriteLine();
           Console.WriteLine();
 
           // Write Cards & Hide Dealer Card
           foreach (var card in player.Cards)
           {
-            if (player.IsDealer && card == player.Cards[0])
+            if (player.IsDealer && !dealerFlipped && card == player.Cards[0])
             {
               card.IsFaceDown = true;
 
@@ -83,7 +84,7 @@
     }
 
     // Overload method to show table for a Player & Dealer
-    public void ShowTable(Player player)
+    public void ShowTable(Player player, bool dealerFlipped)
     {
       Game game = Game.GetGameClient;
 
@@ -121,7 +122,7 @@
 
         foreach (var card in pAD[i].Cards)
         {
-          if (pAD[i].IsDealer && card == pAD[i].Cards[0])
+          if (pAD[i].IsDealer && !dealerFlipped && card == pAD[i].Cards[0])
           {
             card.IsFaceDown = true;
 
