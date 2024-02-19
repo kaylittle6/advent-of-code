@@ -2,20 +2,21 @@
 {
   public class Player
   {
-    public string? Name { get; set; }
-    public List<Card> Cards { get; set; } = new List<Card>();
-    public decimal CurrentMoney { get; set; } = 0;
+    public string? Name { get; protected init; }
+    public List<Card> Cards { get; } = new();
+    public decimal CurrentMoney { get; set; }
     public decimal CurrentBet { get; set; }
-    public decimal PreviousBet { get; set; } = 0;
-    public bool IsDealer { get; set; } = false;
-    public bool HasBlackJack => Cards.Sum(cv => cv.CardValue) == 21 ? true : false;
+    public decimal PreviousBet { get; set; }
+    public bool IsDealer { get; set; }
+    public bool HasBlackJack => Cards.Sum(cv => cv.CardValue) == 21;
     public bool InHand { get; set; } = true;
-    public bool HasInsurance { get; set; } = false;
-    public bool DoubledDown { get; set; } = false;
+    public bool HasInsurance { get; set; }
+    public bool DoubledDown { get; set; }
 
-    public Player(string name)
+    public Player(string name, bool isDealer)
     {
       Name = name;
+      IsDealer = isDealer;
     }
   }
 }

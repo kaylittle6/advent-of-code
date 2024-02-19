@@ -21,19 +21,12 @@
           // Write Money & Current Bet if not Dealer
           if (!player.IsDealer)
           {
-            Console.WriteLine($"Money: {player.CurrentMoney.ToString("C2")}");
-            Console.WriteLine($"Current Bet: {player.CurrentBet.ToString("C2")}");
+            Console.WriteLine($"Money: {player.CurrentMoney:C2}");
+            Console.WriteLine($"Current Bet: {player.CurrentBet:C2}");
 
             Console.Write("Doubled Down: ");
 
-            if (player.DoubledDown)
-            {
-              Console.Write("Yes");
-            }
-            else
-            {
-              Console.Write("No");
-            }
+            Console.Write(player.DoubledDown ? "Yes" : "No");
           }
 
           if (player.HasInsurance)
@@ -79,7 +72,7 @@
       Console.WriteLine("------------------------");
       Console.WriteLine($"Total Decks: {game.Dealer.DeckCount}");
       Console.WriteLine($"Cards Remaining: {game.Dealer.Deck.Count}");
-      Console.WriteLine($"Minimum Bet: {game.Dealer.MinimumBet.ToString("C2")}");
+      Console.WriteLine($"Minimum Bet: {game.Dealer.MinimumBet:C2}");
       Console.WriteLine("------------------------");
     }
 
@@ -90,17 +83,17 @@
 
       Console.Clear(); 
 
-      Player[] pAD = { game.Dealer, player };
+      Player[] pAd = { game.Dealer, player };
 
-      for (int i = 0; i < pAD.Length; i++)
+      foreach (var p in pAd)
       {
         Console.WriteLine("------------------------");
-        Console.WriteLine($"Player: {pAD[i].Name}");
+        Console.WriteLine($"Player: {p.Name}");
 
-        if (!pAD[i].IsDealer)
+        if (!p.IsDealer)
         {
-          Console.WriteLine($"Money: {pAD[i].CurrentMoney.ToString("C2")}");
-          Console.WriteLine($"Current Bet: {player.CurrentBet.ToString("C2")}");
+          Console.WriteLine($"Money: {p.CurrentMoney:C2}");
+          Console.WriteLine($"Current Bet: {player.CurrentBet:C2}");
           Console.WriteLine();
         }
 
@@ -109,20 +102,13 @@
           Console.WriteLine($"Insurance Bet: {player.CurrentBet / 2}");
         }
 
-        Console.WriteLine("Doubled Down: ");
+        Console.Write("Doubled Down: ");
 
-        if (player.DoubledDown)
-        {
-          Console.Write("Yes");
-        }
-        else
-        {
-          Console.Write("No");
-        }
+        Console.Write(player.DoubledDown ? "Yes" : "No");
 
-        foreach (var card in pAD[i].Cards)
+        foreach (var card in p.Cards)
         {
-          if (pAD[i].IsDealer && !dealerFlipped && card == pAD[i].Cards[0])
+          if (p.IsDealer && !dealerFlipped && card == p.Cards[0])
           {
             card.IsFaceDown = true;
 
@@ -135,7 +121,7 @@
           Console.WriteLine();
         }
 
-        if (pAD[i].Cards.Sum(cv => cv.CardValue) > 21 && pAD[i].Cards.Any(c => c.CardNumber == "Ace"))
+        if (p.Cards.Sum(cv => cv.CardValue) > 21 && p.Cards.Any(c => c.CardNumber == "Ace"))
         {
           foreach (var card in player.Cards.Where(c => c.CardNumber == "Ace"))
           {
@@ -143,7 +129,7 @@
           }
         }
 
-        Console.WriteLine($"Total: {pAD[i].Cards.Where(c => !c.IsFaceDown).Sum(cv => cv.CardValue)}");
+        Console.WriteLine($"Total: {p.Cards.Where(c => !c.IsFaceDown).Sum(cv => cv.CardValue)}");
         Console.WriteLine("------------------------");
 
         Console.WriteLine();

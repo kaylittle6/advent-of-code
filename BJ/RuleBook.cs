@@ -2,33 +2,13 @@
 {
   public class RuleBook
   {
-    // 0 = Bust, 1 = Win, 2 = No Action
-    public bool[] CheckForResult(Player player)
-    {
-      bool[] results = new bool[3];
-
-      // Did player Bust (more than 21 total)?
-      results[0] = player.Cards.Sum(cv => cv.CardValue) > 21
-        ? true : false;
-
-      // Did player Win (21 total)?
-      results[1] = player.Cards.Sum(cv => cv.CardValue) == 21
-        ? true : false;
-
-      // No Action (less than 21 total)?
-      results[2] = player.Cards.Sum(cv => cv.CardValue) < 21
-        ? true : false;
-
-      return results;
-    }
-
     public void CheckAndResolveBlackJack()
     {
       Game game = Game.GetGameClient;
 
       foreach (var player in game.Players)
       {
-        if (player.InHand && player.HasBlackJack)
+        if (player is { InHand: true, HasBlackJack: true })
         {
           WinBlackJackBet(player);
 
@@ -43,22 +23,12 @@
         }
       }
     }
-
-    public void PlaySplitHand(Player player)
-    {
-      List<List<Card>> splitHands = new List<List<Card>>();
-      splitHands[0] = new List<Card>();
-      splitHands[1] = new List<Card>();
-
-      //splitHands[0].Add(player.Cards);
-
-      
-    }
-
+    
     public void WinStandardBet(Player player)
     {
       player.CurrentMoney += player.CurrentBet * 2;
     }
+    
     public void WinBlackJackBet(Player player)
     {
       player.CurrentMoney += player.CurrentBet * 1.5m;

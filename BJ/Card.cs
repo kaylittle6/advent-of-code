@@ -2,12 +2,12 @@
 {
   public class Card
   {
-    public string? Display => GetCardDisplay();
+    public string Display => GetCardDisplay();
     public string CardNumber { get; set; }
-    public string CardSuit { get; set; }
+    private string CardSuit { get; set; }
     public int CardValue { get; private set; }
     public bool IsAce => CardNumber == "Ace";
-    public bool IsFaceDown { get; set; } = false;
+    public bool IsFaceDown { get; set; }
 
     public Card(string cardNumber, string cardSuit)
     {

@@ -2,53 +2,40 @@
 {
   public class Game
   {
-    private static Game? gameClient;
+    private static Game? _gameClient;
 
     public List<Player> Players { get; set; } = new List<Player>();
     public Dealer Dealer { get; set; } = new Dealer("Dealer", true);
     public Display Display { get; set; } = new Display();
-
-    public Game() { }
-
-    public static Game GetGameClient
-    {
-      get
-      {
-        if (gameClient == null)
-        {
-          gameClient = new Game();
-        }
-
-        return gameClient;
-      }
-    }
+    
+    public static Game GetGameClient => _gameClient ??= new Game();
 
     public void StartNewGame()
     {
       int p;
-      bool goodNOP;
+      bool goodNop;
 
       do
       {
-        goodNOP = true;
+        goodNop = true;
 
         Console.Clear();
         Console.WriteLine("How many players will play? (Maximum 4 players)");
         Console.WriteLine();
 
-        var nOP = Console.ReadLine();
+        var nOp = Console.ReadLine();
 
-        if (nOP == null || (nOP != "1" && nOP != "2" && nOP != "3" && nOP != "4"))
+        if (nOp == null || (nOp != "1" && nOp != "2" && nOp != "3" && nOp != "4"))
         {
           Console.Clear();
           Console.WriteLine("Please select a valid response");
           Thread.Sleep(3000);
-          goodNOP = false;
+          goodNop = false;
         }
 
-        p = Int32.Parse(nOP!);
+        p = Int32.Parse(nOp!);
 
-      } while (!goodNOP);
+      } while (!goodNop);
 
       for (int i = 0; i < p; i++)
       {
@@ -64,8 +51,11 @@
 
         var money = Console.ReadLine();
 
-        Player player = new(playerName!);
-        player.CurrentMoney = int.Parse(money!);
+        Player player = new(playerName!, false)
+        {
+          CurrentMoney = int.Parse(money!)
+        };
+        
         Players.Add(player);
       }
 
@@ -97,7 +87,7 @@
       Display.ShowTable(false);
 
       // Check if Dealer has Blackjack
-      if (Dealer.Cards.Any(c => c.IsAce && !c.IsFaceDown))
+      if (Dealer.Cards.Any(c => c is { IsAce: true, IsFaceDown: false }))
       {
         foreach (var player in Players)
         {
@@ -105,27 +95,27 @@
           Dealer.FlipFaceDownCard();
           Display.ShowTable(player, true);
 
-          if (Dealer.HasBlackJack && !player.HasBlackJack && player.HasInsurance)
+          switch (Dealer.HasBlackJack)
           {
-            player.CurrentMoney += player.CurrentBet / 2;
-            Console.WriteLine();
-            Console.WriteLine($"The Dealer has Blackjack, {player.Name}");
-            Console.WriteLine();
-            Console.WriteLine($"{player.Name} has Insurance, though! They win {player.CurrentBet / 2} dollars");
-            Dealer.Rules.ResetPlayer(player);
-            Thread.Sleep(4000);
+            case true when player is { HasBlackJack: false, HasInsurance: true }:
+              player.CurrentMoney += player.CurrentBet / 2;
+              Console.WriteLine();
+              Console.WriteLine($"The Dealer has Blackjack, {player.Name}");
+              Console.WriteLine();
+              Console.WriteLine($"{player.Name} has Insurance, though! They win {player.CurrentBet / 2} dollars");
+              player.CurrentMoney += player.CurrentBet;
+              Dealer.Rules.ResetPlayer(player);
+              Thread.Sleep(4000);
+              break;
+            case true when player is { HasBlackJack: false, HasInsurance: false }:
+              Console.WriteLine();
+              Console.WriteLine($"The Dealer has Blackjack, {player.Name}");
+              Console.WriteLine();
+              Console.WriteLine($"Sorry, {player.Name}. You don't have Insurance. You lose.");
+              Dealer.Rules.ResetPlayer(player);
+              Thread.Sleep(4000);
+              break;
           }
-          else if (Dealer.HasBlackJack && !player.HasBlackJack && !player.HasInsurance)
-          {
-            Console.WriteLine();
-            Console.WriteLine($"The Dealer has Blackjack, {player.Name}");
-            Console.WriteLine();
-            Console.WriteLine($"Sorry, {player.Name}. You don't have Insurance. You lose.");
-            Dealer.Rules.ResetPlayer(player);
-            Thread.Sleep(4000);
-          }
-
-
         }
       }
 
