@@ -4,9 +4,10 @@
   {
     private static Game? _gameClient;
 
-    public List<Player> Players { get; set; } = new List<Player>();
-    public Dealer Dealer { get; set; } = new Dealer("Dealer", true);
-    public Display Display { get; set; } = new Display();
+    public List<Player> Players { get; } = new List<Player>();
+    public Dealer Dealer { get; } = new Dealer("Dealer", true);
+    public Display Display { get; } = new Display();
+    private bool HasPLayers => Players.Any();
     
     public static Game GetGameClient => _gameClient ??= new Game();
 
@@ -89,21 +90,21 @@
       // Check if Dealer has Blackjack
       if (Dealer.Cards.Any(c => c is { IsAce: true, IsFaceDown: false }))
       {
+        Dealer.FlipFaceDownCard();
+        
         foreach (var player in Players)
         {
           Dealer.OfferInsurance(player);
-          Dealer.FlipFaceDownCard();
           Display.ShowTable(player, true);
 
           switch (Dealer.HasBlackJack)
           {
             case true when player is { HasBlackJack: false, HasInsurance: true }:
-              player.CurrentMoney += player.CurrentBet / 2;
               Console.WriteLine();
               Console.WriteLine($"The Dealer has Blackjack, {player.Name}");
               Console.WriteLine();
               Console.WriteLine($"{player.Name} has Insurance, though! They win {player.CurrentBet / 2} dollars");
-              player.CurrentMoney += player.CurrentBet;
+              player.CurrentMoney += player.CurrentBet / 2;
               Dealer.Rules.ResetPlayer(player);
               Thread.Sleep(4000);
               break;
@@ -117,10 +118,17 @@
               break;
           }
         }
+        
+        Dealer.Rules.CheckAndResolveBlackJack();
+        return;
       }
 
       Dealer.Rules.CheckAndResolveBlackJack();
 
+      foreach (var player in Players)
+      {
+        
+      }
 
       Console.ReadLine();
     }

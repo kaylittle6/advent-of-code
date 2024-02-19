@@ -3,7 +3,6 @@
   public class Dealer : Player
   {
     public List<Card> Deck { get; private set; } = new List<Card>();
-    public List<int> PlayerBets { get; set; } = new List<int>();
     public RuleBook Rules { get; set; } = new RuleBook();
     public int DeckCount { get; set; }
     public int MinimumBet { get; set; }
@@ -150,16 +149,30 @@
 
     }
 
-    // public void AskForPlayerOptions(Player player, bool firstAsk)
-    // {
-    //   bool goodResp = true;
-    //
-    //   if (firstAsk)
-    //   {
-    //
-    //   }
-    //
-    // }
+    public void AskForPlayerOptions(Player player, bool firstAsk)
+    {
+      Game game = Game.GetGameClient;
+      bool goodResp = true;
+      
+      Console.Clear();
+      game.Display.ShowTable(player, false);
+      
+      do
+      {
+        if (firstAsk)
+        {
+          Console.WriteLine();
+          Console.WriteLine($"{player.Name}, would you like to Double Down?");
+          Console.WriteLine();
+        }
+        
+        
+        
+      } while (!goodResp);
+      
+      
+    
+    }
 
     public void DealCard(Player player)
     {
