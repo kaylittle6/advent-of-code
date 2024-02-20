@@ -20,18 +20,11 @@
 
     private int GetCardValue()
     {
-      if (int.TryParse(CardNumber, out var value))
+      if (int.TryParse(CardNumber, out var value) || CardNumber == "Ace")
       {
-        return value;
+        return CardNumber == "Ace" ? 11 : value;
       }
-      else if (CardNumber == "Ace")
-      {
-        return 11;
-      }
-      else
-      {
-        return 10;
-      }
+      return 10;
     }
 
     public void ChangeAceValueToOne()

@@ -2,8 +2,8 @@
 {
   public class Dealer : Player
   {
-    public List<Card> Deck { get; private set; } = new List<Card>();
-    public RuleBook Rules { get; set; } = new RuleBook();
+    public List<Card> Deck { get; private set; } = new();
+    public RuleBook Rules { get; set; } = new();
     public int DeckCount { get; set; }
     public int MinimumBet { get; set; }
 
@@ -18,7 +18,7 @@
       string[] values = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace" };
       string[] suits = { "Hearts", "Diamonds", "Spades", "Clubs" };
       
-      Deck = values.SelectMany(value => suits, (value, suit) => new Card(value, suit))
+      Deck = values.SelectMany(_ => suits, (value, suit) => new Card(value, suit))
         .SelectMany(card => Enumerable.Repeat(card, numberOfDecks))
         .ToList();
       
@@ -88,13 +88,14 @@
 
     public static void OfferInsurance(Player player)
     {
-      if (!player.InHand) return;
+      if (!player.InHand || player.IsDealer) return;
 
       Console.Clear();
+      Display.ShowTable(player, false);
       Console.WriteLine();
       Console.WriteLine($"The Dealer is showing an Ace, {player.Name}. Would you like insurance?");
       Console.WriteLine();
-      Console.WriteLine($"Insurance Cost: {player.CurrentBet / 2}");
+      Console.WriteLine($"Insurance Cost: {player.CurrentBet / 2:C2}");
       Console.WriteLine();
 
       string? response;
@@ -112,6 +113,7 @@
           }
           else
           {
+            Console.WriteLine();
             Console.WriteLine("Fine then");
             Thread.Sleep(4000); 
           }
@@ -123,32 +125,54 @@
       } while (response != "yes" && response != "no");
     }
 
-    public void AskForPlayerOptions(Player player, bool firstAsk)
+    public void AskForPlayerOptions(Player player)
     {
-      var game = Game.GetGameClient;
-      var goodResp = true;
-      
-      Console.Clear();
-      Display.ShowTable(player, false);
-      
+      var firstAsk = player.Cards.Count == 2;
+      var goodResponse = true;
+
       do
       {
+        Console.Clear();
+        Display.ShowTable(player, false);
+        Console.WriteLine();
+        Console.WriteLine($"{player.Name}, here are you options:");
+        Console.WriteLine();
+      
         if (firstAsk)
         {
-          Console.WriteLine();
-          Console.WriteLine($"{player.Name}, would you like to Double Down?");
-          Console.WriteLine();
+          Console.WriteLine("Double Down");
+
+          if (player.Cards[0].CardNumber == player.Cards[1].CardNumber)
+          {
+            Console.WriteLine("Split");
+          }
         }
-        
-        
-        
-      } while (!goodResp);
       
+        Console.WriteLine("Hit");
+        Console.WriteLine("Stand");
+
+        var response = Console.ReadLine()?.ToLower();
       
-    
+        switch (response)
+        {
+          case "double down":
+            RuleBook.DoubleDownBet(player);
+            DealCard(player);
+            return;
+          case "split":
+            // Method to Split Cards here
+            break;
+          case "hit":
+            DealCard(player);
+            goodResponse = false;
+            break;
+          case "stand":
+            return;
+        }
+      } while (!goodResponse);
     }
 
-    public void DealCard(Player player)
+    private void DealCard(Player player)
     {
       var randomIndex = new Random().Next(Deck.Count);
       var randomCard = Deck[randomIndex];
@@ -163,9 +187,9 @@
       Console.Clear();
     }
 
-    public void ShuffleDeck()
+    private void ShuffleDeck()
     {
-      Deck = Deck.OrderBy(c => Guid.NewGuid()).ToList();
+      Deck = Deck.OrderBy(_ => Guid.NewGuid()).ToList();
     }
   }
 }

@@ -79,6 +79,8 @@
         {
           Console.WriteLine($"Money: {p.CurrentMoney:C2}");
           Console.WriteLine($"Current Bet: {player.CurrentBet:C2}");
+          Console.Write("Doubled Down: ");
+          Console.Write(player.DoubledDown ? "Yes" : "No");
           Console.WriteLine();
         }
 
@@ -86,11 +88,9 @@
         {
           Console.WriteLine($"Insurance Bet: {player.CurrentBet / 2}");
         }
-
-        Console.Write("Doubled Down: ");
-
-        Console.Write(player.DoubledDown ? "Yes" : "No");
-
+        
+        Console.WriteLine();
+        
         foreach (var card in p.Cards)
         {
           if (p.IsDealer && !dealerFlipped && card == p.Cards[0])

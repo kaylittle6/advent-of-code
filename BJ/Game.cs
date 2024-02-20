@@ -4,79 +4,93 @@
   {
     private static Game? _gameClient;
 
-    public List<Player> Players { get; } = new List<Player>();
-    public Dealer Dealer { get; } = new Dealer("Dealer", true);
-    public Display Display { get; } = new Display();
-    private bool HasPLayers => Players.Any();
+    public List<Player> Players { get; } = new();
+    public Dealer Dealer { get; } = new("Dealer", true);
+    
+    public Display Display { get; } = new();
     
     public static Game GetGameClient => _gameClient ??= new Game();
 
     public void StartNewGame()
-    {
-      int p;
-      bool goodNop;
+     {
+       int p;
 
-      do
-      {
-        goodNop = true;
+       Console.Clear();
+       Console.WriteLine("How many players will play? (Maximum 4 players)");
+       Console.WriteLine();
 
-        Console.Clear();
-        Console.WriteLine("How many players will play? (Maximum 4 players)");
-        Console.WriteLine();
+       while (!int.TryParse(Console.ReadLine(), out p) || p < 1 || p > 4)
+       {
+         Console.Clear();
+         Console.WriteLine("Please select a valid response");
+         Thread.Sleep(3000);
+         Console.Clear();
+         Console.WriteLine("How many players will play? (Maximum 4 players)");
+         Console.WriteLine();
+       }
+     
+       for (var i = 0; i < p; i++)
+       {
+         int money;
+         
+         Console.Clear();
+         Console.WriteLine("What is this Player's name?");
+         Console.WriteLine();
+     
+         var name = Console.ReadLine();
+          
+         Console.Clear();
+         Console.WriteLine("Please select a starting amount of money (Numbers Only)");
+         Console.WriteLine();
 
-        var nOp = Console.ReadLine();
-
-        if (nOp == null || (nOp != "1" && nOp != "2" && nOp != "3" && nOp != "4"))
-        {
-          Console.Clear();
-          Console.WriteLine("Please select a valid response");
-          Thread.Sleep(3000);
-          goodNop = false;
-        }
-
-        p = Int32.Parse(nOp!);
-
-      } while (!goodNop);
-
-      for (var i = 0; i < p; i++)
-      {
-        Console.Clear();
-        Console.WriteLine("What is this Player's name?");
-        Console.WriteLine();
-
-        var playerName = Console.ReadLine();
-
-        Console.Clear();
-        Console.WriteLine("Please select a starting amount of money (Numbers Only)");
-        Console.WriteLine();
-
-        var money = Console.ReadLine();
-
-        Player player = new(playerName!, false)
-        {
-          CurrentMoney = int.Parse(money!)
-        };
-        
-        Players.Add(player);
-      }
-
-      Players.Add(Dealer);
-
-      Console.Clear();
-      Console.WriteLine("How many decks would you like to play with?");
-      Console.WriteLine();
-
-      Dealer.DeckCount = int.Parse(Console.ReadLine()!);
-      Dealer.GetDeck(Dealer.DeckCount);
-
-      Console.Clear();
-      Console.WriteLine("What is the minimum bet for this table?");
-      Console.WriteLine();
-
-      Dealer.MinimumBet = int.Parse(Console.ReadLine()!);
-
-      Display.ShowTable(false);
-    }
+         while (!int.TryParse(Console.ReadLine(), out money))
+         {
+           Console.Clear();
+           Console.WriteLine("Please enter a valid amount");
+           Console.WriteLine("Please select a starting amount of money (Numbers Only)");
+           Console.WriteLine();
+         }
+     
+         Players.Add(new Player(name!, false) { CurrentMoney = money });
+       }
+     
+       Players.Add(Dealer);
+     
+       Console.Clear();
+       Console.WriteLine("How many decks would you like to play with?");
+       Console.WriteLine();
+     
+       int deckCount;
+       
+       while (!int.TryParse(Console.ReadLine(), out deckCount))
+       {
+         Console.Clear();
+         Console.WriteLine("Please enter a valid number of decks");
+         Console.WriteLine("How many decks would you like to play with?");
+         Console.WriteLine();
+       }
+       
+       Dealer.DeckCount = deckCount;
+       Dealer.GetDeck(Dealer.DeckCount);
+     
+       Console.Clear();
+       Console.WriteLine("What is the minimum bet for this table?");
+       Console.WriteLine();
+     
+       int minimumBet;
+       
+       while (!int.TryParse(Console.ReadLine(), out minimumBet))
+       {
+         Console.Clear();
+         Console.WriteLine("Please enter a valid minimum bet");
+         Console.WriteLine("What is the minimum bet for this table?");
+         Console.WriteLine();
+       }
+       
+       Dealer.MinimumBet = minimumBet;
+     
+       Display.ShowTable(false);
+     }
 
     public void CommenceRound()
     {
@@ -86,7 +100,7 @@
       Console.Clear();
 
       Display.ShowTable(false);
-
+      
       // Check if Dealer has Blackjack
       if (Dealer.Cards.Any(c => c is { IsAce: true, IsFaceDown: false }))
       {
@@ -119,15 +133,16 @@
           }
         }
         
-        Dealer.Rules.CheckAndResolveBlackJack();
+        RuleBook.CheckAndResolveBlackJack();
         return;
       }
 
-      Dealer.Rules.CheckAndResolveBlackJack();
-
+      RuleBook.CheckAndResolveBlackJack();
+      
+      // Offer Options to each Player
       foreach (var player in Players)
       {
-        
+        Dealer.AskForPlayerOptions(player);
       }
 
       Console.ReadLine();

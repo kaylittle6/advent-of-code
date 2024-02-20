@@ -2,7 +2,7 @@
 {
   public class RuleBook
   {
-    public void CheckAndResolveBlackJack()
+    public static void CheckAndResolveBlackJack()
     {
       var game = Game.GetGameClient;
 
@@ -21,7 +21,7 @@
       }
     }
     
-    public void WinStandardBet(Player player)
+    public void WinStandardBet(Player player, bool doubledDown)
     {
       player.CurrentMoney += player.CurrentBet * 2;
     }
@@ -36,7 +36,7 @@
       player.CurrentMoney += player.CurrentBet;
     }
 
-    public void DoubleDownBet(Player player)
+    public static void DoubleDownBet(Player player)
     {
       player.CurrentMoney -= player.CurrentBet;
       player.DoubledDown = true;
