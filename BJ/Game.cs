@@ -38,7 +38,7 @@
 
       } while (!goodNop);
 
-      for (int i = 0; i < p; i++)
+      for (var i = 0; i < p; i++)
       {
         Console.Clear();
         Console.WriteLine("What is this Player's name?");
@@ -105,7 +105,7 @@
               Console.WriteLine();
               Console.WriteLine($"{player.Name} has Insurance, though! They win {player.CurrentBet / 2} dollars");
               player.CurrentMoney += player.CurrentBet / 2;
-              Dealer.Rules.ResetPlayer(player);
+              RuleBook.ResetPlayer(player);
               Thread.Sleep(4000);
               break;
             case true when player is { HasBlackJack: false, HasInsurance: false }:
@@ -113,7 +113,7 @@
               Console.WriteLine($"The Dealer has Blackjack, {player.Name}");
               Console.WriteLine();
               Console.WriteLine($"Sorry, {player.Name}. You don't have Insurance. You lose.");
-              Dealer.Rules.ResetPlayer(player);
+              RuleBook.ResetPlayer(player);
               Thread.Sleep(4000);
               break;
           }

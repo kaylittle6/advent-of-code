@@ -15,117 +15,94 @@
 
     public void GetDeck(int numberOfDecks)
     {
-      List<List<Card>> masterDeck = new List<List<Card>>();
-
-      for (int i = 0; i < numberOfDecks; i++)
-      {
-        List<Card> deck = new List<Card>();
-        string[] values = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace" };
-        string[] suits = { "Hearts", "Diamonds", "Spades", "Clubs" };
-
-        foreach (var value in values)
-        {
-          foreach (var suit in suits)
-          {
-            deck.Add(new Card(value, suit));
-          }
-        }
-        masterDeck.Add(deck);
-      }
-      Deck = masterDeck.SelectMany(l => l).ToList();
+      string[] values = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace" };
+      string[] suits = { "Hearts", "Diamonds", "Spades", "Clubs" };
+      
+      Deck = values.SelectMany(value => suits, (value, suit) => new Card(value, suit))
+        .SelectMany(card => Enumerable.Repeat(card, numberOfDecks))
+        .ToList();
+      
       ShuffleDeck();
     }
 
-    public void DealStartingCards(List<Player> players)
+    public void DealStartingCards(IEnumerable<Player> players)
     {
-      foreach (var player in players)
+      Random random = new();
+      foreach (var player in players.Where(player => player.InHand))
       {
-        for (int i = 0; i < 2; i++)
+        for (var i = 0; i < 2; i++)
         {
-          if (player.InHand)
-          {
-            Random random = new();
-            var randomIndex = random.Next(Deck.Count);
-            var randomCard = Deck.ElementAt(randomIndex);
+          var randomIndex = random.Next(Deck.Count);
+          var randomCard = Deck[randomIndex];
 
-            player.Cards.Add(randomCard);
-            Deck.Remove(randomCard);
-          }
+          player.Cards.Add(randomCard);
+          Deck.RemoveAt(randomIndex);
         }
       }
     }
 
     public void CollectAntes()
     {
-      Game game = Game.GetGameClient;
-      bool goodResponse = true;
+      var game = Game.GetGameClient;
 
-      foreach (var player in game.Players)
+      foreach (var player in game.Players.Where(p => !p.IsDealer))
       {
-        if (!player.IsDealer)
+        do
         {
-          do
+          Console.Clear();
+          Display.ShowTable(false);
+          Console.WriteLine();
+          Console.WriteLine($"Minimum bet is {MinimumBet:C2}, would you like to play, {player.Name}?");
+          Console.WriteLine();
+          Console.WriteLine("Type in at least the minimum bet to play, or 'no' to sit this hand out:");
+          Console.WriteLine();
+
+          var response = Console.ReadLine()?.ToLower();
+
+          if (response != "no" && int.TryParse(response, out var number))
           {
-            Console.Clear();
-
-            game.Display.ShowTable(false);
-
-            Console.WriteLine();
-            Console.WriteLine($"Minimum bet is {MinimumBet:C2}, would you like to play, {player.Name}?");
-            Console.WriteLine();
-            Console.WriteLine("Type in at least the minimum bet to play, or 'no' to sit this hand out:");
-            Console.WriteLine();
-
-            var response = Console.ReadLine()?.ToLower();
-            var isNumber = int.TryParse(response, out int number);
-
-            if (response != null)
+            if (number < MinimumBet)
             {
-              if (!isNumber)
-              {
-                player.InHand = false;
-              }
-              else if (number < MinimumBet)
-              {
-                goodResponse = false;
-                Console.WriteLine("Please bet more than the minimum");
-                Console.WriteLine();
-                Thread.Sleep(3000);
-              }
-            }
-            else
-            {
-              goodResponse = false;
-              Console.WriteLine("Please either place a bet, or sit this hand out");
+              Console.WriteLine("Please bet more than the minimum");
               Console.WriteLine();
               Thread.Sleep(3000);
             }
-
-            player.CurrentMoney = player.InHand ? player.CurrentMoney -= number : player.CurrentMoney;
-            player.PreviousBet = number;
-            player.CurrentBet += number;
-
-          } while (!goodResponse);
-        }
+            else
+            {
+              player.CurrentMoney -= number;
+              player.PreviousBet = number;
+              player.CurrentBet = number;
+              break;
+            }
+          }
+          else
+          {
+            Console.WriteLine("Please either place a bet, or sit this hand out");
+            Console.WriteLine();
+            Thread.Sleep(3000);
+          }
+          
+        } while (true);
       }
     }
 
-    public void OfferInsurance(Player player)
+    public static void OfferInsurance(Player player)
     {
-      bool goodResp = true;
+      if (!player.InHand) return;
 
-      if (player is not { InHand: true, HasBlackJack: true }) return;
+      Console.Clear();
+      Console.WriteLine();
+      Console.WriteLine($"The Dealer is showing an Ace, {player.Name}. Would you like insurance?");
+      Console.WriteLine();
+      Console.WriteLine($"Insurance Cost: {player.CurrentBet / 2}");
+      Console.WriteLine();
+
+      string? response;
+      
       do
       {
-        Console.Clear();
-        Console.WriteLine();
-        Console.WriteLine($"The Dealer is showing an Ace, {player.Name}. Would you like insurance?");
-        Console.WriteLine();
-        Console.WriteLine($"Insurance Cost: {player.CurrentBet / 2}");
-        Console.WriteLine();
-
-        var response = Console.ReadLine()?.ToLower();
-
+        response = Console.ReadLine()?.ToLower();
+        
         if (response != null)
         {
           if (response == "yes")
@@ -142,20 +119,17 @@
         else
         {
           Console.WriteLine("Please select a valid answer");
-          goodResp = false;
         }
-      } while (!goodResp);
-
-
+      } while (response != "yes" && response != "no");
     }
 
     public void AskForPlayerOptions(Player player, bool firstAsk)
     {
-      Game game = Game.GetGameClient;
-      bool goodResp = true;
+      var game = Game.GetGameClient;
+      var goodResp = true;
       
       Console.Clear();
-      game.Display.ShowTable(player, false);
+      Display.ShowTable(player, false);
       
       do
       {
@@ -176,23 +150,16 @@
 
     public void DealCard(Player player)
     {
-      Random random = new();
-      var randomIndex = random.Next(Deck.Count);
-      var randomCard = Deck.ElementAt(randomIndex);
+      var randomIndex = new Random().Next(Deck.Count);
+      var randomCard = Deck[randomIndex];
 
       player.Cards.Add(randomCard);
-      Deck.Remove(randomCard);
+      Deck.RemoveAt(randomIndex);
     }
 
     public void FlipFaceDownCard()
     {
-      foreach (var card in Cards)
-      {
-        if (card.IsFaceDown)
-        {
-          card.IsFaceDown = false;
-        }
-      }
+      Cards.Where(card => card.IsFaceDown).ToList().ForEach(card => card.IsFaceDown = false);
       Console.Clear();
     }
 

@@ -16,49 +16,27 @@
       CardValue = GetCardValue();
     }
 
-    private string GetCardDisplay()
-    {
-      return $"{CardNumber} of {CardSuit}";
-    }
+    private string GetCardDisplay() => $"{CardNumber} of {CardSuit}";
 
     private int GetCardValue()
     {
-      switch (CardNumber)
+      if (int.TryParse(CardNumber, out var value))
       {
-        case "2":
-          return 2;
-        case "3":
-          return 3;
-        case "4":
-          return 4;
-        case "5":
-          return 5;
-        case "6":
-          return 6;
-        case "7":
-          return 7;
-        case "8":
-          return 8;
-        case "9":
-          return 9;
-        case "10":
-        case "Jack":
-        case "Queen":
-        case "King":
-          return 10;
-        case "Ace":
-          return 11;
-        default:
-          return 0;
+        return value;
+      }
+      else if (CardNumber == "Ace")
+      {
+        return 11;
+      }
+      else
+      {
+        return 10;
       }
     }
 
     public void ChangeAceValueToOne()
     {
-      if (IsAce)
-      {
-        CardValue = 1;
-      }
+      CardValue = IsAce ? 1 : CardValue;
     }
   }
 }
