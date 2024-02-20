@@ -42,6 +42,11 @@
       player.DoubledDown = true;
     }
 
+    public void ResolvePlayerHand(Player player)
+    {
+      
+    }
+
     public static void ResetPlayer(Player player)
     {
       player.InHand = false;

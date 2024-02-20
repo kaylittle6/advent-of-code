@@ -84,7 +84,7 @@
           Console.WriteLine();
         }
 
-        if (player.HasInsurance)
+        if (p is { HasInsurance: true, IsDealer: false })
         {
           Console.WriteLine($"Insurance Bet: {player.CurrentBet / 2}");
         }

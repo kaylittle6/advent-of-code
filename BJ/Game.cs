@@ -108,9 +108,12 @@
         
         foreach (var player in Players)
         {
-          Dealer.OfferInsurance(player);
           Display.ShowTable(player, true);
+          Dealer.OfferInsurance(player);
+        }
 
+        foreach (var player in Players)
+        {
           switch (Dealer.HasBlackJack)
           {
             case true when player is { HasBlackJack: false, HasInsurance: true }:

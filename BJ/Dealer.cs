@@ -127,8 +127,12 @@
 
     public void AskForPlayerOptions(Player player)
     {
-      var firstAsk = player.Cards.Count == 2;
-      var goodResponse = true;
+      if (player.IsDealer)
+      {
+        return;
+      }
+
+      var askAgain = true;
 
       do
       {
@@ -137,8 +141,8 @@
         Console.WriteLine();
         Console.WriteLine($"{player.Name}, here are you options:");
         Console.WriteLine();
-      
-        if (firstAsk)
+
+        if (player.Cards.Count == 2)
         {
           Console.WriteLine("Double Down");
 
@@ -147,29 +151,32 @@
             Console.WriteLine("Split");
           }
         }
-      
+
         Console.WriteLine("Hit");
         Console.WriteLine("Stand");
+        Console.WriteLine();
 
         var response = Console.ReadLine()?.ToLower();
-      
+
         switch (response)
         {
           case "double down":
             RuleBook.DoubleDownBet(player);
             DealCard(player);
-            return;
+            askAgain = false;
+            break;
           case "split":
             // Method to Split Cards here
             break;
           case "hit":
             DealCard(player);
-            goodResponse = false;
             break;
           case "stand":
             return;
         }
-      } while (!goodResponse);
+        
+        if ()
+      } while (askAgain);
     }
 
     private void DealCard(Player player)
