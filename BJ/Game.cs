@@ -102,7 +102,7 @@
       Display.ShowTable(false);
       
       // Check if Dealer has Blackjack
-      if (Dealer.Cards.Any(c => c is { IsAce: true, IsFaceDown: false }))
+      if (Dealer.Cards.Any(c => c is { CardValue: 11, IsFaceDown: false }))
       {
         Dealer.FlipFaceDownCard();
         

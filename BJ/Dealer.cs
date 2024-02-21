@@ -175,7 +175,14 @@
             return;
         }
         
-        if ()
+        var handResult = RuleBook.CheckHand(player);
+
+        switch (handResult)
+        {
+          case RuleBook.HandResult.HandBlackjack:
+            RuleBook.WinStandardBet(player, player.DoubledDown);
+        }
+        
       } while (askAgain);
     }
 

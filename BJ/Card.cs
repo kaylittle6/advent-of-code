@@ -6,7 +6,6 @@
     public string CardNumber { get; set; }
     private string CardSuit { get; set; }
     public int CardValue { get; private set; }
-    public bool IsAce => CardNumber == "Ace";
     public bool IsFaceDown { get; set; }
 
     public Card(string cardNumber, string cardSuit)
@@ -29,7 +28,7 @@
 
     public void ChangeAceValueToOne()
     {
-      CardValue = IsAce ? 1 : CardValue;
+      CardValue = CardValue == 11 ? 1 : CardValue;
     }
   }
 }

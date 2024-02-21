@@ -2,6 +2,13 @@
 {
   public class RuleBook
   {
+    public enum HandResult
+    {
+      HandValid,
+      HandBusted,
+      HandBlackjack
+    }
+    
     public static void CheckAndResolveBlackJack()
     {
       var game = Game.GetGameClient;
@@ -21,17 +28,17 @@
       }
     }
     
-    public void WinStandardBet(Player player, bool doubledDown)
+    public static void WinStandardBet(Player player, bool doubledDown)
     {
       player.CurrentMoney += player.CurrentBet * 2;
     }
     
     private static void WinBlackJackBet(Player player)
     {
-      player.CurrentMoney += player.CurrentBet * 1.5m;
+      player.CurrentMoney += player.CurrentBet * 2.5m;
     }
 
-    public void PushBet(Player player)
+    public static void PushBet(Player player)
     {
       player.CurrentMoney += player.CurrentBet;
     }
@@ -41,10 +48,26 @@
       player.CurrentMoney -= player.CurrentBet;
       player.DoubledDown = true;
     }
-
-    public void ResolvePlayerHand(Player player)
+    
+    public static HandResult CheckHand(Player player)
     {
-      
+      do
+      {
+        if (player.Cards.Any(c => c is { CardValue: 11 }))
+        {
+          player.Cards.First(c => c is { CardValue: 11 }).ChangeAceValueToOne();
+        }
+
+        switch (player.HandValue)
+        {
+          case 21:
+            return HandResult.HandBlackjack;
+          case > 21:
+            return HandResult.HandBusted;
+        }
+      } while (player.Cards.Any(c => c is { CardValue: 11 }));
+
+      return HandResult.HandValid;
     }
 
     public static void ResetPlayer(Player player)
