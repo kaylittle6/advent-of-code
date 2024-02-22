@@ -1,6 +1,6 @@
 ﻿namespace BJ
 {
-  public class Display
+  public static class Display
   {
     // Overload method to show table for all Players
     public static void ShowTable(bool dealerFlipped)

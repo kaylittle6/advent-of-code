@@ -2,8 +2,9 @@
 {
   public class Dealer : Player
   {
+    public bool NeedsReshuffle => GetReshuffle();
+    
     public List<Card> Deck { get; private set; } = new();
-    public RuleBook Rules { get; set; } = new();
     public int DeckCount { get; set; }
     public int MinimumBet { get; set; }
 
@@ -12,7 +13,12 @@
       Name = name;
       IsDealer = isDealer;
     }
-
+    
+    private bool GetReshuffle()
+    {
+      return Deck.Count < DeckCount * 52 * 0.25;
+    }
+    
     public void GetDeck(int numberOfDecks)
     {
       string[] values = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace" };
@@ -28,6 +34,7 @@
     public void DealStartingCards(IEnumerable<Player> players)
     {
       Random random = new();
+      
       foreach (var player in players.Where(player => player.InHand))
       {
         for (var i = 0; i < 2; i++)
@@ -58,8 +65,14 @@
           Console.WriteLine();
 
           var response = Console.ReadLine()?.ToLower();
+          
+          if (response == "no")
+          {
+            player.InHand = false;
+            return;
+          }
 
-          if (response != "no" && int.TryParse(response, out var number))
+          if (int.TryParse(response, out var number))
           {
             if (number < MinimumBet)
             {
@@ -81,7 +94,7 @@
             Console.WriteLine();
             Thread.Sleep(3000);
           }
-          
+
         } while (true);
       }
     }
@@ -127,7 +140,7 @@
 
     public void AskForPlayerOptions(Player player)
     {
-      if (player.IsDealer)
+      if (player.IsDealer || !player.InHand)
       {
         return;
       }
@@ -174,18 +187,47 @@
           case "stand":
             return;
         }
-        
+
         var handResult = RuleBook.CheckHand(player);
 
         switch (handResult)
         {
           case RuleBook.HandResult.HandBlackjack:
-            RuleBook.WinStandardBet(player, player.DoubledDown);
+            Console.Clear();
+            Display.ShowTable(player, false);
+            Console.WriteLine($"{player.Name}, you have 21! They win ${player.CurrentBet * 2.5m}");
+            Console.WriteLine();
+            askAgain = false;
+            RuleBook.WinStandardBet(player);
+            RuleBook.ResetPlayer(player);
+            Thread.Sleep(4000);
+            break;
+          case RuleBook.HandResult.HandBusted:
+            Console.Clear();
+            Display.ShowTable(player, false);
+            Console.WriteLine($"{player.Name}, you busted! They lose ${player.CurrentBet}");
+            Console.WriteLine();
+            askAgain = false;
+            RuleBook.ResetPlayer(player);
+            Thread.Sleep(4000);
+            break;
+          case RuleBook.HandResult.HandValid:
+            break;
+          default:
+            throw new ArgumentOutOfRangeException();
         }
-        
       } while (askAgain);
     }
-
+    
+    public void DealerAction()
+    {
+      do
+      {
+        DealCard(this); 
+        RuleBook.ReduceAceValueToOne(this);
+      } while (HandValue < 17);
+    }
+    
     private void DealCard(Player player)
     {
       var randomIndex = new Random().Next(Deck.Count);

@@ -1,6 +1,6 @@
 ﻿namespace BJ
 {
-  public class RuleBook
+  public static class RuleBook
   {
     public enum HandResult
     {
@@ -28,7 +28,7 @@
       }
     }
     
-    public static void WinStandardBet(Player player, bool doubledDown)
+    public static void WinStandardBet(Player player)
     {
       player.CurrentMoney += player.CurrentBet * 2;
     }
@@ -70,6 +70,17 @@
       return HandResult.HandValid;
     }
 
+    public static void ReduceAceValueToOne(Player player)
+    {
+      do
+      {
+        if (player.Cards.Any(c => c is { CardValue: 11 }) && player.HandValue > 21)
+        {
+          player.Cards.First(c => c is { CardValue: 11 }).ChangeAceValueToOne();
+        }
+      } while (player.Cards.Any(c => c is { CardValue: 11 }));
+    }
+    
     public static void ResetPlayer(Player player)
     {
       player.InHand = false;
