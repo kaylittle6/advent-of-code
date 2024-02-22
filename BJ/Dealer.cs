@@ -2,11 +2,10 @@
 {
   public class Dealer : Player
   {
-    public bool NeedsReshuffle => GetReshuffle();
-    
     public List<Card> Deck { get; private set; } = new();
     public int DeckCount { get; set; }
     public int MinimumBet { get; set; }
+    public bool NeedsReshuffle => GetReshuffle();
 
     public Dealer(string name, bool isDealer) : base(name, isDealer)
     {
@@ -69,7 +68,7 @@
           if (response == "no")
           {
             player.InHand = false;
-            return;
+            break;
           }
 
           if (int.TryParse(response, out var number))
@@ -122,6 +121,7 @@
           if (response == "yes")
           {
             player.CurrentMoney -= player.CurrentBet / 2;
+            player.CurrentBet += player.CurrentBet / 2;
             player.HasInsurance = true;
           }
           else
@@ -190,11 +190,12 @@
 
         var handResult = RuleBook.CheckHand(player);
 
+        Console.Clear();
+        Display.ShowTable(player, false);
+        
         switch (handResult)
         {
           case RuleBook.HandResult.HandBlackjack:
-            Console.Clear();
-            Display.ShowTable(player, false);
             Console.WriteLine($"{player.Name}, you have 21! They win ${player.CurrentBet * 2.5m}");
             Console.WriteLine();
             askAgain = false;
@@ -203,8 +204,6 @@
             Thread.Sleep(4000);
             break;
           case RuleBook.HandResult.HandBusted:
-            Console.Clear();
-            Display.ShowTable(player, false);
             Console.WriteLine($"{player.Name}, you busted! They lose ${player.CurrentBet}");
             Console.WriteLine();
             askAgain = false;
@@ -221,10 +220,20 @@
     
     public void DealerAction()
     {
+      Console.Clear();
+      
       do
       {
-        DealCard(this); 
+        Display.ShowDealersActions(this);
+        Console.WriteLine();
+        Console.WriteLine("Dealer hitting...");
+        Thread.Sleep(3000);
+        DealCard(this);
         RuleBook.ReduceAceValueToOne(this);
+        Console.Clear();
+        Display.ShowDealersActions(this);
+        Thread.Sleep(4000);
+        Console.Clear();
       } while (HandValue < 17);
     }
     

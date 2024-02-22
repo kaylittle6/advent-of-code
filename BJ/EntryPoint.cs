@@ -1,6 +1,6 @@
 ﻿namespace BJ
 {
-  public static class Program
+  public static class EntryPoint
   {
     public static void Main(string[] args)
     {

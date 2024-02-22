@@ -1,6 +1,4 @@
-﻿using System.Data;
-
-namespace BJ
+﻿namespace BJ
 {
   public class Game
   {
@@ -137,9 +135,7 @@ namespace BJ
                 break;
             }
           }
-          
           RuleBook.CheckAndResolveBlackJack();
-          return;
         }
 
         RuleBook.CheckAndResolveBlackJack();
@@ -148,7 +144,12 @@ namespace BJ
         {
           Dealer.AskForPlayerOptions(player);
         }
-
+        
+        foreach (var card in Dealer.Cards.Where(card => card is { IsFaceDown: true }))
+        {
+          Dealer.FlipFaceDownCard();
+        }
+        
         if (Dealer.HandValue < 17)
         {
           Dealer.DealerAction();
@@ -158,49 +159,60 @@ namespace BJ
 
         if (dealerResult == RuleBook.HandResult.HandBusted)
         {
-          foreach (var player in Players.Where(player => player.InHand))
+          foreach (var player in Players.Where(player => player is { InHand: true, IsDealer: false }))
           {
             Console.Clear();
+            Display.ShowTable(player, true);
             Console.WriteLine($"The Dealer busted, {player.Name}.");
             Console.WriteLine();
-            Console.WriteLine($"You win {player.CurrentBet * 2} dollars.");
+            Console.WriteLine($"You win {player.CurrentBet * 2:C2} dollars.");
             RuleBook.WinStandardBet(player);
             RuleBook.ResetPlayer(player);
+            Thread.Sleep(4000);
           }
         }
-        
+
         foreach (var player in Players.Where(player => player is { InHand: true, IsDealer: false }))
         {
           Console.Clear();
           Display.ShowTable(player, true);
-          Console.WriteLine();
           Console.WriteLine($"Dealer has {Dealer.HandValue}, you have {player.HandValue}, {player.Name}.");
           Console.WriteLine();
           
           if (player.HandValue > Dealer.HandValue)
           {
-            Console.WriteLine($"You win {player.CurrentBet * 2} dollars!");
+            Console.WriteLine($"You win {player.CurrentBet * 2:C2} dollars!");
             RuleBook.WinStandardBet(player);
             RuleBook.ResetPlayer(player);
+            Thread.Sleep(4000);
           }
           else if (player.HandValue < Dealer.HandValue)
           {
-            Console.WriteLine($"You lose, {player.Name}. {player.CurrentBet} total in fact.");
+            Console.WriteLine($"You lose. {player.CurrentBet:C2} total in fact.");
             RuleBook.ResetPlayer(player);
+            Thread.Sleep(4000);
           }
           else
           {
-            Console.WriteLine($"Push. You get your money back, {player.Name}.");
+            Console.WriteLine($"Push. You get your money back, all {player.CurrentBet:C2}.");
             RuleBook.PushBet(player);
             RuleBook.ResetPlayer(player);
+            Thread.Sleep(4000);
           }
         }
 
+        Dealer.Cards.Clear();
+        
         if (Dealer.NeedsReshuffle)
         {
           Dealer.GetDeck(Dealer.DeckCount);
         }
-      } while (Players.Any(p => p.InHand));
+
+        foreach (var player in Players)
+        {
+          player.InHand = true;
+        }
+      } while (Players.Any());
     }
   }
 }

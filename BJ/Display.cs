@@ -25,7 +25,7 @@
 
         if (player.HasInsurance)
         {
-          Console.WriteLine($"Insurance Bet: {player.CurrentBet / 2}");
+          Console.WriteLine($"Insurance Bet: {player.CurrentBet / 2:C2}");
         }
 
         Console.WriteLine();
@@ -51,7 +51,7 @@
           }
         }
 
-        Console.WriteLine($"Total: {player.Cards.Where(c => !c.IsFaceDown).Sum(cv => cv.CardValue)}");
+        Console.WriteLine($"Total: {player.HandValue}");
         Console.WriteLine("------------------------");
         Console.WriteLine();
       }
@@ -86,7 +86,7 @@
 
         if (p is { HasInsurance: true, IsDealer: false })
         {
-          Console.WriteLine($"Insurance Bet: {player.CurrentBet / 2}");
+          Console.WriteLine($"Insurance Bet: {player.CurrentBet / 2:C2}");
         }
         
         Console.WriteLine();
@@ -115,11 +115,27 @@
           }
         }
 
-        Console.WriteLine($"Total: {p.Cards.Where(c => !c.IsFaceDown).Sum(cv => cv.CardValue)}");
+        Console.WriteLine($"Total: {p.HandValue}");
         Console.WriteLine("------------------------");
 
         Console.WriteLine();
       }
+    }
+
+    public static void ShowDealersActions(Dealer dealer)
+    {
+      Console.WriteLine("------------------------");
+      Console.WriteLine($"{dealer.Name}");
+      Console.WriteLine();
+
+      foreach (var card in dealer.Cards)
+      {
+        Console.WriteLine($"{card.Display}");
+      }
+      
+      Console.WriteLine($"Total: {dealer.HandValue}");
+      
+      Console.WriteLine("------------------------");
     }
   }
 }
