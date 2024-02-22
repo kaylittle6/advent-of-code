@@ -9,7 +9,11 @@
       game.StartNewGame();
       game.CommenceRound();
 
-      Console.ReadLine();
+      Console.Clear();
+      Console.WriteLine("Thanks for playing!");
+      Console.WriteLine();
+      Console.WriteLine("We'll see ya next time!");
+      Thread.Sleep(5000);
     }
   }
 }

@@ -107,7 +107,7 @@
           Console.WriteLine();
         }
 
-        if (p.Cards.Sum(cv => cv.CardValue) > 21 && p.Cards.Any(c => c.CardNumber == "Ace"))
+        if (p.HandValue > 21 && p.Cards.Any(c => c.CardValue == 11))
         {
           foreach (var card in player.Cards.Where(c => c.CardNumber == "Ace"))
           {

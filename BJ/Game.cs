@@ -144,6 +144,16 @@
         {
           Dealer.AskForPlayerOptions(player);
         }
+
+        if (!Players.Any(p => p is { InHand: true, IsDealer: false }))
+        {
+          Console.Clear();
+          Console.WriteLine("Well shit, nobody is left, guess we'll do it again");
+          Dealer.RemoveBrokeAssPlayers(Players);
+          Dealer.FinishUpRound(Players);
+          Thread.Sleep(4000);
+          continue;
+        }
         
         foreach (var card in Dealer.Cards.Where(card => card is { IsFaceDown: true }))
         {
@@ -200,19 +210,13 @@
             Thread.Sleep(4000);
           }
         }
-
-        Dealer.Cards.Clear();
         
-        if (Dealer.NeedsReshuffle)
-        {
-          Dealer.GetDeck(Dealer.DeckCount);
-        }
-
-        foreach (var player in Players)
-        {
-          player.InHand = true;
-        }
+        Dealer.RemoveBrokeAssPlayers(Players);
+        Dealer.FinishUpRound(Players);
+        
       } while (Players.Any());
+      
+      
     }
   }
 }

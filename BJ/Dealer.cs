@@ -5,7 +5,7 @@
     public List<Card> Deck { get; private set; } = new();
     public int DeckCount { get; set; }
     public int MinimumBet { get; set; }
-    public bool NeedsReshuffle => GetReshuffle();
+    private bool NeedsReshuffle => GetReshuffle();
 
     public Dealer(string name, bool isDealer) : base(name, isDealer)
     {
@@ -51,8 +51,12 @@
     {
       var game = Game.GetGameClient;
 
-      foreach (var player in game.Players.Where(p => !p.IsDealer))
+      for (var i = 0; i < game.Players.Count; i++)
       {
+        var player = game.Players[i];
+
+        if (player.IsDealer) continue;
+        
         do
         {
           Console.Clear();
@@ -60,14 +64,25 @@
           Console.WriteLine();
           Console.WriteLine($"Minimum bet is {MinimumBet:C2}, would you like to play, {player.Name}?");
           Console.WriteLine();
-          Console.WriteLine("Type in at least the minimum bet to play, or 'no' to sit this hand out:");
+          Console.WriteLine("Place your bet or type the option you would like:");
+          Console.WriteLine();
+          Console.WriteLine($"Place Bet (Minimum: {game.Dealer.MinimumBet:C2})");
+          Console.WriteLine("Sit this Hand (sit)");
+          Console.WriteLine("Leave game (leave)");
           Console.WriteLine();
 
           var response = Console.ReadLine()?.ToLower();
           
-          if (response == "no")
+          if (response == "sit")
           {
             player.InHand = false;
+            break;
+          }
+          
+          if (response == "leave")
+          {
+            game.Players.RemoveAt(i);
+            i--;
             break;
           }
 
@@ -81,8 +96,8 @@
             }
             else
             {
+              player.PreviousBet = player.CurrentBet;
               player.CurrentMoney -= number;
-              player.PreviousBet = number;
               player.CurrentBet = number;
               break;
             }
@@ -93,7 +108,6 @@
             Console.WriteLine();
             Thread.Sleep(3000);
           }
-
         } while (true);
       }
     }
@@ -235,6 +249,34 @@
         Thread.Sleep(4000);
         Console.Clear();
       } while (HandValue < 17);
+    }
+
+    public void FinishUpRound(IEnumerable<Player> players)
+    {
+      Cards.Clear();
+        
+      if (NeedsReshuffle)
+      {
+        GetDeck(DeckCount);
+      }
+        
+      foreach (var player in players.Where(p => !p.IsDealer))
+      {
+        player.InHand = true;
+      }
+    }
+
+    public void RemoveBrokeAssPlayers(List<Player> players)
+    {
+      for (var i = 0; i < players.Count; i++)
+      {
+        var player = players[i];
+
+        if (player is { IsDealer: true, CurrentMoney: > 0 }) continue;
+        
+        players.RemoveAt(i);
+        i--;
+      }
     }
     
     private void DealCard(Player player)

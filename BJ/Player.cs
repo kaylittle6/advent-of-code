@@ -11,6 +11,7 @@
     public bool IsDealer { get; protected init; }
     public bool HasBlackJack => Cards.Sum(cv => cv.CardValue) == 21;
     public bool InHand { get; set; } = true;
+    public bool IsLeaving { get; set; }
     public bool HasInsurance { get; set; }
     public bool DoubledDown { get; set; }
 
