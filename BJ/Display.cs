@@ -18,40 +18,55 @@
         if (!player.IsDealer)
         {
           Console.WriteLine($"Money: {player.CurrentMoney:C2}");
-          Console.WriteLine($"Current Bet: {player.CurrentBet:C2}");
+
+          for (var i = 0; i < player.Hand.Count; i++)
+          {
+            Console.WriteLine($"Hand {i + 1}: {player.Hand[i].CurrentBet:C2}");
+          }
+          
           Console.Write("Doubled Down: ");
           Console.Write(player.DoubledDown ? "Yes" : "No");
         }
 
         if (player.HasInsurance)
         {
-          Console.WriteLine($"Insurance Bet: {player.CurrentBet / 2:C2}");
+          for (var i = 0; i < player.Hand.Count; i++)
+          {
+            Console.WriteLine($"Hand {i + 1} Insurance Bet: {player.Hand[i].CurrentBet / 2:C2}");
+          }
         }
 
         Console.WriteLine();
         Console.WriteLine();
-
-        foreach (var card in player.Cards)
+        
+        foreach (var hand in player.Hand)
         {
-          if (player.IsDealer && !dealerFlipped && card == player.Cards[0])
+          foreach (var card in hand.Cards)
           {
-            card.IsFaceDown = true;
-            Console.WriteLine("[Card Face Down]");
-            continue;
-          }
+            if (player.IsDealer && !dealerFlipped && card == hand.Cards[0])
+            {
+              card.IsFaceDown = true;
+              Console.WriteLine("[Card Face Down]");
+              continue;
+            }
 
-          Console.Write($"{card.Display}\n");
-        }
-
-        if (player.Cards.Sum(cv => cv.CardValue) > 21 && player.Cards.Any(c => c.CardNumber == "Ace"))
-        {
-          foreach (var card in player.Cards.Where(c => c.CardNumber == "Ace"))
-          {
-            card.ChangeAceValueToOne();
+            Console.Write($"{card.Display}\n");
           }
         }
 
-        Console.WriteLine($"Total: {player.HandValue}");
+        foreach (var card in player.Hand.Where(hand => hand.Cards.Sum(cv => cv.CardValue) > 21 
+                  && hand.Cards.Any(c => c.CardNumber == "Ace"))
+                  .SelectMany(hand => hand.Cards
+                  .Where(c => c.CardNumber == "Ace")))
+        {
+          card.ChangeAceValueToOne();
+        }
+
+        for (var i = 0; i < player.Hand.Count; i++)
+        {
+          Console.WriteLine($"Hand {i + 1} Total: {player.Hand[i].Value}");
+        }
+        
         Console.WriteLine("------------------------");
         Console.WriteLine();
       }
@@ -59,7 +74,7 @@
       Console.WriteLine("------------------------");
       Console.WriteLine($"Total Decks: {game.Dealer.DeckCount}");
       Console.WriteLine($"Cards Remaining: {game.Dealer.Deck.Count}");
-      Console.WriteLine($"Minimum Bet: {game.Dealer.MinimumBet:C2}");
+      Console.WriteLine($"Minimum Bet: {game.MinimumBet:C2}");
       Console.WriteLine("------------------------");
     }
 
@@ -78,7 +93,12 @@
         if (!p.IsDealer)
         {
           Console.WriteLine($"Money: {p.CurrentMoney:C2}");
-          Console.WriteLine($"Current Bet: {player.CurrentBet:C2}");
+          
+          for (var i = 0; i < p.Hand.Count; i++)
+          {
+            Console.WriteLine($"Hand {i + 1}: {p.Hand[i].CurrentBet:C2}");
+          }
+
           Console.Write("Doubled Down: ");
           Console.Write(player.DoubledDown ? "Yes" : "No");
           Console.WriteLine();
@@ -86,38 +106,44 @@
 
         if (p is { HasInsurance: true, IsDealer: false })
         {
-          Console.WriteLine($"Insurance Bet: {player.CurrentBet / 2:C2}");
+          for (var i = 0; i < p.Hand.Count; i++)
+          {
+            Console.WriteLine($"Hand {i + 1} Insurance Bet: {player.Hand[i].CurrentBet / 2:C2}");
+          }
         }
         
         Console.WriteLine();
+        Console.WriteLine();
+
+        foreach (var hand in p.Hand)
+        {
+          foreach (var card in hand.Cards)
+          {
+            if (p.IsDealer && !dealerFlipped && card == hand.Cards[0])
+            {
+              card.IsFaceDown = true;
+              Console.WriteLine("[Card Face Down]");
+              continue;
+            }
+
+            Console.Write($"{card.Display}");
+          }
+        }
+
+        foreach (var card in player.Hand.Where(hand => hand.Cards.Sum(cv => cv.CardValue) > 21
+                  && hand.Cards.Any(c => c.CardNumber == "Ace"))
+                  .SelectMany(hand => hand.Cards
+                  .Where(c => c.CardNumber == "Ace")))
+        {
+          card.ChangeAceValueToOne();
+        }
+
+        for (var i = 0; i < p.Hand.Count; i++)
+        {
+          Console.WriteLine($"Hand {i + 1} Total: {player.Hand[i].Value}");
+        }
         
-        foreach (var card in p.Cards)
-        {
-          if (p.IsDealer && !dealerFlipped && card == p.Cards[0])
-          {
-            card.IsFaceDown = true;
-
-            Console.WriteLine();
-            Console.WriteLine("[Card Face Down]");
-
-            continue;
-          }
-
-          Console.Write($"{card.Display}");
-          Console.WriteLine();
-        }
-
-        if (p.HandValue > 21 && p.Cards.Any(c => c.CardValue == 11))
-        {
-          foreach (var card in player.Cards.Where(c => c.CardNumber == "Ace"))
-          {
-            card.ChangeAceValueToOne();
-          }
-        }
-
-        Console.WriteLine($"Total: {p.HandValue}");
         Console.WriteLine("------------------------");
-
         Console.WriteLine();
       }
     }
@@ -128,13 +154,12 @@
       Console.WriteLine($"{dealer.Name}");
       Console.WriteLine();
 
-      foreach (var card in dealer.Cards)
+      foreach (var card in dealer.Hand[0].Cards)
       {
         Console.WriteLine($"{card.Display}");
       }
       
-      Console.WriteLine($"Total: {dealer.HandValue}");
-      
+      Console.WriteLine($"Total: {dealer.Hand[0].Value}");
       Console.WriteLine("------------------------");
     }
   }

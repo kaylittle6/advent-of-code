@@ -4,13 +4,11 @@
   {
     public List<Card> Deck { get; private set; } = new();
     public int DeckCount { get; set; }
-    public int MinimumBet { get; set; }
     private bool NeedsReshuffle => GetReshuffle();
 
-    public Dealer(string name, bool isDealer) : base(name, isDealer)
+    public Dealer(string name) : base(name)
     {
       Name = name;
-      IsDealer = isDealer;
     }
     
     private bool GetReshuffle()
@@ -41,13 +39,13 @@
           var randomIndex = random.Next(Deck.Count);
           var randomCard = Deck[randomIndex];
 
-          player.Cards.Add(randomCard);
+          player.Hand[0].Cards.Add(randomCard);
           Deck.RemoveAt(randomIndex);
         }
       }
     }
 
-    public void CollectAntes()
+    public static void CollectAntes()
     {
       var game = Game.GetGameClient;
 
@@ -62,11 +60,11 @@
           Console.Clear();
           Display.ShowTable(false);
           Console.WriteLine();
-          Console.WriteLine($"Minimum bet is {MinimumBet:C2}, would you like to play, {player.Name}?");
+          Console.WriteLine($"Minimum bet is {game.MinimumBet:C2}, would you like to play, {player.Name}?");
           Console.WriteLine();
           Console.WriteLine("Place your bet or type the option you would like:");
           Console.WriteLine();
-          Console.WriteLine($"Place Bet (Minimum: {game.Dealer.MinimumBet:C2})");
+          Console.WriteLine($"Place Bet (Minimum: {game.MinimumBet:C2})");
           Console.WriteLine("Sit this Hand (sit)");
           Console.WriteLine("Leave game (leave)");
           Console.WriteLine();
@@ -88,7 +86,7 @@
 
           if (int.TryParse(response, out var number))
           {
-            if (number < MinimumBet)
+            if (number < game.MinimumBet)
             {
               Console.WriteLine("Please bet more than the minimum");
               Console.WriteLine();
@@ -96,9 +94,8 @@
             }
             else
             {
-              player.PreviousBet = player.CurrentBet;
               player.CurrentMoney -= number;
-              player.CurrentBet = number;
+              player.Hand[0].CurrentBet = number;
               break;
             }
           }
@@ -116,33 +113,36 @@
     {
       if (!player.InHand || player.IsDealer) return;
 
-      Console.Clear();
-      Display.ShowTable(player, false);
-      Console.WriteLine();
-      Console.WriteLine($"The Dealer is showing an Ace, {player.Name}. Would you like insurance?");
-      Console.WriteLine();
-      Console.WriteLine($"Insurance Cost: {player.CurrentBet / 2:C2}");
-      Console.WriteLine();
-
-      string? response;
-      
-      do
+      foreach (var hand in player.Hand)
       {
-        response = Console.ReadLine()?.ToLower();
+        Console.Clear();
+        Display.ShowTable(player, false);
+        Console.WriteLine();
+        Console.WriteLine($"The Dealer is showing an Ace, {player.Name}. Would you like insurance?");
+        Console.WriteLine();
+        Console.WriteLine($"Insurance Cost: {hand.CurrentBet / 2:C2}");
+        Console.WriteLine();
+
+        string? response;
+      
+        do
+        {
+          response = Console.ReadLine()?.ToLower();
         
-        if (response != null)
-        {
-          if (response != "yes") continue;
+          if (response != null)
+          {
+            if (response != "yes") continue;
           
-          player.CurrentMoney -= player.CurrentBet / 2;
-          player.CurrentBet += player.CurrentBet / 2;
-          player.HasInsurance = true;
-        }
-        else
-        {
-          Console.WriteLine("Please select a valid answer");
-        }
-      } while (response != "yes" && response != "no");
+            player.CurrentMoney -= hand.CurrentBet / 2;
+            hand.CurrentBet += hand.CurrentBet / 2;
+            player.HasInsurance = true;
+          }
+          else
+          {
+            Console.WriteLine("Please select a valid answer");
+          }
+        } while (response != "yes" && response != "no");
+      }
     }
 
     public void AskForPlayerOptions(Player player)
@@ -154,73 +154,81 @@
 
       var askAgain = true;
 
-      do
+      foreach (var hand in player.Hand)
       {
-        Console.Clear();
-        Display.ShowTable(player, false);
-        Console.WriteLine();
-        Console.WriteLine($"{player.Name}, here are you options:");
-        Console.WriteLine();
-
-        if (player.Cards.Count == 2)
+        do
         {
-          Console.WriteLine("Double Down");
+          Console.Clear();
+          Display.ShowTable(player, false);
+          Console.WriteLine();
+          Console.WriteLine($"{player.Name}, here are you options:");
+          Console.WriteLine();
 
-          if (player.Cards[0].CardNumber == player.Cards[1].CardNumber)
+          if (hand.Cards.Count == 2)
           {
-            Console.WriteLine("Split");
+            Console.WriteLine("Double Down");
+
+            if (hand.Cards[0].CardNumber == hand.Cards[1].CardNumber)
+            {
+              Console.WriteLine("Split");
+            }
           }
-        }
 
-        Console.WriteLine("Hit");
-        Console.WriteLine("Stand");
-        Console.WriteLine();
+          Console.WriteLine("Hit");
+          Console.WriteLine("Stand");
+          Console.WriteLine();
 
-        var response = Console.ReadLine()?.ToLower();
+          var response = Console.ReadLine()?.ToLower();
 
-        switch (response)
-        {
-          case "double down":
-            RuleBook.DoubleDownBet(player);
-            DoubleDownAction(player);
-            askAgain = false;
-            break;
-          case "split":
-            // Method to Split Cards here
-            break;
-          case "hit":
-            DealCard(player);
-            break;
-          case "stand":
-            return;
-        }
+          switch (response)
+          {
+            case "double down":
+              RuleBook.DoubleDownBet(player, hand);
+              DoubleDownAction(player, hand);
+              askAgain = false;
+              break;
+            case "split":
+              // Method to Split Cards here
+              break;
+            case "hit":
+              DealCard(hand);
+              break;
+            case "stand":
+              return;
+          }
 
-        var handResult = RuleBook.CheckHand(player);
+          var handResult = RuleBook.CheckHand(hand);
 
-        Console.Clear();
-        Display.ShowTable(player, false);
+          Console.Clear();
+          Display.ShowTable(player, false);
         
-        switch (handResult)
-        {
-          case RuleBook.HandResult.HandBlackjack:
-            Console.WriteLine($"{player.Name}, you have 21, very nice!");
-            Console.WriteLine();
-            askAgain = false;
-            Thread.Sleep(3000);
-            break;
-          case RuleBook.HandResult.HandBusted:
-            Console.WriteLine($"{player.Name}, you busted! You lose ${player.CurrentBet}");
-            Console.WriteLine();
-            askAgain = false;
-            RuleBook.ResetPlayer(player);
-            Thread.Sleep(4000);
-            break;
-          case RuleBook.HandResult.HandValid:
-            break;
-          default:
-            throw new ArgumentOutOfRangeException();
-        }
-      } while (askAgain);
+          switch (handResult)
+          {
+            case RuleBook.HandResult.HandBlackjack:
+              Console.WriteLine($"{player.Name}, you have 21, very nice!");
+              Console.WriteLine();
+              askAgain = false;
+              Thread.Sleep(3000);
+              break;
+            case RuleBook.HandResult.HandBusted:
+              Console.WriteLine($"{player.Name}, you busted! You lose ${hand.CurrentBet}");
+              Console.WriteLine();
+              askAgain = false;
+              RuleBook.ResetPlayer(player, hand);
+              Thread.Sleep(4000);
+              break;
+            case RuleBook.HandResult.HandValid:
+              break;
+            default:
+              throw new ArgumentOutOfRangeException();
+          }
+        } while (askAgain);
+      }
+    }
+
+    public void PlaySplitHands()
+    {
+      
     }
     
     public void DealerAction()
@@ -233,16 +241,16 @@
         Console.WriteLine();
         Console.WriteLine("Dealer hitting...");
         Thread.Sleep(3000);
-        DealCard(this);
-        RuleBook.ReduceAceValueToOne(this);
+        DealCard(Hand[0]);
+        RuleBook.ReduceAceValueToOne(Hand[0]);
         Console.Clear();
         Display.ShowDealersActions(this);
         Thread.Sleep(4000);
         Console.Clear();
-      } while (HandValue < 17);
+      } while (Hand[0].Value < 17);
     }
 
-    public void DoubleDownAction(Player player)
+    private void DoubleDownAction(Player player, Hand hand)
     {
       Console.Clear();
 
@@ -250,7 +258,7 @@
       Console.WriteLine();
       Console.WriteLine("It's a double down! Here it comes...");
       Thread.Sleep(3000);
-      DealCard(player);
+      DealCard(hand);
       Console.Clear();
       Display.ShowTable(player, false);
       Thread.Sleep(3000);
@@ -259,7 +267,7 @@
 
     public void FinishUpRound(IEnumerable<Player> players)
     {
-      Cards.Clear();
+      Hand[0].Cards.Clear();
         
       if (NeedsReshuffle)
       {
@@ -292,12 +300,12 @@
       }
     }
     
-    private void DealCard(Player player)
+    private void DealCard(Hand hand)
     {
       var randomIndex = new Random().Next(Deck.Count);
       var randomCard = Deck[randomIndex];
-
-      player.Cards.Add(randomCard);
+      
+      hand.Cards.Add(randomCard);
       Deck.RemoveAt(randomIndex);
     }
   }
