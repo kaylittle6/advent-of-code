@@ -104,41 +104,49 @@
         // Check if Dealer has Blackjack
         if (Dealer.Cards.Any(c => c is { CardValue: 11, IsFaceDown: false }))
         {
-          Dealer.FlipFaceDownCard();
-          
+          Console.Clear();
+
           foreach (var player in Players)
           {
             Display.ShowTable(player, true);
             Dealer.OfferInsurance(player);
           }
 
-          foreach (var player in Players)
+          if (Dealer.Cards[0].CardValue == 10)
           {
-            switch (Dealer.HasBlackJack)
+            Dealer.Cards[0].IsFaceDown = false;
+            Console.Clear();
+            Display.ShowTable(true);
+            Console.WriteLine();
+            Console.WriteLine("The Dealer has Blackjack, let's look at the Players");
+            Thread.Sleep(3000);
+
+            foreach (var player in Players)
             {
-              case true when player is { HasBlackJack: false, HasInsurance: true }:
+              if (player is { HasBlackJack: false, HasInsurance: true })
+              {
                 Console.WriteLine();
-                Console.WriteLine($"The Dealer has Blackjack, {player.Name}");
-                Console.WriteLine();
-                Console.WriteLine($"{player.Name} has Insurance, though! They win {player.CurrentBet / 2} dollars");
+                Console.WriteLine($"{player.Name} has Insurance! Smart. You win {player.CurrentBet / 2} dollars");
                 player.CurrentMoney += player.CurrentBet / 2;
                 RuleBook.ResetPlayer(player);
                 Thread.Sleep(4000);
-                break;
-              case true when player is { HasBlackJack: false, HasInsurance: false }:
-                Console.WriteLine();
-                Console.WriteLine($"The Dealer has Blackjack, {player.Name}");
+              }
+              if (player is { HasBlackJack: false, HasInsurance: false })
+              {
                 Console.WriteLine();
                 Console.WriteLine($"Sorry, {player.Name}. You don't have Insurance. You lose.");
                 RuleBook.ResetPlayer(player);
                 Thread.Sleep(4000);
-                break;
+              }
+              if (player.HasBlackJack)
+              {
+                RuleBook.CheckAndResolveBlackJack(true);
+              }
             }
           }
-          RuleBook.CheckAndResolveBlackJack();
         }
 
-        RuleBook.CheckAndResolveBlackJack();
+        RuleBook.CheckAndResolveBlackJack(false);
         
         foreach (var player in Players)
         {
@@ -154,15 +162,20 @@
           Thread.Sleep(4000);
           continue;
         }
-        
-        foreach (var card in Dealer.Cards.Where(card => card is { IsFaceDown: true }))
-        {
-          Dealer.FlipFaceDownCard();
-        }
+
+        Dealer.Cards[0].IsFaceDown = false;
         
         if (Dealer.HandValue < 17)
         {
           Dealer.DealerAction();
+        }
+        else
+        {
+          Console.Clear();
+          Display.ShowTable(true);
+          Console.WriteLine();
+          Console.WriteLine($"Dealer stands with {Dealer.HandValue}");
+          Thread.Sleep(4000);
         }
 
         var dealerResult = RuleBook.CheckHand(Dealer);
@@ -214,9 +227,7 @@
         Dealer.RemoveBrokeAssPlayers(Players);
         Dealer.FinishUpRound(Players);
         
-      } while (Players.Any());
-      
-      
+      } while (Players.Any(player => !player.IsDealer));
     }
   }
 }

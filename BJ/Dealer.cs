@@ -27,7 +27,7 @@
         .SelectMany(card => Enumerable.Repeat(card, numberOfDecks))
         .ToList();
       
-      ShuffleDeck();
+      Deck = Deck.OrderBy(_ => Guid.NewGuid()).ToList();
     }
 
     public void DealStartingCards(IEnumerable<Player> players)
@@ -132,18 +132,11 @@
         
         if (response != null)
         {
-          if (response == "yes")
-          {
-            player.CurrentMoney -= player.CurrentBet / 2;
-            player.CurrentBet += player.CurrentBet / 2;
-            player.HasInsurance = true;
-          }
-          else
-          {
-            Console.WriteLine();
-            Console.WriteLine("Fine then");
-            Thread.Sleep(4000); 
-          }
+          if (response != "yes") continue;
+          
+          player.CurrentMoney -= player.CurrentBet / 2;
+          player.CurrentBet += player.CurrentBet / 2;
+          player.HasInsurance = true;
         }
         else
         {
@@ -189,7 +182,7 @@
         {
           case "double down":
             RuleBook.DoubleDownBet(player);
-            DealCard(player);
+            DoubleDownAction(player);
             askAgain = false;
             break;
           case "split":
@@ -210,15 +203,13 @@
         switch (handResult)
         {
           case RuleBook.HandResult.HandBlackjack:
-            Console.WriteLine($"{player.Name}, you have 21! They win ${player.CurrentBet * 2.5m}");
+            Console.WriteLine($"{player.Name}, you have 21, very nice!");
             Console.WriteLine();
             askAgain = false;
-            RuleBook.WinStandardBet(player);
-            RuleBook.ResetPlayer(player);
-            Thread.Sleep(4000);
+            Thread.Sleep(3000);
             break;
           case RuleBook.HandResult.HandBusted:
-            Console.WriteLine($"{player.Name}, you busted! They lose ${player.CurrentBet}");
+            Console.WriteLine($"{player.Name}, you busted! You lose ${player.CurrentBet}");
             Console.WriteLine();
             askAgain = false;
             RuleBook.ResetPlayer(player);
@@ -251,6 +242,21 @@
       } while (HandValue < 17);
     }
 
+    public void DoubleDownAction(Player player)
+    {
+      Console.Clear();
+
+      Display.ShowTable(player, false);
+      Console.WriteLine();
+      Console.WriteLine("It's a double down! Here it comes...");
+      Thread.Sleep(3000);
+      DealCard(player);
+      Console.Clear();
+      Display.ShowTable(player, false);
+      Thread.Sleep(3000);
+      Console.Clear();
+    }
+
     public void FinishUpRound(IEnumerable<Player> players)
     {
       Cards.Clear();
@@ -266,13 +272,20 @@
       }
     }
 
-    public void RemoveBrokeAssPlayers(List<Player> players)
+    public static void RemoveBrokeAssPlayers(List<Player> players)
     {
       for (var i = 0; i < players.Count; i++)
       {
         var player = players[i];
 
-        if (player is { IsDealer: true, CurrentMoney: > 0 }) continue;
+        if (player.IsDealer || player.CurrentMoney > 0) continue;
+        
+        Console.Clear();
+        Display.ShowTable(player, false);
+        Console.WriteLine();
+        Console.WriteLine($"{player.Name}, you're broke. Get outta here");
+        Console.WriteLine();
+        Thread.Sleep(4000);
         
         players.RemoveAt(i);
         i--;
@@ -286,17 +299,6 @@
 
       player.Cards.Add(randomCard);
       Deck.RemoveAt(randomIndex);
-    }
-
-    public void FlipFaceDownCard()
-    {
-      Cards.Where(card => card.IsFaceDown).ToList().ForEach(card => card.IsFaceDown = false);
-      Console.Clear();
-    }
-
-    private void ShuffleDeck()
-    {
-      Deck = Deck.OrderBy(_ => Guid.NewGuid()).ToList();
     }
   }
 }

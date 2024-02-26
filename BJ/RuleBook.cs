@@ -9,21 +9,19 @@
       HandBlackjack
     }
     
-    public static void CheckAndResolveBlackJack()
+    public static void CheckAndResolveBlackJack(bool dealerFlipped)
     {
       var game = Game.GetGameClient;
 
-      foreach (var player in game.Players.Where(p => p is { InHand: true, HasBlackJack: true }))
+      foreach (var player in game.Players.Where(p => p is { IsDealer: false, InHand: true, HasBlackJack: true }))
       {
         WinBlackJackBet(player);
 
         Console.Clear();
-        Display.ShowTable(false);
+        Display.ShowTable(dealerFlipped);
         Console.WriteLine();
-        Console.WriteLine();
-        Console.WriteLine($"{player.Name} has Blackjack! They win ${player.CurrentBet * 1.5m}");
+        Console.WriteLine($"{player.Name} has Blackjack! They win ${player.CurrentBet * 2.5m}");
         Thread.Sleep(5000);
-        Display.ShowTable(false);
         ResetPlayer(player);
       }
     }
