@@ -13,80 +13,63 @@
     {
       var game = Game.GetGameClient;
 
-      foreach (var player in game.Players.Where(p => p is { IsDealer: false, InHand: true, HasBlackJack: true }))
+      foreach (var player in game.Players.Where(player => player is { IsDealer: false, InHand: true }))
       {
-        WinBlackJackBet(player);
-
-        Console.Clear();
-        Display.ShowTable(dealerFlipped);
-        Console.WriteLine();
-        Console.WriteLine($"{player.Name} has Blackjack! They win ${player.CurrentBet * 2.5m}");
-        Thread.Sleep(5000);
-        ResetPlayer(player);
+        foreach (var hand in player.Hand.Where(hand => hand.HasBlackJack))
+        {
+          Console.Clear();
+          Display.ShowTable(dealerFlipped);
+          Console.WriteLine();
+          Console.WriteLine($"{player.Name} has Blackjack! They win ${hand.CurrentBet * 2.5m}");
+          player.CurrentMoney += hand.CurrentBet * 2.5m;
+          player.InHand = false;
+          Thread.Sleep(4000);
+        }
       }
     }
     
-    public static void WinStandardBet(Player player)
+    public static void WinBet(Player player, Hand hand)
     {
-      player.CurrentMoney += player.CurrentBet * 2;
+      player.CurrentMoney += hand.DoubledDown ? hand.CurrentBet * 4 : hand.CurrentBet * 2;
     }
     
-    private static void WinBlackJackBet(Player player)
-    {
-      player.CurrentMoney += player.CurrentBet * 2.5m;
-    }
-
-    public static void PushBet(Player player)
-    {
-      player.CurrentMoney += player.CurrentBet;
-    }
-
-    public static void DoubleDownBet(Player player)
-    {
-      player.CurrentMoney -= player.CurrentBet;
-      player.DoubledDown = true;
-    }
-    
-    public static HandResult CheckHand(Player player)
+    public static HandResult CheckHand(Hand hand)
     {
       do
       {
-        if (player.Cards.Any(c => c is { CardValue: 11 }))
+        if (hand.Cards.Any(c => c is { CardValue: 11 }))
         {
-          player.Cards.First(c => c is { CardValue: 11 }).ChangeAceValueToOne();
+          hand.Cards.First(c => c is { CardValue: 11 }).ChangeAceValueToOne();
         }
 
-        switch (player.HandValue)
+        switch (hand.Value)
         {
           case 21:
             return HandResult.HandBlackjack;
           case > 21:
             return HandResult.HandBusted;
         }
-      } while (player.Cards.Any(c => c is { CardValue: 11 }));
+      } while (hand.Cards.Any(c => c is { CardValue: 11 }));
 
       return HandResult.HandValid;
     }
 
-    public static void ReduceAceValueToOne(Player player)
+    public static void ReduceAceValueToOne(Hand hand)
     {
       do
       {
-        if (player.Cards.Any(c => c is { CardValue: 11 }) && player.HandValue > 21)
+        if (hand.Cards.Any(c => c is { CardValue: 11 }) && hand.Value > 21)
         {
-          player.Cards.First(c => c is { CardValue: 11 }).ChangeAceValueToOne();
+          hand.Cards.First(c => c is { CardValue: 11 }).ChangeAceValueToOne();
         }
-      } while (player.Cards.Any(c => c is { CardValue: 11 }));
+      } while (hand.Cards.Any(c => c is { CardValue: 11 }));
     }
     
     public static void ResetPlayer(Player player)
     {
       player.InHand = false;
       player.HasInsurance = false;
-      player.DoubledDown = false;
-      player.PreviousBet = player.CurrentBet;
-      player.CurrentBet = 0;
-      player.Cards.Clear();
+      player.Hand.Clear();
     }
   }
 }
