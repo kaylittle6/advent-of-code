@@ -20,7 +20,7 @@
 
           if (player.Hand.Count < 2)
           {
-            Console.WriteLine($"Current Bet: {player.Hand[0].CurrentBet:C2}");
+            Console.WriteLine($"Current Bet: {player.Hand[0]?.CurrentBet:C2}");
           }
           else
           {
@@ -46,11 +46,15 @@
           }
         }
 
-        foreach (var hand in player.Hand)
+        Console.WriteLine();
+        
+        for (var i = 0; i < player.Hand.Count; i++)
         {
-          foreach (var card in hand.Cards)
+          Console.WriteLine(player.Hand.Count > 1 ? $"Hand {i + 1}: " : "Player's Cards: ");
+
+          foreach (var card in player.Hand[i].Cards)
           {
-            if (player.IsDealer && !dealerFlipped && card == hand.Cards[0])
+            if (player.IsDealer && !dealerFlipped && card == player.Hand[i].Cards[0])
             {
               card.IsFaceDown = true;
               Console.WriteLine("[Face Down]");
@@ -59,9 +63,9 @@
 
             Console.Write($"{card.Display}\n");
           }
+
+          Console.WriteLine();
         }
-        
-        Console.WriteLine();
         
         foreach (var card in player.Hand.Where(hand => hand.Cards.Sum(cv => cv.CardValue) > 21 
                   && hand.Cards.Any(c => c.CardNumber == "Ace"))
@@ -137,12 +141,16 @@
             }
           }
         }
+
+        Console.WriteLine();
         
-        foreach (var hand in p.Hand)
+        for (var i = 0; i < p.Hand.Count; i++)
         {
-          foreach (var card in hand.Cards)
+          Console.WriteLine(p.Hand.Count > 1 ? $"Hand {i + 1}: " : "Player's Cards: ");
+
+          foreach (var card in p.Hand[i].Cards)
           {
-            if (p.IsDealer && !dealerFlipped && card == hand.Cards[0])
+            if (p.IsDealer && !dealerFlipped && card == p.Hand[i].Cards[0])
             {
               card.IsFaceDown = true;
               Console.WriteLine("[Face Down]");
@@ -151,9 +159,9 @@
 
             Console.Write($"{card.Display}\n");
           }
+
+          Console.WriteLine();
         }
-        
-        Console.WriteLine();
         
         foreach (var card in player.Hand.Where(hand => hand.Cards.Sum(cv => cv.CardValue) > 21
                   && hand.Cards.Any(c => c.CardNumber == "Ace"))

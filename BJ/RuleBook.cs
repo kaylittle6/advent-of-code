@@ -30,7 +30,7 @@
     
     public static void WinBet(Player player, Hand hand)
     {
-      player.CurrentMoney += hand.DoubledDown ? hand.CurrentBet * 2 : hand.CurrentBet * 2.5m;
+      player.CurrentMoney += hand.DoubledDown ? hand.CurrentBet * 4 : hand.CurrentBet * 2;
     }
     
     public static HandResult CheckHand(Hand hand)

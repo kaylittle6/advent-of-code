@@ -183,6 +183,7 @@
         }
 
         var dealerResult = RuleBook.CheckHand(Dealer.Hand[0]);
+        
 
         if (dealerResult == RuleBook.HandResult.HandBusted)
         {
@@ -190,15 +191,18 @@
           {
             foreach (var hand in player.Hand)
             {
+              var winnings = hand.DoubledDown ? hand.CurrentBet * 2.5m : hand.CurrentBet * 2;
+              
               Console.Clear();
               Display.ShowTable(player, true);
               Console.WriteLine($"The Dealer busted, {player.Name}.");
               Console.WriteLine();
-              Console.WriteLine($"You win {hand.CurrentBet * 2:C2} dollars this hand.");
+              Console.WriteLine($"You win {winnings:C2} dollars this hand.");
               RuleBook.WinBet(player, hand);
-              RuleBook.ResetPlayer(player);
               Thread.Sleep(4000);
             }
+            
+            RuleBook.ResetPlayer(player);
           }
         }
 
@@ -235,7 +239,7 @@
           player.InHand = false;
         }
 
-        foreach (var p in Players) { RuleBook.ResetPlayer(p);}
+        foreach (var p in Players.Where(p => !p.IsDealer)) { RuleBook.ResetPlayer(p);}
         
         Dealer.RemoveBrokeAssPlayers(Players);
         Dealer.FinishUpRound(Players);

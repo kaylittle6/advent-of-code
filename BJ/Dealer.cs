@@ -153,6 +153,7 @@
       }
 
       var askAgain = true;
+      var response = "";
 
       foreach (var hand in player.Hand)
       {
@@ -178,12 +179,13 @@
           Console.WriteLine("Stand");
           Console.WriteLine();
 
-          var response = Console.ReadLine()?.ToLower();
+          response = Console.ReadLine()?.ToLower();
 
           switch (response)
           {
             case "double down":
               player.CurrentMoney -= hand.CurrentBet;
+              hand.CurrentBet *= 2;
               hand.DoubledDown = true;
               DoubleDownAction(player, hand);
               askAgain = false;
@@ -195,7 +197,8 @@
               DealCard(hand);
               break;
             case "stand":
-              return;
+              askAgain = false;
+              break;
           }
 
           var handResult = RuleBook.CheckHand(hand);
@@ -217,25 +220,29 @@
               askAgain = false;
               Thread.Sleep(4000);
               break;
-            case RuleBook.HandResult.HandValid:
-              break;
-            default:
-              throw new ArgumentOutOfRangeException();
           }
         } while (askAgain);
       }
-      
-      RuleBook.ResetPlayer(player);
+
+      if (response != "stand")
+      {
+        RuleBook.ResetPlayer(player);
+      }
     }
 
     private void PlaySplitHands(Player player, Hand hand)
     {
-      var nextHand = player.Hand.Count;
-      player.Hand[nextHand] = new Hand();
-      player.Hand[nextHand].Cards.Add(hand.Cards[1]);
+      var newHand = new Hand
+      {
+        CurrentBet = hand.CurrentBet
+      };
+
+      player.CurrentMoney -= newHand.CurrentBet;
+      player.Hand.Add(newHand);
+      newHand.Cards.Add(hand.Cards[1]);
       hand.Cards.RemoveAt(1);
       
-      DealCard(player.Hand[nextHand]);
+      DealCard(newHand);
       DealCard(hand);
       
       AskForPlayerOptions(player);
@@ -277,7 +284,8 @@
 
     public void FinishUpRound(IEnumerable<Player> players)
     {
-      Hand[0].Cards.Clear();
+      Hand.Clear();
+      Hand = new List<Hand> { new() };
         
       if (NeedsReshuffle)
       {
@@ -287,6 +295,8 @@
       foreach (var player in players.Where(p => !p.IsDealer))
       {
         player.InHand = true;
+        player.Hand.Clear();
+        player.Hand = new List<Hand> { new() };
       }
     }
 
