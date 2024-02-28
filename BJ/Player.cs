@@ -8,7 +8,6 @@
     public bool IsDealer => Name == "Dealer"; 
     public bool InHand { get; set; } = true;
     public bool HasInsurance { get; set; }
-    public bool DoubledDown { get; set; }
 
     public Player(string name)
     {

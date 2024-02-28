@@ -183,13 +183,14 @@
           switch (response)
           {
             case "double down":
-              RuleBook.DoubleDownBet(player, hand);
+              player.CurrentMoney -= hand.CurrentBet;
+              hand.DoubledDown = true;
               DoubleDownAction(player, hand);
               askAgain = false;
               break;
             case "split":
-              // Method to Split Cards here
-              break;
+              PlaySplitHands(player, hand);
+              return;
             case "hit":
               DealCard(hand);
               break;
@@ -214,7 +215,6 @@
               Console.WriteLine($"{player.Name}, you busted! You lose ${hand.CurrentBet}");
               Console.WriteLine();
               askAgain = false;
-              RuleBook.ResetPlayer(player, hand);
               Thread.Sleep(4000);
               break;
             case RuleBook.HandResult.HandValid:
@@ -224,11 +224,21 @@
           }
         } while (askAgain);
       }
+      
+      RuleBook.ResetPlayer(player);
     }
 
-    public void PlaySplitHands()
+    private void PlaySplitHands(Player player, Hand hand)
     {
+      var nextHand = player.Hand.Count;
+      player.Hand[nextHand] = new Hand();
+      player.Hand[nextHand].Cards.Add(hand.Cards[1]);
+      hand.Cards.RemoveAt(1);
       
+      DealCard(player.Hand[nextHand]);
+      DealCard(hand);
+      
+      AskForPlayerOptions(player);
     }
     
     public void DealerAction()

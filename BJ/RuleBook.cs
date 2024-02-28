@@ -17,37 +17,20 @@
       {
         foreach (var hand in player.Hand.Where(hand => hand.HasBlackJack))
         {
-          WinBlackJackBet(player, hand);
-
           Console.Clear();
           Display.ShowTable(dealerFlipped);
           Console.WriteLine();
           Console.WriteLine($"{player.Name} has Blackjack! They win ${hand.CurrentBet * 2.5m}");
+          player.CurrentMoney += hand.CurrentBet * 2.5m;
+          player.InHand = false;
           Thread.Sleep(4000);
-          ResetPlayer(player, hand);
         }
       }
     }
     
-    public static void WinStandardBet(Player player, Hand hand)
+    public static void WinBet(Player player, Hand hand)
     {
-      player.CurrentMoney += hand.CurrentBet * 2;
-    }
-    
-    private static void WinBlackJackBet(Player player, Hand hand)
-    {
-      player.CurrentMoney += hand.CurrentBet * 2.5m;
-    }
-
-    public static void PushBet(Player player, Hand hand)
-    {
-      player.CurrentMoney += hand.CurrentBet;
-    }
-
-    public static void DoubleDownBet(Player player, Hand hand)
-    {
-      player.CurrentMoney -= hand.CurrentBet;
-      player.DoubledDown = true;
+      player.CurrentMoney += hand.DoubledDown ? hand.CurrentBet * 2 : hand.CurrentBet * 2.5m;
     }
     
     public static HandResult CheckHand(Hand hand)
@@ -82,13 +65,11 @@
       } while (hand.Cards.Any(c => c is { CardValue: 11 }));
     }
     
-    public static void ResetPlayer(Player player, Hand hand)
+    public static void ResetPlayer(Player player)
     {
       player.InHand = false;
       player.HasInsurance = false;
-      player.DoubledDown = false;
-      hand.CurrentBet = 0;
-      hand.Cards.Clear();
+      player.Hand.Clear();
     }
   }
 }

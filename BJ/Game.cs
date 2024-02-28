@@ -119,33 +119,33 @@
             Console.Clear();
             Display.ShowTable(true);
             Console.WriteLine();
-            Console.WriteLine("The Dealer has Blackjack, let's look at the Players");
-            Thread.Sleep(3000);
+            Console.WriteLine("The Dealer has Blackjack, let's look at the Players...");
+            Thread.Sleep(4000);
 
             foreach (var player in Players)
             {
               foreach (var hand in player.Hand)
               {
-                if (!hand.HasBlackJack && player.HasInsurance)
+                switch (hand.HasBlackJack)
                 {
-                  Console.WriteLine();
-                  Console.WriteLine($"{player.Name} has Insurance! Smart. You win {hand.CurrentBet / 2} dollars");
-                  player.CurrentMoney += hand.CurrentBet / 2;
-                  RuleBook.ResetPlayer(player, hand);
-                  Thread.Sleep(4000);
-                }
-                if (!hand.HasBlackJack && !player.HasInsurance)
-                {
-                  Console.WriteLine();
-                  Console.WriteLine($"Sorry, {player.Name}. You don't have Insurance. You lose.");
-                  RuleBook.ResetPlayer(player, hand);
-                  Thread.Sleep(4000);
-                }
-                if (hand.HasBlackJack)
-                {
-                  RuleBook.CheckAndResolveBlackJack(true);
+                  case false when player.HasInsurance:
+                    Console.WriteLine();
+                    Console.WriteLine($"{player.Name} has Insurance! Smart. You win {hand.CurrentBet / 2:C2} dollars");
+                    player.CurrentMoney += hand.CurrentBet / 2;
+                    Thread.Sleep(4000);
+                    continue;
+                  case false when !player.HasInsurance:
+                    Console.WriteLine();
+                    Console.WriteLine($"Sorry, {player.Name}. You don't have Insurance. You lose.");
+                    Thread.Sleep(4000);
+                    break;
+                  case true:
+                    RuleBook.CheckAndResolveBlackJack(true);
+                    break;
                 }
               }
+              
+              RuleBook.ResetPlayer(player);
             }
           }
         }
@@ -176,7 +176,7 @@
         else
         {
           Console.Clear();
-          Display.ShowTable(true);
+          Display.ShowDealersActions(Dealer);
           Console.WriteLine();
           Console.WriteLine($"Dealer stands with {Dealer.Hand[0].Value}");
           Thread.Sleep(4000);
@@ -195,8 +195,8 @@
               Console.WriteLine($"The Dealer busted, {player.Name}.");
               Console.WriteLine();
               Console.WriteLine($"You win {hand.CurrentBet * 2:C2} dollars this hand.");
-              RuleBook.WinStandardBet(player, hand);
-              RuleBook.ResetPlayer(player, hand);
+              RuleBook.WinBet(player, hand);
+              RuleBook.ResetPlayer(player);
               Thread.Sleep(4000);
             }
           }
@@ -206,6 +206,8 @@
         {
           foreach (var hand in player.Hand)
           {
+            var winnings = hand.DoubledDown ? hand.CurrentBet * 2.5m : hand.CurrentBet * 2;
+            
             Console.Clear();
             Display.ShowTable(player, true);
             Console.WriteLine($"Dealer has {Dealer.Hand[0].Value}, you have {hand.Value}, {player.Name}.");
@@ -213,26 +215,27 @@
           
             if (hand.Value > Dealer.Hand[0].Value)
             {
-              Console.WriteLine($"You win {hand.CurrentBet * 2:C2} dollars this hand!");
-              RuleBook.WinStandardBet(player, hand);
-              RuleBook.ResetPlayer(player, hand);
+              Console.WriteLine($"You win {winnings:C2} dollars this hand!");
+              RuleBook.WinBet(player, hand);
               Thread.Sleep(4000);
             }
             else if (hand.Value < Dealer.Hand[0].Value)
             {
-              Console.WriteLine($"You lose. {hand.CurrentBet:C2} total in fact.");
-              RuleBook.ResetPlayer(player, hand);
+              Console.WriteLine($"You lose. {winnings:C2} total in fact.");
               Thread.Sleep(4000);
             }
             else
             {
               Console.WriteLine($"Push. You get your money back, all {hand.CurrentBet:C2}.");
-              RuleBook.PushBet(player, hand);
-              RuleBook.ResetPlayer(player, hand);
+              player.CurrentMoney += hand.CurrentBet;
               Thread.Sleep(4000);
             }
           }
+
+          player.InHand = false;
         }
+
+        foreach (var p in Players) { RuleBook.ResetPlayer(p);}
         
         Dealer.RemoveBrokeAssPlayers(Players);
         Dealer.FinishUpRound(Players);
