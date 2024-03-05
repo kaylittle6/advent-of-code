@@ -1,18 +1,18 @@
 ﻿public class Program
 {
-  public int CurrentTotal { get; set; } = 0;
-  public int Highest { get; set; } = 0;
-  public int SecondHighest { get; set; } = 0;
-  public int ThirdHighest { get; set; } = 0;
-  public int TopThreeTotal => Highest + SecondHighest + ThirdHighest;
+  private int CurrentTotal { get; set; } = 0;
+  private int Highest { get; set; } = 0;
+  private int SecondHighest { get; set; } = 0;
+  private int ThirdHighest { get; set; } = 0;
+  private int TopThreeTotal => Highest + SecondHighest + ThirdHighest;
 
   public static void Main(string[] args)
   {
-    string[] input = File.ReadAllLines("C:\\Users\\klittle\\source\\vscPractice\\advent-of-code\\2022\\Day1\\csharp\\calories\\calories\\input.txt");
+    var input = File.ReadAllLines("C:\\Users\\klittle\\source\\vscPractice\\advent-of-code\\2022\\Day1\\csharp\\calories\\calories\\input.txt");
 
     Program totals = new();
 
-    foreach (string line in input)
+    foreach (var line in input)
     {
       if (string.IsNullOrEmpty(line))
       {

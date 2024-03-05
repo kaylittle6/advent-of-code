@@ -4,7 +4,11 @@
   {
     public static void Main(string[] args)
     {
-      Console.WriteLine("Hello World!");
+      var gameClient = Game.GetGameClient;
+      
+      gameClient.StartNewGame();
+
+      Console.ReadLine();
     }
   }
 }
