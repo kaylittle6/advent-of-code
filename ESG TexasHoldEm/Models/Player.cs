@@ -7,6 +7,7 @@ public class Player(string? name, int money) : IPlayer
   public string? Name { get; set; } = name;
   public List<Card> Hand { get; set; } = [];
   public decimal Money { get; set; } = money;
-  public decimal CurrentBet { get; set; } = 0;
+  public decimal CurrentBet { get; set; }
   public bool InHand { get; set; } = true;
+  public bool IsNpc { get; set; }
 }

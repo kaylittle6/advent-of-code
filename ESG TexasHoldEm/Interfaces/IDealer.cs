@@ -10,7 +10,7 @@ namespace TexasHoldEm.Interfaces
     int HandsPlayed { get; set; }
     void CollectBets();
     void DealHoleCards();
-    void RoundOfBets(List<Player> players, GameStates gameState);
+    void RoundOfBets(List<Player> players);
     void DealFlop();
     void DealTurnOrRiver();
     void FinishUpRound(List<Player> players);

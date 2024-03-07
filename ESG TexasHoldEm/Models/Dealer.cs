@@ -33,27 +33,27 @@ namespace TexasHoldEm.Models
       Thread.Sleep(3000);
     }
     
-    public void DealHoleCards()
-    {
-      foreach (var player in Table.Players)
-      {
-        DealCards(hand: player.Hand, 2);
-      }
-    }
-    
-    public void RoundOfBets(List<Player> players, GameStates gameState)
+    public void RoundOfBets(List<Player> players)
     {
       
     }
     
+    public void DealHoleCards()
+    {
+      foreach (var player in Table.Players)
+      {
+        DealCards(player.Hand, 2);
+      }
+    }
+    
     public void DealFlop()
     {
-      throw new NotImplementedException();
+      DealCards(Table.CommunityCards, 3);
     }
     
     public void DealTurnOrRiver()
     {
-      throw new NotImplementedException();
+      DealCards(Table.CommunityCards, 1);
     }
   
     public void FinishUpRound(List<Player> players)
@@ -66,7 +66,7 @@ namespace TexasHoldEm.Models
       throw new NotImplementedException();
     }
 
-    private void DealCards(ICollection<Card> hand, int cardsToDeal)
+    private void DealCards(List<Card> hand, int cardsToDeal)
     {
       for (var i = 0; i < cardsToDeal; i++)
       {

@@ -9,6 +9,7 @@ namespace TexasHoldEm.Interfaces
     decimal Money { get; set; }
     decimal CurrentBet { get; set; }
     bool InHand { get; set; }
+    bool IsNpc { get; set; }
   }
 }
 

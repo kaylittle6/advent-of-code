@@ -14,26 +14,39 @@ namespace TexasHoldEm
     public void StartNewGame()
     {
       Console.Clear();
-      Console.WriteLine("How many players will play? (2-4)\n");
-      var amountOfPlayers = GetUserInput(1, 4);
-
+      Console.WriteLine($"What is your player's name?\n");
+      
+      var playerName = Console.ReadLine();
+      
+      while (string.IsNullOrEmpty(playerName))
+      {
+        Console.Clear();
+        Console.WriteLine($"Please select a valid name.\n");
+        playerName = Console.ReadLine();
+      }
+      
+      Console.Clear();
+      Console.WriteLine("How many opponents will play against? (1-3)\n");
+      var amountOfPlayers = GetUserInput(1, 3);
+      
       Console.Clear();
       Console.WriteLine("How much money will each player start with? ($1m Maximum)\n");
       var startingMoney = GetUserInput(1, 1000000);
+      
+      Dealer.Table.Players.Add(new Player(playerName, startingMoney) { IsNpc = false });
 
       for (var i = 0; i < amountOfPlayers; i++)
       {
-        string? playerName;
+        string npcName;
+        
         do
         {
-          Console.Clear();
-          Console.WriteLine($"What is player {i + 1}'s name?\n");
-          playerName = Console.ReadLine();
-        } while (string.IsNullOrEmpty(playerName));
+          npcName = PlayerNames.PickName();
+        } while (Dealer.Table.Players.Any(p => p.Name == npcName));
 
-        Dealer.Table.Players.Add(new Player(playerName, startingMoney));
+        Dealer.Table.Players.Add(new Player(npcName, startingMoney) { IsNpc = true });
       }
-
+      
       Console.Clear();
       Console.WriteLine($"How much will the Small Blind start at?\n");
       var smallBlind = GetUserInput(1, startingMoney / 2);

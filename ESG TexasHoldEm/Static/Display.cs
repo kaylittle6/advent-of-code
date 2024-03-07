@@ -17,11 +17,19 @@ namespace TexasHoldEm.Static
         Console.WriteLine($"Bank: {player.Money:C2}");
         Console.WriteLine($"Current Bet:{player.CurrentBet:C2}\n");
 
-        foreach (var card in player.Hand)
+        if (!player.IsNpc)
         {
-          Console.WriteLine($"{card.Display}");
+          foreach (var card in player.Hand)
+          {
+            Console.WriteLine($"{card.Display}");
+          }
         }
-
+        else
+        {
+          Console.WriteLine("Card Hidden");
+          Console.WriteLine("Card Hidden");
+        }
+        
         Console.WriteLine("----------\n\n");
       }
     }
