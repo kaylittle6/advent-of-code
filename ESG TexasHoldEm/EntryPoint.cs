@@ -7,8 +7,10 @@
       var gameClient = Game.GetGameClient;
       
       gameClient.StartNewGame();
-
+      gameClient.CommenceRound();
+      
       Console.ReadLine();
+      
     }
   }
 }

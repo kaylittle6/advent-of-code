@@ -7,12 +7,9 @@ namespace TexasHoldEm.Interfaces
     List<Player> Players { get; }
     List<int> SidePots { get; }
     decimal SmallBlind { get; set; }
-    decimal BigBlind { get; set; }
-    int OpenSeats => 9 - Players.Count;
-    int SmallBlindIndex { get; set; }
-    int BigBlindIndex { get; set; }
-    int DealButtonIndex { get; set; }
-    int MinimumBet { get; set; }
+    decimal BigBlind => SmallBlind * 2;
+    decimal MinimumBet { get; set; }
+    int BlindIndex { get; set; }
     int MainPot { get; set; }
   }
 }

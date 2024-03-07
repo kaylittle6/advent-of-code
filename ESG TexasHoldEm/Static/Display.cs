@@ -14,15 +14,15 @@ namespace TexasHoldEm.Static
       {
         Console.WriteLine("----------");
         Console.WriteLine($"{player.Name}");
-        Console.WriteLine($"{player.Money:C2}\n");
+        Console.WriteLine($"Bank: {player.Money:C2}");
+        Console.WriteLine($"Current Bet:{player.CurrentBet:C2}\n");
 
         foreach (var card in player.Hand)
         {
           Console.WriteLine($"{card.Display}");
         }
 
-        Console.WriteLine();
-        Console.WriteLine("----------");
+        Console.WriteLine("----------\n\n");
       }
     }
 
@@ -32,21 +32,21 @@ namespace TexasHoldEm.Static
 
       Console.WriteLine("----------");
       Console.WriteLine($"{player.Name}");
-      Console.WriteLine($"{player.Money:C2}\n");
+      Console.WriteLine($"Bank: {player.Money:C2}");
+      Console.WriteLine($"Current Bet:{player.CurrentBet:C2}\n");
 
       foreach (var card in player.Hand)
       {
         Console.WriteLine($"{card.Display}");
       }
 
-      Console.WriteLine();
-      Console.WriteLine("----------");
+      Console.WriteLine("----------\n\n");
     }
 
     private static void ShowGameDetails()
     {
       Console.Clear();
-      Console.WriteLine($"Number of Players: {Game.Dealer.Table.Players.Count} --" +
+      Console.WriteLine($"Number of Players: {Game.Dealer.Table.Players.Count}    |--|   " +
                     $"Small/Big Blinds: {Game.Dealer.Table.SmallBlind:C2} / {Game.Dealer.Table.BigBlind:C2}\n");
     }
   }

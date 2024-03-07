@@ -1,4 +1,5 @@
 using TexasHoldEm.Models;
+using TexasHoldEm.Utilities;
 
 namespace TexasHoldEm.Interfaces
 {
@@ -7,11 +8,9 @@ namespace TexasHoldEm.Interfaces
     List<Card> Deck { get; set; }
     Table Table { get; set; }
     int HandsPlayed { get; set; }
-    
-    List<Card> GetDeck();
     void CollectBets();
-    void AskPlayerOptions(Player player);
-    void DealHoleCards(List<Player> players);
+    void DealHoleCards();
+    void RoundOfBets(List<Player> players, GameStates gameState);
     void DealFlop();
     void DealTurnOrRiver();
     void FinishUpRound(List<Player> players);
