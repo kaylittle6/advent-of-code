@@ -1,16 +1,15 @@
-﻿namespace TexasHoldEm
+﻿namespace TexasHoldEm;
+
+public static class EntryPoint
 {
-  public static class EntryPoint
+  public static void Main(string[] args)
   {
-    public static void Main(string[] args)
-    {
-      var gameClient = Game.GetGameClient;
+    var gameClient = Game.GetGameClient;
       
-      gameClient.StartNewGame();
-      gameClient.CommenceRound();
+    gameClient.StartNewGame();
+    gameClient.CommenceRound();
       
-      Console.ReadLine();
+    Console.ReadLine();
       
-    }
   }
 }
