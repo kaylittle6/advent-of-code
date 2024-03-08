@@ -52,14 +52,13 @@ namespace TexasHoldEm
       var smallBlind = GetUserInput(1, startingMoney / 2);
 
       Dealer.Table.SmallBlind = smallBlind;
-      Dealer.Table.MinimumBet = Dealer.Table.BigBlind;
 
       Display.ShowEntireTable();
     }
 
     public void CommenceRound()
     {
-      Dealer.CollectBets();
+      Dealer.CollectBlinds();
       Dealer.DealHoleCards();
       Display.ShowEntireTable();
       

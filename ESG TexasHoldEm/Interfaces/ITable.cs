@@ -9,7 +9,6 @@ namespace TexasHoldEm.Interfaces
     List<int> SidePots { get; }
     decimal SmallBlind { get; }
     decimal BigBlind => SmallBlind * 2;
-    decimal MinimumBet { get; set; }
     int BlindIndex { get; set; }
     int MainPot { get; set; }
   }

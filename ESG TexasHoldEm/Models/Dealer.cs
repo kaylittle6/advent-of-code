@@ -1,6 +1,5 @@
 using TexasHoldEm.Interfaces;
 using TexasHoldEm.Static;
-using TexasHoldEm.Utilities;
 
 namespace TexasHoldEm.Models
 {
@@ -16,7 +15,7 @@ namespace TexasHoldEm.Models
     public int HandsPlayed { get; set; } = 0;
     
   
-    public void CollectBets()
+    public void CollectBlinds()
     {
       var smallBlindPlayer = Table.Players[Table.BlindIndex];
       var bigBlindPlayer = Table.Players[Table.BlindIndex + 1];
